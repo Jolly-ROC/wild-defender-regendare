@@ -1,0 +1,391 @@
+-- // Mods/Waves //
+-- // For for enemy AI behavior //
+local mods = nil
+local mod = {}
+local ai_class = {}
+local ai_table = {}
+local ai_table_ordered = {}
+local player_AI = {}
+
+local log_settings = {
+    logging_on = true,
+    filter = 1 -- 1 = all, 2 = some, 3 = strict
+}
+local function log(message)
+    mods.utility.print(message, {priority = 3, type="error"}, log_settings)
+end
+-- mods.utility.print("Message Content", {priority = 3, type="error"}, log_settings)
+
+-- Data from other mods
+-- If we access them often, easier to put them in a local variable
+-- So we don't have to call "mods.bank.GetBankData()" every time, we can just reference this local "bank_data"
+local bank_data = nil
+local ui = nil
+local xml = nil
+local game = nil
+local game_state = nil
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            core = GameModules["Arcade/Core"],
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            meta = GameModules["Mods/Meta"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"]
+        }
+        bank_data = mods.bank.GetBankData()
+        ui = mods.ui.Get()
+        xml = mods.ui.xml()
+        game = mods.gameplay.game()
+        game_state = mods.main.game_state()
+    end
+end
+
+-- VARIABLES
+mod.timer = nil
+mod.wave_data = nil
+mod.sub_wave_data = {}
+mod.current_y = 0
+mod.enemy_units_table = {}
+mod.boss_wave_interval = 5
+mod.greatest_y = 0
+mod.gap_between_waves = 4
+mod.gold_per_hp = 0
+
+mod.create_shape = {}
+function mod.StartWave()
+    LoadData()
+    mod.timer = nil
+    mod.greatest_y = game.spawn_center.y
+    mod.wave_data = mod.GenerateWaveData()
+    mod.sub_wave_data = {}
+    mod.current_y = game.spawn_center.y
+    mod.rewarded_gold = 0
+
+    for i = 1, #mod.wave_data do 
+        table.insert(mod.sub_wave_data, mod.CreateSubWaveData(mod.wave_data[i]))
+    end
+
+    mod.greatest_y = mod.greatest_y - mod.gap_between_waves
+    mod.timer = mods.core.GameTimer:New({tick=mod.IterateThroughSubWaves})
+end
+
+local speeds = {
+    enemy_drow_hawk = 0.9,
+    enemy_goblin_flyer= 1, 
+    enemy_dragon_1= 1, 
+    enemy_goblin_flyer_red= 2.4, 
+    enemy_goblin_flyer_purple_1= 0.6,
+    boss_dragon_1 = 1
+}
+
+function mod.GenerateWaveData()
+    local return_table = {}
+    local used_hp = 0
+    local stage = bank_data.game.g_current_island_progress.l_value.stage or 1
+    local unit_q_bounds = {4}
+    unit_q_bounds[2] = math.min(30, 6 + (stage * 1))
+    local waves = math.min(6, 1 + stage)
+    local total_hp_pool = math.min(30, stage) * 100
+    local hp_per_wave = total_hp_pool / waves
+    local units_types = mod.GetWaveUnitTypes()
+    local patterns = {
+        {pattern="Line", width=7, offset={x=0, y=0}},
+        {pattern="Rectangle", width=7, height=7, offset={x=0, y=0}},
+        {pattern="Circle", radius=3.5, offset={x=0, y=0}},
+    }
+    local gold_this_wave = math.floor((30 + stage) * (1 + (stage / 20)))
+    mod.gold_per_hp = gold_this_wave / total_hp_pool
+
+    while used_hp < total_hp_pool do
+        local creep = units_types[math.random(1, (math.min(stage, #units_types)))]
+        local q =  math.ceil(hp_per_wave / creep.hp) --math.random(unit_q_bounds[1], unit_q_bounds[2])
+        return_table[#return_table + 1] = mods.core.DeepCopyTable(patterns[math.random(1, #patterns)])
+        return_table[#return_table].creep = creep
+        return_table[#return_table].quantity = q
+        return_table[#return_table].index = #return_table
+        --return_table[#return_table].offset.y = mod.greatest_y + 6
+        used_hp = used_hp + (q * creep.hp)
+    end
+
+    if math.fmod(stage, mod.boss_wave_interval) == 0 then
+        return_table[#return_table + 1] = mods.core.DeepCopyTable(patterns[1])
+        return_table[#return_table].creep = mod.GetBoss()
+        return_table[#return_table].quantity = 1
+        --return_table[#return_table].offset.y = mod.greatest_y + 6
+        return_table[#return_table].boss = true
+        return_table[#return_table].index = #return_table
+    end
+
+    return return_table 
+end
+
+function mod.IterateThroughSubWaves()
+    mod.current_y = mod.current_y + 0.055
+    local prog = ((mod.current_y - game.spawn_center.y) / (mod.greatest_y - game.spawn_center.y))
+
+    if (prog) >= 1 then
+        --mod.timer:Destroy()
+    else
+        DCEI.SetBackgroundImageFillAmount(xml.ingame.level_fill, prog)
+        DCEI.SetHorizontalOffsetInParent(xml.ingame.prog_icon, 20 + (math.max(-200, -200 * (prog))))
+    end
+
+    for k, v in pairs(mod.sub_wave_data) do
+        for k2, v2 in pairs(v.points) do
+            if mod.current_y > v2.y then
+                mod.SpawnEnemyUnit(v, k2)
+                v.points[k2] = nil
+                if mods.utility.TableLength(v.points) == 0 then
+                    mod.sub_wave_data[k] = nil
+                end
+            end
+        end
+    end
+
+    if mods.utility.TableLength(mod.sub_wave_data) == 0 then
+        --DCEI.LogError("FINISHED SPAWNING!")
+    end
+end
+
+function mod.CreateSubWaveData(data)
+    local special_units = {"enemy_cargo_ship", "enemy_goblin_flyer_huge", "enemy_goblin_flyer_huge",  "enemy_goblin_flyer", "enemy_goblin_flyer"}
+    local sub_wave_data = {}
+
+    sub_wave_data = data
+    sub_wave_data.offset.y = (mod.greatest_y - game.spawn_center.y)
+    sub_wave_data.points = mod.create_shape[data.pattern](data)
+    table.insert(sub_wave_data.points, {
+        x = game.spawn_center.x + ((math.random(-4,4) * math.random())),
+        y = mod.greatest_y + ((math.random(-4,4) * math.random())),
+        special_unit=special_units[math.random(1, #special_units)]})
+    mod.greatest_y = mod.greatest_y + mod.gap_between_waves
+    sub_wave_data.quantity = #sub_wave_data.points
+
+    return sub_wave_data
+end
+
+function mod.SpawnEnemyUnit(data, index)
+    local unit_to_spawn = data.points[index].special_unit or data.creep.unit_type
+    local u = DCEI.CreateUnitAsync(-1, -1, unit_to_spawn, data.points[index].x, game.spawn_center.y)
+    local pos = DCEI.GetUnitPosition2D(u)
+    DCEI.Move(u, pos.x, game.level_center[2] + 3.5)
+    if bank_data.game.g_current_island_progress.l_value.stage > 30 then
+        DCEI.ApplyBehaviorCountAsync(u, "enemy_scaling", 30 + ((bank_data.game.g_current_island_progress.l_value.stage - 30) * 2))
+    else
+        DCEI.ApplyBehaviorCountAsync(u, "enemy_scaling", bank_data.game.g_current_island_progress.l_value.stage)
+    end
+    DCEI.AddTagToUnit(u, "_group", -1, data.index)
+    table.insert(mod.enemy_units_table, u)
+    table.insert(game.all_game_units, u)
+    DCEI.TriggerAddUnitDiedEvent(u, function() mod.EnemyUnitDies(#mod.enemy_units_table) end, true)
+    if data.boss == true then
+        local pos = DCEI.GetCameraCurrentFocalPoint()
+        DCEI.ShowFloatingText({x = pos.x, z = pos.y}, 
+        "<size=300%>BOSS!",
+        2, 1,-- 3, 1, -- stayDuration, animationType,
+        2, {offset = {up = -0.5}} -- animationDuration, options
+        )   
+    end
+end
+
+function mod.EnemyUnitDies(index)
+    local u = DCEI.TriggeringUnit
+    local pos = DCEI.GetUnitPosition2D(u)
+    local gold_reward = math.ceil(mod.gold_per_hp * DCEI.UnitTypeHealth(DCEI.UnitName(u)))
+
+    if DCEI.UnitName(u) == "enemy_goblin_flyer_huge" then
+        mods.ui.Flash({1, 0.8, 0, 1}, 0.3)
+    elseif DCEI.UnitName(u) == "enemy_cargo_ship" then
+        local p_up = mods.gameplay.CreateUnit(-1, "powerup_tripleshot", pos, 0)
+        DCEI.TriggerAddUnitDiedEvent(p_up, function() 
+            game.triple_shot = true
+            mods.ui.Flash({1, 0.2, 1, 1}, 5)
+            DCEI.TriggerAddTimerEventElapsed(function() game.triple_shot = false end, 10, false, true)
+        end, true)
+    end
+   
+    mods.ui.animate.Pop(xml.all.gold, 1.5)
+    mods.ui.animate.Pop(xml.all.gold_icon, 1.5)
+
+    mods.data.currencies.gold:Add(gold_reward)
+    mod.rewarded_gold = mod.rewarded_gold + gold_reward
+    
+    local r =  math.random(1,3)
+    if r == 1 then
+        DCEI.ShowFloatingText({x = pos.x, z = pos.y}, 
+        "<size=100%><sprite name=gold>" .. gold_reward,
+        0.3, 2,-- 3, 1, -- stayDuration, animationType,
+        0.3, {offset = {up = -0.5}} -- animationDuration, options
+        )
+    end
+
+    mod.enemy_units_table[index] = nil
+
+    if game_state.location == "gameplay" and mods.utility.TableLength(mod.enemy_units_table) == 0  and mods.utility.TableLength(mod.sub_wave_data) == 0 then
+        local pos = DCEI.GetCameraCurrentFocalPoint()
+        DCEI.ShowFloatingText({x = pos.x, z = pos.y}, 
+        "<size=300%>VICTORY",
+        1, 1,-- 3, 1, -- stayDuration, animationType,
+        1, {offset = {up = -0.5}} -- animationDuration, options
+        )
+
+        DCEI.TriggerAddTimerEventElapsed(function() 
+            ui.victory_screen.Show({
+                rewards = {
+                    {icon ="icon_coin00", text=mod.rewarded_gold},
+                }
+            })
+            
+            bank_data.game.g_current_island_progress.l_value.stage = bank_data.game.g_current_island_progress.l_value.stage + 1
+            mods.bank.Save()
+        end, 0, false, true)
+    else
+        -- DCEI.LogError("whyyyy :(")
+        -- DCEI.LogError(game_state.location)
+        -- DCEI.LogError(mods.utility.TableLength(mod.enemy_units_table))
+        -- DCEI.LogError(mods.utility.TableLength(mod.sub_wave_data))
+        -- DCEI.LogError("whyyyy :(")
+    end
+end
+
+function mod.create_shape.Circle(data)
+    local points = {}
+    local center = {game.spawn_center.x + data.offset.x, game.spawn_center.y + data.radius + data.offset.y}
+    local difference = 0
+    for i = 1, data.quantity do
+        local angle = (360 / data.quantity) * i
+        points[i] = mods.core.PointWithPolarOffset(center[1], center[2], angle, data.radius)
+        local temp = points[i].y - center[2]
+        local speed_adjust = temp * ((1 / data.creep.speed) * 1)
+        points[i].y = center[2] + speed_adjust
+        if speed_adjust > difference then
+            difference = speed_adjust - data.radius
+        end
+    end
+
+    for k, v in pairs(points) do
+        v.y = v.y  + math.abs(difference)
+        if v.y > mod.greatest_y then
+            mod.greatest_y = v.y 
+        end
+    end
+
+    return points
+end
+
+function mod.create_shape.Line(data)
+    local points = {}
+    local first_point = game.spawn_center.x - (data.width / 2) + data.offset.x
+    for i = 1, data.quantity do
+        points[i] = {
+            x = first_point + ((data.width / data.quantity) * (i-0.5)), 
+            y = game.spawn_center.y + data.offset.y
+        }
+        if points[i].y > mod.greatest_y then
+            mod.greatest_y = points[i].y 
+        end
+    end
+
+    return points
+end
+
+function mod.create_shape.Rectangle(data)
+    local points = {}
+    local quantity = math.max(4, data.quantity)
+    quantity = quantity - math.fmod(quantity, 4)
+
+    local center = {x=game.spawn_center.x + data.offset.x, y=game.spawn_center.y + data.offset.y + (data.height)} 
+
+    -- Bottom-left:
+    points[1] = {x = center.x - (data.width / 2), y=center.y - (data.height / 2)}
+    -- Top-left
+    points[2] = {x = center.x - (data.width / 2), y=center.y + (data.height / 2)}
+    -- Top right
+    points[3] = {x = center.x + (data.width / 2), y=center.y + (data.height / 2)}
+    -- Bottom right
+    points[4] = {x = center.x + (data.width / 2), y=center.y - (data.height / 2)}
+
+    quantity = quantity - 4
+    local x_increment = data.width / ((quantity / 4) + 2)
+    local y_increment = data.height / ((quantity / 4) + 2)
+
+    if quantity > 0 then
+        local a = 1
+        for i = 5, #points + 1 + (quantity / 4) do
+            points[i] = {x = points[1].x + (x_increment * a), y=points[1].y}
+            a = a + 1
+        end
+
+        a = 1
+        for i = #points + 1, #points + 1 + (quantity / 4) do
+            points[i] = {x = points[2].x + (x_increment * a), y=points[2].y}
+            a = a + 1
+        end
+
+        a = 1
+        for i = #points + 1, #points + 1 + (quantity / 4) do
+            points[i] = {x = points[4].x, y=points[4].y + (y_increment * a)}
+            a = a + 1
+        end
+
+        a = 1
+        for i = #points + 1, #points + 1 + (quantity / 4) do
+            points[i] = {x = points[1].x, y=points[1].y + (y_increment * a)}
+            a = a + 1
+        end
+
+    end
+
+    for i, v in pairs(points) do
+        if v.y ~= nil then
+            --v.y = v.y + (((1 - speeds[data.creep])) * 5)
+
+            local temp = v.y - center.y
+            local speed_adjust = temp * ((1 / data.creep.speed) * 1)
+            v.y = center.y + speed_adjust
+
+            if v.y > mod.greatest_y then
+                mod.greatest_y = v.y 
+            end
+        else
+            --log("nil " .. i)
+        end
+    end
+     
+    return points
+end
+
+--------------------------------------------------------------------------------------------
+-- Helpers
+function mod.GetWaveUnitTypes()
+    local return_table = {}
+    local max_types = math.min(4, (bank_data.game.g_current_island_progress.l_value.stage / 2))
+
+    for k, v in pairs(mods.data.creeps) do
+        if (bank_data.game.g_current_island_progress.l_value.stage >= v.min_wave) and (#return_table < max_types) then
+            table.insert(return_table, v)
+        end
+    end
+
+    --return {mods.data.creeps.dragon_1}
+    return return_table
+end
+
+function mod.GetBoss()
+    for k, v in pairs(mods.data.bosses) do
+        return v
+    end
+end
+
+return mod

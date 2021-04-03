@@ -1,0 +1,12 @@
+{
+    "cameraSettings": {
+        "allowZoom": true,
+        "allowPanX": true,
+        "allowPanY": true,
+        "skipIntroSequence": true,
+        "viewMode": 0
+    },
+    "weatherSettings": {
+        "hasCloud": true
+    }
+}

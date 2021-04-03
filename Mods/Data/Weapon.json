@@ -1,0 +1,218 @@
+{
+    "weapons": {
+        "enemy_weapon": {
+            "parent": "_StandardRangedWeapon",
+            "effectName": "Standard RangedUnit Weapon Launch",
+            "stats": {
+                "range": 5,
+                "scanRange": 12
+            }
+        },
+        "ship_cannon_weapon": {
+            "effectName": "ship_cannon_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "crew_hero_alchemist_weapon": {
+            "effectName": "crew_hero_alchemist_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "Standard RangedUnit Weapon": {
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4
+            }
+        },
+        "crew_hero_centaur_weapon": {
+            "effectName": "crew_hero_centaur_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "crew_hero_wolfhuntress_maskedheroine_weapon": {
+            "effectName": "crew_hero_wolfhuntress_maskedheroine_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "crew_hero_beemistress_thief_weapon": {
+            "effectName": "crew_hero_beemistress_thief_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "crew_hero_boarbarian_shaman_weapon": {
+            "effectName": "crew_hero_boarbarian_shaman_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "crew_hero_cloudrabbit_weapon": {
+            "effectName": "crew_hero_cloudrabbit_weapon Launch",
+            "stats": {
+                "preSwing": 0.3,
+                "backSwing": 0.4,
+                "period": 1,
+                "range": 15,
+                "scanRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "invulerable": 2
+            }
+        },
+        "enemy_pig1_weapon": {
+            "effectName": "enemy_pig1_damage",
+            "stats": {
+                "preSwing": 0.5,
+                "backSwing": 0.5,
+                "period": 1,
+                "range": 2,
+                "scanRange": 15,
+                "arc": 15,
+                "bufferRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "ground": 1,
+                "invulerable": 2
+            }
+        },
+        "enemy_ogre1_weapon  ": {
+            "effectName": "enemy_ogre1_damage  ",
+            "stats": {
+                "preSwing": 0.5,
+                "backSwing": 0.5,
+                "period": 1,
+                "range": 2,
+                "scanRange": 15,
+                "arc": 15,
+                "bufferRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "ground": 1,
+                "invulerable": 2
+            }
+        },
+        "enemy_ooze1_weapon ": {
+            "effectName": "enemy_ooze1_damage ",
+            "stats": {
+                "preSwing": 0.5,
+                "backSwing": 0.5,
+                "period": 1,
+                "range": 2,
+                "scanRange": 15,
+                "arc": 15,
+                "bufferRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "ground": 1,
+                "invulerable": 2
+            }
+        },
+        "boss_boar1_weapon  ": {
+            "effectName": "boss_boar1_damage  ",
+            "stats": {
+                "preSwing": 0.5,
+                "backSwing": 0.5,
+                "period": 1,
+                "range": 1,
+                "scanRange": 15,
+                "arc": 15,
+                "bufferRange": 15
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "ground": 1,
+                "invulerable": 2
+            }
+        },
+        "avalanche_surfer_golem": {
+            "parent": "_StandardMeleeWeapon",
+            "effectName": "avalanche_surfer_golem_damage",
+            "stats": {
+                "scanRange": 12
+            },
+            "distanceExtendMode": 1
+        },
+        "suicide_weapon": {
+            "effectName": "Kill Caster",
+            "stats": {
+                "preSwing": 0.5,
+                "backSwing": 0.5,
+                "period": 1,
+                "range": 0.4,
+                "scanRange": 12
+            },
+            "distanceExtendMode": 1,
+            "targetFilter": {
+                "ground": 1,
+                "invulerable": 2
+            }
+        },
+        "dragon_1_weapon": {
+            "parent": "_StandardRangedWeapon",
+            "effectName": "dragon_1_weapon Launch",
+            "stats": {
+                "preSwing": 0.1,
+                "backSwing": 0.2,
+                "period": 2,
+                "range": 4,
+                "scanRange": 6
+            }
+        }
+    }
+}

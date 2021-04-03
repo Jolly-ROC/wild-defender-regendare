@@ -1,0 +1,18 @@
+-- // MOD NAME //
+-- // Description of mod purpose //
+mod = {}
+
+function Initialize()
+
+end
+
+-- VARIABLES: 
+
+-- FUNCTIONS: Local
+
+
+-- FUNCTIONS: Mod
+
+-- CALLBACKS
+DCEI.TriggerAddTimerEventElapsed(Initialize, 0.0625, true)
+return mod

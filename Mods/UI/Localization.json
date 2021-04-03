@@ -1,0 +1,92 @@
+{
+    "localizationEntries": {
+        "ui/review/ask": {
+            "text": "Nice win! How do you like our game so far?",
+            "description": ""
+        },
+        "ui/review/invite": {
+            "text": "Would you help us by rating TOOD(Jolly) in the store?",
+            "description": ""
+        },
+        "ui/review/decline": {
+            "text": "Decline",
+            "description": ""
+        },
+        "ui/review/accept": {
+            "text": "Sure!",
+            "description": ""
+        },
+        "ui/review/thanks": {
+            "text": "Thanks for your feedback!",
+            "description": ""
+        },
+        "heroes": {
+            "text": "Heroes",
+            "description": ""
+        },
+        "ship": {
+            "text": "Ship",
+            "description": ""
+        },
+        "hero/lionking/name": {
+            "text": "Leonidas",
+            "description": ""
+        },
+        "hero/icemage/name": {
+            "text": "Ice Mage",
+            "description": ""
+        },
+        "hero/wolfhuntress_maskedheroine/name": {
+            "text": "Wolf Huntress",
+            "description": ""
+        },
+        "hero/cloudrabbit/name": {
+            "text": "Cloud Rabbit",
+            "description": ""
+        },
+        "hero/centaurarcher_awaken/name": {
+            "text": "Centaur Archer",
+            "description": ""
+        },
+        "hero/avalanche_surfer/name": {
+            "text": "Dustin",
+            "description": ""
+        },
+        "hero/beemistress_thief/name": {
+            "text": "Bee Mistress",
+            "description": ""
+        },
+        "hero/alchemist_musketeer/name": {
+            "text": "Alchemist",
+            "description": ""
+        },
+        "meta/play_btn_txt": {
+            "text": "{[x]}",
+            "description": ""
+        },
+        "ship/hp": {
+            "text": "Health Lvl: {[x]}",
+            "description": ""
+        },
+        "ship/weapon": {
+            "text": "Weapon Lvl: {[x]}",
+            "description": ""
+        },
+        "ui/choose_target": {
+            "text": "Choose Ability Target",
+            "description": ""
+        },
+        "ui/upgrade_cost": {
+            "text": "Upgrade \\n <sprite name=gold> {[x]}",
+            "description": ""
+        },
+        "ui/victory": {
+            "text": "{[x]} Victory!",
+            "description": ""
+        },
+        "ui/level": {
+            "text": "Level",
+            "description": ""
+        }
+    }
+}

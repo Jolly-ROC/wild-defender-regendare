@@ -1,0 +1,88 @@
+local mod = {}
+local mods = nil
+local local_f = {}
+
+--local loading = DCEI.NewUiFromXml(DCEI.GetUiRoot(), "_loading_screen")
+DCEI.TriggerAddTimerEventElapsed(function() DCEI.Destroy(loading) end, 0.3, true, true)
+for n = 0, 2 do
+    DCEI.HideSystemUi(n)
+end
+
+DCEI.HideShipSpellMenu()
+DCEI.PlayMusic("placeholder")
+
+-- Seed RNG?
+math.randomseed(os.time())
+math.randomseed(os.time())
+math.randomseed(os.time())
+
+local xml = nil
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            meta = GameModules["Mods/Meta"],
+            ui = GameModules["Mods/UI"],
+            waves = GameModules["Mods/Waves"],
+        }
+        xml = mods.ui.xml()
+    end
+end
+
+-- VARIABLES
+local game_state = {}
+game_state.location = nil
+
+function local_f.Initialize()
+    -- Load mods
+    LoadData()
+
+    -- Load player save data
+    mods.data.SetData()
+    DCEI.Wait(0)
+    mods.bank.Load()
+    DCEI.Wait(0)
+
+    mods.ui.Initialize()
+
+    mod.SwitchState("meta")
+    mods.bank.Save()
+end
+
+function mod.SwitchState(new_state, options)
+    local options = options or {}
+    if new_state ~= game_state.location then
+        DCEI.ExitTargetingModeAndDeselectUnits()
+        if game_state.location ~= nil then mods[game_state.location].Exit() end
+        game_state.location = new_state
+        if options.transition == true then 
+            xml.all.ship_travel:Show()
+            DCEI.SetCameraFocusSmoothOvertime(250, 250, 0, true)
+            if options.flip == true then
+                DCEI.SetRotation3D(xml.all.ship_travel.Frame, 0, 180, 0)
+            else
+                DCEI.SetRotation3D(xml.all.ship_travel.Frame, 0, 0, 0)
+            end
+        end
+        DCEI.TriggerAddTimerEventElapsed(function()
+            mods[game_state.location].Enter()
+            xml.all.ship_travel:Hide()
+        end, options.transition_time or 0, false, true)
+    end
+end
+
+function mod.game_state() return game_state end
+
+DCEI.TriggerAddTimerEventElapsed(local_f.Initialize, 0, true, false)
+
+return mod

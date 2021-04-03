@@ -1,0 +1,1 @@
+You can override in-built mods (shop, user interface, core) by placing them here. Avoid if possible, but can be good for temporarily reverting when one of these mods has a bug.

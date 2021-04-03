@@ -1,0 +1,11 @@
+{
+    "cameraSettings": {
+        "focalPointX": 3.5,
+        "focalPointY": 8,
+        "allowZoom": false,
+        "panAreaCenterX": 3.5,
+        "panAreaCenterY": 8,
+        "panAreaLengthX": 50,
+        "viewMode": 1
+    }
+}

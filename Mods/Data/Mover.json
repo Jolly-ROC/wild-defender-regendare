@@ -1,0 +1,74 @@
+{
+    "movers": {
+        "DragonMissile": {
+            "ballistic": {
+                "flightTime": 0,
+                "speed": 5,
+                "gravity": 28
+            },
+            "upright": true
+        },
+        "KnockBack d100 Mover": {
+            "ballistic": {
+                "flightTime": 0.25,
+                "gravity": 24
+            },
+            "upright": true,
+            "noRotation": true,
+            "stayOnNavMesh": true
+        },
+        "bow_mover_1": {
+            "guidance": {
+                "acceleration": 20,
+                "speed": 20,
+                "maxSpeed": 20
+            },
+            "upright": true,
+            "noRotation": true
+        },
+        "_arc_medium": {
+            "ballistic": {
+                "flightTime": 0.4,
+                "gravity": 60
+            },
+            "upright": true
+        },
+        "_knockback": {
+            "ballistic": {
+                "flightTime": 0.5,
+                "gravity": 24
+            },
+            "upright": true,
+            "noRotation": true,
+            "stayOnNavMesh": true
+        },
+        "_arc_slow": {
+            "ballistic": {
+                "flightTime": 1.5,
+                "gravity": 31
+            },
+            "upright": true
+        },
+        "Death Knockback": {
+            "ballistic": {
+                "flightTime": 0.5,
+                "gravity": 24
+            },
+            "upright": true,
+            "noRotation": true
+        },
+        "Standard Ballistic Missile Slower": {
+            "ballistic": {
+                "flightTime": 1,
+                "gravity": 12
+            }
+        },
+        "_arc_high_fast": {
+            "ballistic": {
+                "flightTime": 0.8125,
+                "gravity": 28
+            },
+            "upright": true
+        }
+    }
+}

@@ -1,0 +1,5253 @@
+{
+    "actors": {
+        "bow_base": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "repeater_rank01_base"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
+        "bow_basic_missile_1": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "tower_repeater_rank01_missile"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "bow_impact_basic"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp UpBy 1"
+                ]
+            }
+        },
+        "player_health_bar": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ship_default_body"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": false
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 4,
+                "hostSiteOperations": [
+                    "SOp DownBy 1"
+                ],
+                "selectionBonusRadius": -4
+            }
+        },
+        "enemy_goblin_1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_no_weapon_fire"
+                },
+                "modelScale": 1.8
+            }
+        },
+        "_Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_green"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 1
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "projectile_death_squash_stretch"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "bow_impact_basic": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_repeater_bola_impact"
+                },
+                "modelScale": 2.5
+            }
+        },
+        "_StandardUnit DecayOnDeathSlow": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Decay Slow"
+                ]
+            }
+        },
+        "_UnitTrueMinimal": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_green"
+                },
+                "preserveOnUnitRemove": true,
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "ability_queued_1 Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_lavaooze_friendlyfire_lava_shield"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "ability_queued_1"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "ability_queued_1"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 3
+            }
+        },
+        "ability_queued_2 Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_icemage_icearmor_buff"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "ability_queued_2"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "ability_queued_2"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 3
+            }
+        },
+        "bow_fire_missile_1": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_spell_fireball_missile"
+                },
+                "modelScale": 3
+            }
+        },
+        "bow_frost_missile_1": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_arrow_ice"
+                },
+                "modelScale": 3
+            }
+        },
+        "bow_frost_missile_1_search Impact Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_icemage_frostnova_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 3
+            }
+        },
+        "bow_frost_missile_1_search Action Actor": {
+            "actionActor": {
+                "effect": "bow_frost_missile_damage",
+                "launchModelDetached": true,
+                "impactModel": "bow_frost_missile_1_search Impact Model",
+                "impactModelDetached": true
+            }
+        },
+        "bow_fire_missile_1_persistent Impact Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_breathoffire_blazingtrail"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "persistentEffectOff": {
+                                "effect": "bow_fire_missile_1_persistent"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "persistentEffectOn": {
+                                "effect": "bow_fire_missile_1_persistent"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1
+            }
+        },
+        "aoe_ability_target": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_indicator_white"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorOrphan": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onCustomEvent": {
+                                "identifier": "EventDestroy"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onCustomEvent": {
+                                "identifier": "EventHide"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onCustomEvent": {
+                                "identifier": "EventShow"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 255
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 3
+            }
+        },
+        "ability_fireball_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "lionking_discusthrow_missile"
+                },
+                "modelScale": 2.2,
+                "hostSiteOperations": [
+                    "SOp MissileSpin 1"
+                ]
+            }
+        },
+        "enemy_hobgoblin_1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "hobgoblin_red"
+                },
+                "preserveOnUnitRemove": true,
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.4,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "_hero": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "repeater_rank01_main"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "status": {},
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.3,
+                            "right": -0.3,
+                            "up": 0.4
+                        }
+                    },
+                    "SiteHit": {
+                        "offset": {
+                            "up": 0.4
+                        }
+                    }
+                },
+                "modelScale": 1.8,
+                "hideShadow": true
+            }
+        },
+        "preloads_1": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "repeater_rank01_main"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.8,
+                "hostSiteOperations": [
+                    "SOp 180",
+                    "SOp UpBy Dot25"
+                ],
+                "hideShadow": true
+            }
+        },
+        "icemage_attack_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_icemage_frostbolt_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 0.0625
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 0.0625
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "icemage_attack_impact"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.7,
+                "hostSiteOperations": [
+                    "SOp UpBy 1"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "icemage_attack_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_frosttower_shatter_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.4
+            }
+        },
+        "lionking_attack_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "lionking_tomyhand_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "trail_red"
+                                }
+                            },
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp UpBy 1"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "lionking_attack_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_weapon_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "lionking_attack_impact_sfx"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.5
+            }
+        },
+        "ability_fireball_burning Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_status_burn"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "ability_fireball_burning"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "ability_fireball_burning"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
+        "ability_snowstorm_action 2": {
+            "actionActor": {
+                "effect": "ability_snowstorm_search 2",
+                "launchModelDetached": true,
+                "impactModel": "ability_snowstorm_impact 2",
+                "impactModelDetached": true
+            }
+        },
+        "ability_snowstorm_impact 2": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_yeti_snowball_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.9
+            }
+        },
+        "ability_snowstorm_freeze Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_status_freeze"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "ability_snowstorm_freeze"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "ability_snowstorm_freeze"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "meta_wall": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "PropModel",
+                    "name": "forestworld_castleset_wall03"
+                },
+                "modelScale": 2
+            }
+        },
+        "preloads_meta": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "airship_cargo"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "actor_preloads"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "upgrade_flash",
+                                    "hostSite": "SiteHit"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "meta_build_spot": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "towerslot_forestworld"
+                },
+                "modelScale": 1.4
+            }
+        },
+        "meta_arrow_tower": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "arrowtower_rank03"
+                },
+                "modelScale": 1.5,
+                "hostSiteOperations": [
+                    "SOp -45"
+                ]
+            }
+        },
+        "meta_tent": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "PropModel",
+                    "name": "forestworld_battletent00"
+                },
+                "modelScale": 1.5,
+                "hostSiteOperations": [
+                    "SOp -45"
+                ]
+            }
+        },
+        "meta_shop": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "chest_golden"
+                },
+                "modelScale": 2.5,
+                "hostSiteOperations": [
+                    "SOp -45"
+                ]
+            }
+        },
+        "meta_armory": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "dragoonbarracks_rank3"
+                },
+                "modelScale": 1.2,
+                "hostSiteOperations": [
+                    "SOp -45"
+                ]
+            }
+        },
+        "meta_hero_temple": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "lionking"
+                },
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp 135",
+                    "SOp UpBy 2",
+                    "SOp UpBy 1"
+                ]
+            }
+        },
+        "ship_cannon": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ship_default_cannon"
+                },
+                "hostSites": {
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 1,
+                            "up": 1
+                        }
+                    }
+                },
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot5"
+                ]
+            }
+        },
+        "ship_cannon_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "cannontower_missile"
+                },
+                "modelScale": 0.6,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation",
+                    "SOp MissileSpin 1"
+                ]
+            }
+        },
+        "ship_cannon_weapon Attack FX": {
+            "actionActor": {
+                "effect": "ship_cannon_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_alchemist_weapon Attack FX": {
+            "actionActor": {
+                "effect": "crew_hero_alchemist_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_alchemist_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "alchemist_missile"
+                },
+                "modelScale": 1.5,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation",
+                    "SOp MissileSpin 1"
+                ]
+            }
+        },
+        "SOp MissileSpin 1": {
+            "siteOperation": {
+                "rotate": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                    "dx": 560,
+                    "dy": 719.85,
+                    "dz": 180,
+                    "orientation": 2
+                }
+            }
+        },
+        "crew_hero_centaur_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "alchemist_missile"
+                },
+                "modelScale": 3,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation",
+                    "SOp MissileSpin 1"
+                ]
+            }
+        },
+        "crew_hero_centaur_weapon Attack FX": {
+            "actionActor": {
+                "effect": "crew_hero_centaur_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_wolfhuntress_maskedheroine_weapon Attack FX": {
+            "actionActor": {
+                "effect": "crew_hero_wolfhuntress_maskedheroine_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_wolfhuntress_maskedheroine": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "wolfhuntress_maskedheroine"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.8,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "aliases": [
+                    "_Unit"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_wolfhuntress_maskedheroine_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "wolfhuntress_maskedheroine_spear_missile"
+                },
+                "modelScale": 3,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation"
+                ]
+            }
+        },
+        "crew_hero_beemistress_thief_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bemistress_thief_pet"
+                },
+                "modelScale": 3,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation"
+                ]
+            }
+        },
+        "crew_hero_beemistress_thief_weapon Attack FX": {
+            "actionActor": {
+                "effect": "crew_hero_beemistress_thief_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_beemistress_thief": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "beemistress_thief"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.8,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "aliases": [
+                    "_Unit"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_boarbarian_shaman_weapon Attack FX": {
+            "actionActor": {
+                "effect": "crew_hero_boarbarian_shaman_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_cloudrabbit_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "bemistress_thief_pet"
+                },
+                "modelScale": 3,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation"
+                ]
+            }
+        },
+        "crew_hero_cloudrabbit_weapon Attack FX": {
+            "actionActor": {
+                "effect": "crew_hero_cloudrabbit_weapon Launch",
+                "impactModel": "Standard Impact FX",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "crew_hero_cloudrabbit": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "cloudrabbit"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.8,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "aliases": [
+                    "_Unit"
+                ],
+                "hideShadow": true
+            }
+        },
+        "SOp -45": {
+            "siteOperation": {
+                "rotate": {
+                    "y": -45,
+                    "orientation": 1
+                }
+            }
+        },
+        "hero_icemage": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "elvenmage"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "hideShadow": true
+            }
+        },
+        "hero_lionking": {
+            "parent": "_hero",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "lionking"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimationWithDuration": {
+                                    "clipId": 4,
+                                    "clipDuration": 0.5
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.4,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_centaurarcher_awaken": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "centaurarcher_awaken"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.8,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "aliases": [
+                    "_Unit"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_avalanche_surfer": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "avalanchersurfer"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    },
+                    "SiteWeapon": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.6,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "aliases": [
+                    "_Unit"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_alchemist_musketeer": {
+            "parent": "_UnitTrueMinimal",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "alchemist_musketeer"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation"
+                ],
+                "modelScale": 1.6,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_lionking": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "lionking"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.4,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "hideShadow": true
+            }
+        },
+        "crew_hero_icemage": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "elvenmage"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "anim_attack"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp UpBy Dot25"
+                ],
+                "hideShadow": true
+            }
+        },
+        "enemy_pig1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "warpigmy"
+                },
+                "preserveOnUnitRemove": true,
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1.5,
+                "modelScale": 2.2,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "enemy_ooze1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ooze_green"
+                },
+                "preserveOnUnitRemove": true,
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.3,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "enemy_ogre": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "ogre"
+                },
+                "preserveOnUnitRemove": true,
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 1.4,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "meta_ship": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "drow_warship"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "ship_flying"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {
+                                "clip": 3
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2,
+                "hostSiteOperations": [
+                    "SOp UpBy 1",
+                    "SOp UpBy Dot5"
+                ]
+            }
+        },
+        "boss_boar": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_boarbarius"
+                },
+                "modelScale": 2
+            }
+        },
+        "meta_transition_scene_cloud": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "cloudcover_missle"
+                },
+                "modelScale": 1,
+                "hostSiteOperations": [
+                    "SOp DownBy 2",
+                    "SOp 90"
+                ],
+                "selectionBonusRadius": -6
+            }
+        },
+        "gameplay_ship": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "drow_warship"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "ship_flying"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {
+                                "clip": 3
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {
+                                "clip": 7
+                            }
+                        },
+                        "actions": [
+                            {
+                                "pauseAnimation": {
+                                    "clipId": 7
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "all_music"
+                                }
+                            },
+                            {
+                                "playAnimation": {
+                                    "clipId": 3
+                                }
+                            },
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 5.8
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Hit VFX 2"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 5.8,
+                "hostSiteOperations": [
+                    "SOp DownBy 1",
+                    "SOp FaceNorth"
+                ],
+                "selectionBonusRadius": -5,
+                "aliases": [
+                    "_Unit"
+                ],
+                "scaleMultiplier": {
+                    "x": 1.15,
+                    "y": 0.8,
+                    "z": 1.15
+                }
+            }
+        },
+        "earthsurfer_stone_golem": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "golem_stone"
+                },
+                "modelScale": 0.8
+            }
+        },
+        "earthsurfer_stone_golem_spawn Impact Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_surfer_eruption_hit"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "earthsurfer_stone_golem_spawn SOp"
+                ],
+                "modelScale": 2
+            }
+        },
+        "earthsurfer_stone_golem_spawn Action Actor": {
+            "actionActor": {
+                "effect": "earthsurfer_stone_golem_spawn",
+                "launchModelDetached": true,
+                "impactModel": "earthsurfer_stone_golem_spawn Impact Model",
+                "impactModelDetached": true
+            }
+        },
+        "earthsurfer_stone_golem_spawn SOp": {
+            "siteOperation": {
+                "rotate": {
+                    "y": 0
+                }
+            }
+        },
+        "ability_snowstorm_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "snowball_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 0.0625
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitDeath": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 0.0625
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 2,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "hero_ability_active Model": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_itemdrop_ring"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "hero_ability_active"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "hostSite": "status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "hero_ability_active"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
+        "alchemist_ability_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_skull_flyer_missile"
+                },
+                "modelScale": 4
+            }
+        },
+        "alchemist_ability_missile Impact Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_alchemist_transmute_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "alchemist_ability_missile SOp"
+                ]
+            }
+        },
+        "alchemist_ability_missile Action Actor": {
+            "actionActor": {
+                "effect": "alchemist_ability_missile",
+                "launchModelDetached": true,
+                "impactModel": "alchemist_ability_missile Impact Model",
+                "impactModelDetached": true
+            }
+        },
+        "alchemist_ability_missile SOp": {
+            "siteOperation": {
+                "rotate": {
+                    "y": 0
+                }
+            }
+        },
+        "alchemist_ability_weapon_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_skull_flyer_missile"
+                },
+                "modelScale": 6
+            }
+        },
+        "_StandardUnit": {
+            "unitActor": {
+                "eventMacros": [
+                    "Hit VFX"
+                ]
+            }
+        },
+        "lionking_attack_launch_sfx": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_tomyhand_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.2
+            }
+        },
+        "lionking_attack_impact_sfx": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_tomyhand_launch"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.5
+            }
+        },
+        "lionking_attack_action": {
+            "actionActor": {
+                "effect": "lionking_attack_launch_missile_ground",
+                "launchModel": "lionking_attack_launch",
+                "impactModel": "lionking_attack_impact",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "lionking_attack_launch": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_lionking_discussthrow_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "lionking_attack_launch_sfx"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
+        "unit_death_vfx_1": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_creep_death_ooze_red"
+                }
+            }
+        },
+        "unit_death_vfx_2": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_goldorb_collect"
+                }
+            }
+        },
+        "unit_death_vfx_3": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_lionking_discussthrow_impact"
+                },
+                "modelScale": 3
+            }
+        },
+        "unit_death_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "goblin_sapper_die"
+                },
+                "events": [
+                    {
+                        "actions": [
+                            {}
+                        ]
+                    }
+                ],
+                "additionalResources": [
+                    {
+                        "type": "Sound",
+                        "name": "zombie_ogre_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "boarbarian_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "dragonling_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "drow_captain_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "drow_hawk_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Drow_Ranger_Die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "drow_skirmisher_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "drow_stalker_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "hobgoblin_die"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "ooze_die"
+                    }
+                ]
+            }
+        },
+        "all_music": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "Boss1"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorOrphan": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "additionalResources": [
+                    {
+                        "type": "Sound",
+                        "name": "Battle1"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Battle2"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Battle3"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Hometown1"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Pocket legion campaign loop"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Summon Revolt menu full"
+                    }
+                ],
+                "modelScale": 0.2
+            }
+        },
+        "town_music": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "Hometown1"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorOrphan": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "additionalResources": [
+                    {
+                        "type": "Sound",
+                        "name": "Battle1"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Hometown1"
+                    },
+                    {
+                        "type": "Sound",
+                        "name": "Summon Revolt menu full"
+                    }
+                ],
+                "modelScale": 0.5
+            }
+        },
+        "music_controller": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "airship_cargo"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "town_music"
+                                }
+                            },
+                            {
+                                "setVisibility": {
+                                    "visibility": false
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "enemy_goblin_flyer": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_flyer"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2.5
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Hit VFX"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 0.7,
+                "modelScale": 2.5,
+                "hostSiteOperations": [
+                    "goblin_flyer_rotation"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "enemy_drow_hawk": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "drow_hawk"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Hit VFX"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 0.8,
+                "modelScale": 2,
+                "aliases": [
+                    "_Unit",
+                    "_Unit"
+                ]
+            }
+        },
+        "enemy_dragon_1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "dragonling_red"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2.4
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 0.9,
+                "modelScale": 2.4,
+                "hostSiteOperations": [
+                    "goblin_flyer_rotation"
+                ],
+                "aliases": [
+                    "_Unit",
+                    "_Unit"
+                ]
+            }
+        },
+        "lionking_attack_action 2": {
+            "actionActor": {
+                "effect": "lionking_attack_launch_missile",
+                "launchModel": "lionking_attack_launch",
+                "impactModel": "lionking_attack_impact",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "boss_dragon_1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "boss_dragon_red"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 10
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {
+                                "clip": 10
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 10
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Hit VFX 2"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 2,
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "crew_hero_avalanche_surfer_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "surfer_weapon_missile"
+                },
+                "modelScale": 1.5,
+                "hostSiteOperations": [
+                    "SOp FollowMovement Orientation"
+                ]
+            }
+        },
+        "enemy_goblin_flyer_red": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_flyer_red"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2.5
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Hit VFX"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 0.7,
+                "modelScale": 2.5,
+                "hostSiteOperations": [
+                    "goblin_flyer_rotation"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "enemy_goblin_flyer_purple_1": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_flyer_purple"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2.5
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Hit VFX"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 0.8,
+                "modelScale": 2.5,
+                "hostSiteOperations": [
+                    "goblin_flyer_rotation"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "upgrade_flash": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_blindingflash_impact"
+                },
+                "hostSiteOperations": [
+                    "SOp ForwardBy 1",
+                    "SOpForwardBy Dot5"
+                ],
+                "modelScale": 1.6
+            }
+        },
+        "SOp BackBy 3": {
+            "siteOperation": {
+                "offset": {
+                    "z": 3,
+                    "orientation": 1
+                }
+            }
+        },
+        "SOp ForwardBy 1": {
+            "siteOperation": {
+                "offset": {
+                    "z": -0.5,
+                    "orientation": 1
+                }
+            }
+        },
+        "SOpForwardBy Dot5": {
+            "siteOperation": {
+                "offset": {
+                    "z": -1,
+                    "orientation": 1
+                }
+            }
+        },
+        "meta_transition_scene_cloud2": {
+            "unitActor": {
+                "resource": {
+                    "type": "PropModel",
+                    "name": "vfx_cloud_In_background"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 99999,
+                                        "g": 99999,
+                                        "b": 99999
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 5,
+                "hostSiteOperations": [
+                    "SOp FaceSouth"
+                ]
+            }
+        },
+        "clouds_attachment": {
+            "modelActor": {
+                "resource": {
+                    "type": "PropModel",
+                    "name": "vfx_cloud_In_background"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimationWithDuration": {
+                                    "clipId": 0,
+                                    "clipDuration": 0.5
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {
+                                "clip": 0
+                            }
+                        },
+                        "actions": [
+                            {
+                                "playAnimationWithDuration": {
+                                    "clipId": 2,
+                                    "clipDuration": 0.5
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "SOp FaceNorth +30": {
+            "parent": "",
+            "siteOperation": {
+                "rotate": {
+                    "y": 5
+                }
+            }
+        },
+        "SOp FaceNorth - 30": {
+            "parent": "",
+            "siteOperation": {
+                "rotate": {
+                    "y": -5
+                }
+            }
+        },
+        "enemy_cargo_ship": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "airship_cargo"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2.2
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2.2,
+                "hostSiteOperations": [
+                    "SOp 180"
+                ]
+            }
+        },
+        "trail_white_long": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "general_trail_longer"
+                },
+                "modelScale": 10
+            }
+        },
+        "target_blip": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "misc_move"
+                },
+                "modelScale": 2
+            }
+        },
+        "_StandardUnitMinimal": {
+            "unitActor": {
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 1
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "trail_white": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "general_trail"
+                },
+                "modelScale": 8
+            }
+        },
+        "target_marker Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_indicator_white"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "behaviorOn": {
+                                "behavior": "target_marker"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "create": {}
+                            },
+                            {
+                                "setModelScale": {
+                                    "modelScaleExpression": [
+                                        {
+                                            "multiply": {
+                                                "expressions": [
+                                                    {
+                                                        "variable": {
+                                                            "name": "scale"
+                                                        }
+                                                    },
+                                                    {
+                                                        "constant": {
+                                                            "value": 0.25
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "behaviorOff": {
+                                "behavior": "target_marker"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 322
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "SOp DefaultWorld Rotation"
+                ]
+            }
+        },
+        "goblin_flyer_rotation": {
+            "siteOperation": {
+                "rotate": {
+                    "x": -65,
+                    "orientation": 1
+                }
+            }
+        },
+        "enemy_goblin_flyer_search Impact Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_shared_explosion_small"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "enemy_goblin_flyer_search SOp"
+                ],
+                "modelScale": 1.2
+            }
+        },
+        "enemy_goblin_flyer_search Action Actor": {
+            "actionActor": {
+                "effect": "enemy_goblin_flyer_search",
+                "launchModelDetached": true,
+                "impactModel": "enemy_goblin_flyer_search Impact Model",
+                "impactModelDetached": true
+            }
+        },
+        "enemy_goblin_flyer_search SOp": {
+            "siteOperation": {
+                "rotate": {
+                    "y": 0
+                }
+            }
+        },
+        "dragon_1_Impact FX": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_generic_hit00"
+                }
+            }
+        },
+        "dragon_1_weapon Attack FX": {
+            "parent": "_FX Attack SingleTarget",
+            "actionActor": {
+                "effect": "dragon_1_weapon Launch",
+                "impactModel": "dragon_1_Impact FX"
+            }
+        },
+        "dragon_1_weapon Missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_spell_fireball_missile"
+                },
+                "modelScale": 0.5
+            }
+        },
+        "aoe_ability_target_small": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_indicator_white"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 255
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "aoe_ability_target_ring": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": false
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "1"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "2"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "3"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "4"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "5"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "6"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "7"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "8"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "9"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "10"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "11"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "12"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "13"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "14"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "15"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_small",
+                                    "hostSite": "16"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "1": {
+                        "offset": {
+                            "forward": 3.5
+                        }
+                    },
+                    "2": {
+                        "offset": {
+                            "forward": -3.5
+                        }
+                    },
+                    "3": {
+                        "offset": {
+                            "right": 3.5
+                        }
+                    },
+                    "4": {
+                        "offset": {
+                            "right": -3.5
+                        }
+                    },
+                    "5": {
+                        "offset": {
+                            "forward": 2.13,
+                            "right": 2.485
+                        }
+                    },
+                    "6": {
+                        "offset": {
+                            "forward": -2.13,
+                            "right": 2.485
+                        }
+                    },
+                    "7": {
+                        "offset": {
+                            "forward": 2.13,
+                            "right": -2.485
+                        }
+                    },
+                    "8": {
+                        "offset": {
+                            "forward": -2.13,
+                            "right": -2.485
+                        }
+                    },
+                    "9": {
+                        "offset": {
+                            "forward": 3.23,
+                            "right": 1.34
+                        }
+                    },
+                    "10": {
+                        "offset": {
+                            "forward": 1.34,
+                            "right": 3.23
+                        }
+                    },
+                    "11": {
+                        "offset": {
+                            "forward": -1.34,
+                            "right": 3.23
+                        }
+                    },
+                    "12": {
+                        "offset": {
+                            "forward": -3.23,
+                            "right": 1.34
+                        }
+                    },
+                    "13": {
+                        "offset": {
+                            "forward": -3.23,
+                            "right": -1.34
+                        }
+                    },
+                    "14": {
+                        "offset": {
+                            "forward": -1.34,
+                            "right": -3.23
+                        }
+                    },
+                    "15": {
+                        "offset": {
+                            "forward": 1.34,
+                            "right": -3.23
+                        }
+                    },
+                    "16": {
+                        "offset": {
+                            "forward": 3.23,
+                            "right": -1.34
+                        }
+                    }
+                }
+            }
+        },
+        "ability_alchemist_musketeer_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_potiondealer_unknown_missile"
+                },
+                "modelScale": 2
+            }
+        },
+        "ability_alchemist_musketeer_action": {
+            "actionActor": {
+                "effect": "ability_alchemist_musketeer_launch_missile",
+                "launchModelDetached": false,
+                "impactModel": "ability_alchemist_musketeer_impact",
+                "impactModelDetached": true
+            }
+        },
+        "ability_alchemist_musketeer_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_tower_potiondealer_mysterypotion_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "ability_alchemist_musketeer_impact_sfx"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 5
+            }
+        },
+        "aoe_ability_target_rectangle": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "simple_square_gpu"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorOrphan": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onCustomEvent": {
+                                "identifier": "EventDestroy"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onCustomEvent": {
+                                "identifier": "EventHide"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onCustomEvent": {
+                                "identifier": "EventShow"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setTintColor": {
+                                    "color": {
+                                        "r": 255
+                                    }
+                                }
+                            },
+                            {
+                                "setMeshEffect": {
+                                    "effect": "Ghost"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 8,
+                "scaleMultiplier": {
+                    "x": 1,
+                    "y": 1,
+                    "z": 0.2
+                }
+            }
+        },
+        "aoe_ability_target_square": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVisibility": {
+                                    "visibility": false
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_rectangle",
+                                    "hostSite": "1"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_rectangle",
+                                    "hostSite": "2"
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_rectangle",
+                                    "hostSite": "3",
+                                    "hostSiteOperations": [
+                                        "SOp 90"
+                                    ]
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "aoe_ability_target_rectangle",
+                                    "hostSite": "4",
+                                    "hostSiteOperations": [
+                                        "SOp 90"
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "1": {
+                        "offset": {
+                            "forward": 3.5
+                        }
+                    },
+                    "2": {
+                        "offset": {
+                            "forward": -3.5
+                        }
+                    },
+                    "3": {
+                        "offset": {
+                            "right": 3.5
+                        }
+                    },
+                    "4": {
+                        "offset": {
+                            "right": -3.5
+                        }
+                    },
+                    "5": {
+                        "offset": {
+                            "forward": 2.13,
+                            "right": 2.485
+                        }
+                    },
+                    "6": {
+                        "offset": {
+                            "forward": -2.13,
+                            "right": 2.485
+                        }
+                    },
+                    "7": {
+                        "offset": {
+                            "forward": 2.13,
+                            "right": -2.485
+                        }
+                    },
+                    "8": {
+                        "offset": {
+                            "forward": -2.13,
+                            "right": -2.485
+                        }
+                    },
+                    "9": {
+                        "offset": {
+                            "forward": 3.23,
+                            "right": 1.34
+                        }
+                    },
+                    "10": {
+                        "offset": {
+                            "forward": 1.34,
+                            "right": 3.23
+                        }
+                    },
+                    "11": {
+                        "offset": {
+                            "forward": -1.34,
+                            "right": 3.23
+                        }
+                    },
+                    "12": {
+                        "offset": {
+                            "forward": -3.23,
+                            "right": 1.34
+                        }
+                    },
+                    "13": {
+                        "offset": {
+                            "forward": -3.23,
+                            "right": -1.34
+                        }
+                    },
+                    "14": {
+                        "offset": {
+                            "forward": -1.34,
+                            "right": -3.23
+                        }
+                    },
+                    "15": {
+                        "offset": {
+                            "forward": 1.34,
+                            "right": -3.23
+                        }
+                    },
+                    "16": {
+                        "offset": {
+                            "forward": 3.23,
+                            "right": -1.34
+                        }
+                    }
+                }
+            }
+        },
+        "ability_avalanche_surfer_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_surfer_poolparty_earthward_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "ability_avalanche_surfer_impact_sfx"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2.2
+            }
+        },
+        "ability_avalanche_surfer_action": {
+            "actionActor": {
+                "effect": "ability_avalanche_surfer_launch_missile",
+                "launchModelDetached": false,
+                "impactModel": "ability_avalanche_surfer_impact",
+                "impactModelDetached": true
+            }
+        },
+        "ability_avalanche_surfer_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "floating_rock"
+                },
+                "modelScale": 0.7,
+                "hostSiteOperations": [
+                    "SOp MissileSpin 1"
+                ]
+            }
+        },
+        "avalanche_surfer_attack_launch_sfx": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_tomyhand_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.2
+            }
+        },
+        "avalanche_surfer_attack_launch": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_lionking_discussthrow_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "avalanche_surfer_attack_launch_sfx"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
+        "avalanche_surfer_attack_impact_sfx": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_tomyhand_launch"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.5
+            }
+        },
+        "avalanche_surfer_attack_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_weapon_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "avalanche_surfer_attack_impact_sfx"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.5
+            }
+        },
+        "avalanche_surfer_attack_action": {
+            "actionActor": {
+                "effect": "avalanche_surfer_attack_launch_missile_ground",
+                "launchModel": "avalanche_surfer_attack_launch",
+                "impactModel": "avalanche_surfer_attack_impact",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "avalanche_surfer_attack_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "surfer_weapon_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "trail_dust_cloud"
+                                }
+                            },
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 3,
+                "hostSiteOperations": [
+                    "SOp UpBy 1"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "alchemist_musketeer_attack_launch_sfx": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_tomyhand_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.2
+            }
+        },
+        "alchemist_musketeer_attack_launch": {
+            "parent": "_FX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_lionking_discussthrow_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "alchemist_musketeer_attack_launch_sfx"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 2
+            }
+        },
+        "alchemist_musketeer_attack_impact_sfx": {
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_tomyhand_launch"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 0.5
+            }
+        },
+        "alchemist_musketeer_attack_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_chosen_weapon_impact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {}
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "FailsafeRemove",
+                                    "duration": 5
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "alchemist_musketeer_attack_impact_sfx"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "FailsafeRemove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.5
+            }
+        },
+        "alchemist_musketeer_attack_action": {
+            "actionActor": {
+                "effect": "alchemist_musketeer_attack_launch_missile_ground",
+                "launchModel": "alchemist_musketeer_attack_launch",
+                "impactModel": "alchemist_musketeer_attack_impact",
+                "launchSite": "SiteWeapon",
+                "targetSite": "SiteHit"
+            }
+        },
+        "alchemist_musketeer_attack_missile": {
+            "parent": "_Missile",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "potiondealer_missile"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "create": {
+                                    "actor": "trail_purple_clouds"
+                                }
+                            },
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 2
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 1,
+                "modelScale": 4,
+                "hostSiteOperations": [
+                    "SOp UpBy 1",
+                    "SOp MissileSpin 1"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "trail_purple_clouds": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "purple_trail"
+                },
+                "modelScale": 4
+            }
+        },
+        "trail_dust_cloud": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "brown_trail"
+                },
+                "modelScale": 2
+            }
+        },
+        "trail_red": {
+            "parent": "_UnitModelAddition",
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "red_trail"
+                },
+                "modelScale": 8
+            }
+        },
+        "Standard RangedUnit Weapon Missile": {
+            "unitActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_warhawk_missile"
+                },
+                "modelScale": 2
+            }
+        },
+        "enemy_goblin_flyer_huge_search Impact Model": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_breathoffire_secondimpact"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            },
+                            {
+                                "shakeCamera": {
+                                    "parameters": {
+                                        "duration": 0.25,
+                                        "strength": 0.6,
+                                        "vibrato": 30
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "hostSiteOperations": [
+                    "enemy_goblin_flyer_huge_search SOp"
+                ],
+                "modelScale": 4
+            }
+        },
+        "enemy_goblin_flyer_huge_search Action Actor": {
+            "actionActor": {
+                "effect": "enemy_goblin_flyer_huge_search",
+                "launchModelDetached": true,
+                "impactModel": "enemy_goblin_flyer_huge_search Impact Model",
+                "impactModelDetached": true
+            }
+        },
+        "enemy_goblin_flyer_huge": {
+            "parent": "_StandardUnit",
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "goblin_flyer_red"
+                },
+                "preserveOnUnitRemove": true,
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "setVariable": {
+                                    "name": "scale",
+                                    "valueExpression": {
+                                        "constant": {
+                                            "value": 4
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "unitRemove": {}
+                        },
+                        "actions": [
+                            {
+                                "createTimer": {
+                                    "name": "timer_remove",
+                                    "duration": 3
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "timer_remove"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "eventMacros": [
+                    "Events StandardUnit AttackAnimation",
+                    "Events StandardUnit DeathAnimation",
+                    "Hit VFX"
+                ],
+                "hostSites": {
+                    "SiteHit": {
+                        "offset": {
+                            "forward": 0.1,
+                            "up": 0.375
+                        }
+                    },
+                    "SiteStatus": {
+                        "offset": {
+                            "up": 0.75
+                        }
+                    }
+                },
+                "walkAnimationSpeed": 0.7,
+                "modelScale": 4,
+                "hostSiteOperations": [
+                    "goblin_flyer_rotation"
+                ],
+                "aliases": [
+                    "_Unit"
+                ]
+            }
+        },
+        "enemy_goblin_flyer_huge_search SOp": {
+            "siteOperation": {
+                "rotate": {
+                    "y": 0
+                }
+            }
+        },
+        "powerup_tripleshot": {
+            "unitActor": {
+                "resource": {
+                    "type": "GpuAnimation",
+                    "name": "airship_rank5_crystal"
+                },
+                "modelScale": 2
+            }
+        },
+        "ability_alchemist_musketeer_cast_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "tower_potiondealer_weapon_launch"
+                }
+            }
+        },
+        "ability_alchemist_musketeer_impact_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "tower_potiondealer_weapon_impact"
+                },
+                "modelScale": 0.25
+            }
+        },
+        "ability_avalanche_surfer_impact_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "surfer_eruption_hit"
+                },
+                "modelScale": 0.25
+            }
+        },
+        "ability_avalanche_surfer_cast_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "surfer_eruption_cast"
+                }
+            }
+        },
+        "ability_lionking_impact_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_heroic_impact"
+                },
+                "modelScale": 0.25
+            }
+        },
+        "ability_lionking_impact": {
+            "modelActor": {
+                "resource": {
+                    "type": "ParticleAnimation",
+                    "name": "vfx_dragoon_leap_impact_aoe"
+                },
+                "events": [
+                    {
+                        "actorTerm": {
+                            "actorCreate": {}
+                        },
+                        "actions": [
+                            {
+                                "playAnimation": {
+                                    "clipId": 0
+                                }
+                            },
+                            {
+                                "createTimer": {
+                                    "name": "duration",
+                                    "duration": 1
+                                }
+                            },
+                            {
+                                "create": {
+                                    "actor": "ability_lionking_impact_sfx"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "animationFinish": {}
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    },
+                    {
+                        "actorTerm": {
+                            "onTimer": {
+                                "name": "duration"
+                            }
+                        },
+                        "actions": [
+                            {
+                                "destroy": {}
+                            }
+                        ]
+                    }
+                ],
+                "modelScale": 1.4
+            }
+        },
+        "ability_lionking_action": {
+            "actionActor": {
+                "effect": "ability_fireball_launch_missile",
+                "launchModelDetached": false,
+                "impactModel": "ability_lionking_impact",
+                "impactModelDetached": true
+            }
+        },
+        "ability_lionking_cast_sfx": {
+            "parent": "_SFX OneShot SelfRemoving",
+            "modelActor": {
+                "resource": {
+                    "type": "Sound",
+                    "name": "lionking_heroic_launch"
+                }
+            }
+        },
+        "ability_lionking_action 2": {
+            "actionActor": {
+                "effect": "ability_fireball_persistent",
+                "launchModel": "ability_lionking_cast_sfx",
+                "launchModelDetached": false,
+                "impactModelDetached": true
+            }
+        },
+        "ability_avalanche_surfer_action 2": {
+            "actionActor": {
+                "effect": "ability_avalanche_surfer_persistent",
+                "launchModel": "ability_avalanche_surfer_cast_sfx",
+                "launchModelDetached": false,
+                "impactModelDetached": true
+            }
+        },
+        "ability_alchemist_musketeer_action 2": {
+            "actionActor": {
+                "effect": "ability_alchemist_musketeer_persistent",
+                "launchModel": "ability_alchemist_musketeer_cast_sfx",
+                "launchModelDetached": false,
+                "impactModelDetached": true
+            }
+        }
+    },
+    "actorEventMacros": {
+        "Decay Slow": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitDeath": {}
+                    },
+                    "actions": [
+                        {
+                            "createTimer": {
+                                "name": "EventDeath",
+                                "duration": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "EventDeath"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setSiteOperations": {
+                                "siteOperations": [
+                                    "SOp DownBy Dot5"
+                                ],
+                                "duration": 6
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "r",
+                                "duration": 6
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "unitDeath": {}
+                    },
+                    "actions": [
+                        {
+                            "playAnimation": {
+                                "clipId": 1
+                            }
+                        },
+                        {
+                            "sendCustomEvent": {
+                                "actor": "_UnitModelAddition",
+                                "identifier": "EventUnitDeath"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "r"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {}
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "animationFinish": {
+                            "clip": 1
+                        }
+                    },
+                    "actions": [
+                        {
+                            "pauseAnimation": {
+                                "clipId": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "Events StandardUnit DeathImmediate": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitRemove": {}
+                    },
+                    "actions": [
+                        {
+                            "setVisibility": {}
+                        },
+                        {
+                            "sendCustomEvent": {
+                                "identifier": "EventDeathImmediate"
+                            }
+                        },
+                        {
+                            "sendCustomEvent": {
+                                "actor": "_UnitModelAddition",
+                                "identifier": "EventUnitDeath"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "Events StandardUnit DeathAnimation": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitRemove": {}
+                    },
+                    "actions": [
+                        {
+                            "destroy": {}
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "unitDeath": {}
+                    },
+                    "actions": [
+                        {
+                            "create": {
+                                "actor": "unit_death_vfx_1"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "unit_death_vfx_2"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "unit_death_vfx_3"
+                            }
+                        },
+                        {
+                            "create": {
+                                "actor": "unit_death_sfx"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "Hit VFX": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "System HitReaction Trigger"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setTintColor": {
+                                "color": {
+                                    "r": 655,
+                                    "g": 255,
+                                    "b": 255
+                                }
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "flash_duration",
+                                "duration": 0.25
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "offset_duration",
+                                "duration": 0.125
+                            }
+                        },
+                        {
+                            "setModelScale": {
+                                "modelScaleExpression": [
+                                    {
+                                        "multiply": {
+                                            "expressions": [
+                                                {
+                                                    "variable": {
+                                                        "name": "scale"
+                                                    }
+                                                },
+                                                {
+                                                    "constant": {
+                                                        "value": 2
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "duration": 0.125
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "flash_duration"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setTintColor": {
+                                "color": {
+                                    "r": 255,
+                                    "g": 255,
+                                    "b": 255
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "offset_duration"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setModelScale": {
+                                "modelScaleExpression": [
+                                    {
+                                        "add": {
+                                            "expressions": [
+                                                {
+                                                    "variable": {
+                                                        "name": "scale"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "duration": 0.125
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "projectile_death_squash_stretch": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "unitDeath": {}
+                    },
+                    "actions": [
+                        {
+                            "sendCustomEvent": {
+                                "identifier": "1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "unitRemove": {}
+                    },
+                    "actions": [
+                        {
+                            "sendCustomEvent": {
+                                "identifier": "1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onCustomEvent": {
+                            "identifier": "1"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "createTimer": {
+                                "name": "timer_remove",
+                                "duration": 0.3
+                            }
+                        },
+                        {
+                            "setTintColor": {
+                                "color": {
+                                    "r": 655,
+                                    "g": 255,
+                                    "b": 255
+                                }
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "flash_duration",
+                                "duration": 0.25
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "offset_duration",
+                                "duration": 0.125
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "timer_remove"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "destroy": {}
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "offset_duration"
+                        }
+                    }
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "flash_duration"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setTintColor": {
+                                "color": {
+                                    "r": 255,
+                                    "g": 255,
+                                    "b": 255
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "Hit VFX 2": {
+            "events": [
+                {
+                    "actorTerm": {
+                        "behaviorOn": {
+                            "behavior": "System HitReaction Trigger"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setTintColor": {
+                                "color": {
+                                    "r": 655,
+                                    "g": 255,
+                                    "b": 255
+                                }
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "flash_duration",
+                                "duration": 0.25
+                            }
+                        },
+                        {
+                            "createTimer": {
+                                "name": "offset_duration",
+                                "duration": 0.125
+                            }
+                        },
+                        {
+                            "setModelScale": {
+                                "modelScaleExpression": [
+                                    {
+                                        "multiply": {
+                                            "expressions": [
+                                                {
+                                                    "variable": {
+                                                        "name": "scale"
+                                                    }
+                                                },
+                                                {
+                                                    "constant": {
+                                                        "value": 1.1
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "duration": 0.125
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "flash_duration"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setTintColor": {
+                                "color": {
+                                    "r": 255,
+                                    "g": 255,
+                                    "b": 255
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "actorTerm": {
+                        "onTimer": {
+                            "name": "offset_duration"
+                        }
+                    },
+                    "actions": [
+                        {
+                            "setModelScale": {
+                                "modelScaleExpression": [
+                                    {
+                                        "add": {
+                                            "expressions": [
+                                                {
+                                                    "variable": {
+                                                        "name": "scale"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "duration": 0.125
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

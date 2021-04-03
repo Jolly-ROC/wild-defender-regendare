@@ -1,0 +1,181 @@
+{
+    "behaviors": {
+        "Bow Collision Search": {
+            "periodicInterval": 0.0625,
+            "periodicEffect": "Bow Basic Search"
+        },
+        "anim_attack": {
+            "duration": 0.0625
+        },
+        "ability_queued_1": {
+            "duration": -1
+        },
+        "ability_queued_2": {
+            "duration": -1
+        },
+        "bow_frost_missile_1_collision_search": {
+            "periodicInterval": 0.0625,
+            "periodicEffect": "bow_frost_missile_1_search"
+        },
+        "bow_fire_missile_1_collision_search ": {
+            "periodicInterval": 0.0625,
+            "periodicEffect": "bow_fire_missile_1_persistent",
+            "periodicEffectCount": 15
+        },
+        "target_marker": {
+            "duration": -1
+        },
+        "target_marker 2": {
+            "duration": 0.2
+        },
+        "icemage_attack_collision_search": {
+            "periodicInterval": 0.0025,
+            "periodicEffect": "icemage_attack_basic_search"
+        },
+        "lionking_attack_collision_search": {
+            "periodicInterval": 0.0025,
+            "periodicEffect": "lionking_attack_basic_search"
+        },
+        "ability_fireball_burning": {
+            "duration": 6,
+            "startEffect": "ability_fireball_damage",
+            "periodicInterval": 1,
+            "periodicEffect": "ability_fireball_damage"
+        },
+        "ability_snowstorm_freeze": {
+            "duration": 6,
+            "modifiers": {
+                "moveSpeedModifier": {
+                    "multiplierFactor": -0.5
+                }
+            }
+        },
+        "hero_upgrade_scaling": {
+            "maxStackCount": -1,
+            "duration": -1,
+            "modifiers": {
+                "weaponDamageModifier": {
+                    "additiveFactor": 0.25
+                },
+                "abilityDamageModifier": {
+                    "additiveFactor": 0.25
+                }
+            },
+            "behaviorTagArray": [
+                {
+                    "name": "dmg_multiplier",
+                    "count": 115
+                }
+            ]
+        },
+        "enemy_scaling": {
+            "modifiers": {
+                "maxHealthModifier": {
+                    "additiveFactor": 0.1
+                },
+                "weaponDamageModifier": {
+                    "additiveFactor": 0.1
+                }
+            }
+        },
+        "ship_hp_scaling": {
+            "modifiers": {
+                "maxHealthModifier": {
+                    "additiveFactor": 0.15
+                }
+            }
+        },
+        "ship_weapon_scaling": {
+            "maxStackCount": -1,
+            "duration": -1,
+            "modifiers": {
+                "weaponDamageModifier": {
+                    "additiveFactor": 0.15
+                },
+                "abilityDamageModifier": {
+                    "additiveFactor": 0.15
+                }
+            },
+            "behaviorTagArray": [
+                {
+                    "name": "dmg_multiplier",
+                    "count": 45
+                }
+            ]
+        },
+        "ship_flying": {},
+        "hero_ability_active": {},
+        "no_navmesh": {
+            "duration": -1,
+            "modifiers": {
+                "flags": {
+                    "ignorePathing": true
+                }
+            }
+        },
+        "System HitReaction Trigger": {
+            "startEffect": "System HitReaction Remove Trigger"
+        },
+        "System HitReaction": {
+            "damageResponse": {
+                "chance": 1,
+                "location": 1,
+                "effect": "System HitReaction Apply Trigger"
+            }
+        },
+        "System Knockback": {
+            "damageResponse": {
+                "chance": 1,
+                "location": 1,
+                "fatalOnly": true,
+                "effect": "System Death Knockback Create"
+            }
+        },
+        "slow_down": {
+            "modifiers": {
+                "moveSpeedModifier": {
+                    "unscaled": -0.2
+                }
+            }
+        },
+        "timed_life_short": {
+            "duration": 0.3,
+            "expireEffect": "Kill"
+        },
+        "enemy_goblin_flyer_deathrattle": {
+            "deathResponse": {
+                "chance": 1,
+                "effect": "enemy_goblin_flyer_search"
+            }
+        },
+        "ranged_unit_range_increase": {
+            "maxStackCount": 1,
+            "duration": 0.5,
+            "startEffect": "stop",
+            "modifiers": {
+                "weaponRangeModifier": {
+                    "unscaled": 12,
+                    "multiplierFactor": 5
+                },
+                "weaponScanRangeModifier": {
+                    "unscaled": 12,
+                    "multiplierFactor": 5
+                }
+            }
+        },
+        "avalanche_surfer_attack_collision_search": {
+            "periodicInterval": 0.0025,
+            "periodicEffect": "avalanche_surfer_attack_basic_search"
+        },
+        "alchemist_musketeer_attack_collision_search": {
+            "periodicInterval": 0.0025,
+            "periodicEffect": "alchemist_musketeer_attack_basic_search"
+        },
+        "enemy_goblin_flyer_huge_deathrattle": {
+            "deathResponse": {
+                "chance": 1,
+                "effect": "enemy_goblin_flyer_huge_search"
+            }
+        }
+    }
+}

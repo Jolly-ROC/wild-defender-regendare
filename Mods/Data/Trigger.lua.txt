@@ -1,0 +1,358 @@
+local mods = nil
+local mod = {}
+local bank_data = {}
+local player = nil
+local game = nil
+
+-- Log settings for this mod, so we can easily enable/disable/filter log messages on a per-mod basis
+local log_settings = {
+    logging_on = true,
+    filter = 1 -- 1 = all, 2 = some, 3 = strict
+}
+local function log(message)
+    mods.utility.print(message, {priority = 3, type="error"}, log_settings)
+end
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"]
+        }
+        bank_data = mods.bank.GetBankData()
+        player = mods.gameplay.player()
+        game = mods.gameplay.game()
+    end
+end
+
+local ability_class = {}
+local hero_class = {}
+local currency_class = {}
+local creep_class = {}
+local boss_class = {}
+local dialogue_class = {}
+
+function mod.SetData()
+    LoadData()
+
+    --------------------------------------------------------------------------------------------
+    -- boss_class
+    boss_class:new(nil, {index="dragon_1", unit_type="boss_dragon_1", speed=1})
+
+    --------------------------------------------------------------------------------------------
+    -- creep_class
+    creep_class:new(nil, {index="drow_hawk",    unit_type="enemy_drow_hawk",        speed=1.8, min_wave=3})
+    creep_class:new(nil, {index="goblin_flyer", unit_type="enemy_goblin_flyer",     speed=1.4})
+    creep_class:new(nil, {index="dragon_1",     unit_type="enemy_dragon_1",         speed=1, min_wave=12})
+    creep_class:new(nil, {index="goblin_flyer_red",         unit_type="enemy_goblin_flyer_red",         speed=2.4, min_wave=6})
+    creep_class:new(nil, {index="goblin_flyer_purple_1",    unit_type="enemy_goblin_flyer_purple_1",    speed=1.2, min_wave=9})
+
+    --------------------------------------------------------------------------------------------
+    -- ability_class
+    ability_class:new(nil, {index="lionking", target=true}) 
+    ability_class:new(nil, {index="avalanche_surfer", target=true}) 
+    ability_class:new(nil, {index="alchemist_musketeer", target=true})
+    -- ability_class:new(nil, {index="alchemist_musketeer", click_func = function(hero, ability)
+    --     DCEI.CastAbility(ability, hero, hero) 
+    -- end,
+    -- cast_func = function(hero, ability)
+    --     LoadData()
+    --     game.triple_shot = true
+    --     DCEI.CreateEffect("alchemist_ability_missile", hero, hero, player.heroes[1].unit)
+    --     DCEI.TriggerAddTimerEventElapsed(function() game.triple_shot = false end, 10, false, true)
+    -- end})         
+
+    --------------------------------------------------------------------------------------------
+    -- hero_class
+    hero_class:new(nil, {index="lionking"}) --
+    hero_class:new(nil, {index="avalanche_surfer"})
+    hero_class:new(nil, {index="alchemist_musketeer", icon="card_hero_alchemist_musketter"})
+    --hero_class:new(nil, {index="icemage", icon="card_hero_traveling_mage"})
+    --hero_class:new(nil, {index="wolfhuntress_maskedheroine", icon="card_herp_wolfhuntress_maskedheroine"})
+    --hero_class:new(nil, {index="cloudrabbit"}) --
+    --hero_class:new(nil, {index="centaurarcher_awaken"}) -- 
+    --hero_class:new(nil, {index="beemistress_thief"}) -- 
+    -- for k, v in pairs(bank_data.cards.c_heroes.l_value) do
+    --     mod.hero_table[k].level = v.lvl
+    -- end
+
+    --------------------------------------------------------------------------------------------
+    -- currency_class
+    currency_class:new(nil, {index = "gold",  icon = "icon_coin00",   sprite="<sprite name=gold>"})
+
+    --------------------------------------------------------------------------------------------
+    -- hero_dialogue
+    dialogue_class:new(nil, {index="lionking"})
+    mod.dialogue.lionking.lines.upgrade = {
+        {emoji="e_grinning_eyes", text="Thanks for the upgrade, Chief!"},
+        {emoji="e_strong", text="Whoa, I feel so STRONG now!"},
+        {emoji="e_smiling_open", text="Hey, I feel good!"},
+        {emoji="e_sweat_smile", text="I hope you  made the right choice!"},
+        {emoji="star_eyes", text="Whoaa I've really leveled up!"},
+    }
+
+end
+
+--------------------------------------------------------------------------------------------
+-- ability_class
+mod.ability_table = {}
+mod.ability_table_ordered = {}
+
+ability_class = {
+    index="",
+    ability="",
+    click_func = function() end,
+    cast_func = nil,
+    cooldown=15,
+    mana_cost=30,
+    display_name = "",
+    icon="",
+    level = 1,
+    target = false,
+}
+
+-- Base class method new
+function ability_class:new(o, properties)
+    properties = properties or {}
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    -- Auto-set units, display name, icon
+    o.ability = "ability_" .. properties.index
+    o.display_name = DCEI.GetTranslationText("ability/" .. properties.index .. "/name")
+    o.icon = "card_spell_" .. properties.index
+    o.click_func = function(hero)
+        DCEI.EnterTargetingMode(hero, o.ability)
+    end
+
+    -- Set initial properties
+    for k, v in pairs(properties) do
+        o[k] = v
+    end
+
+    -- Table values should be set directly because they are by-reference only in lua
+
+    mod.ability_table[o.index] = o
+
+    return o
+end
+function mod.NewAbility(o, properties) return ability_class:new(o, properties) end
+
+--------------------------------------------------------------------------------------------
+-- hero_class
+mod.hero_table = {}
+mod.hero_table_ordered = {}
+local heroes_quantity = 0
+
+hero_class = {
+    index="",
+    index_int=0,
+    unit_captain = "",
+    unit_crew = "",
+    display_name = "",
+    weapon_effect="",
+    icon="",
+    level = 1,
+    ability = nil,
+}
+
+-- Base class method new
+function hero_class:new(o, properties)
+    properties = properties or {}
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    -- Auto-set units, display name, icon
+    o.unit_captain = "hero_" .. properties.index
+    o.unit_crew = "crew_hero_" .. properties.index
+    o.display_name = DCEI.GetTranslationText("hero/" .. properties.index .. "/name")
+    o.icon = "card_hero_" .. properties.index
+    o.ability = mod.ability_table[properties.index]
+    o.weapon_effect = properties.index .. "_attack_launch_missile"
+    o.weapon_effect_g = properties.index .. "_attack_launch_missile_ground"
+
+    -- Set initial properties
+    for k, v in pairs(properties) do
+        o[k] = v
+    end
+
+    -- Table values should be set directly because they are by-reference only in lua
+
+    heroes_quantity = heroes_quantity + 1
+    o.index_int = heroes_quantity
+    mod.hero_table[o.index] = o
+    mod.hero_table_ordered[o.index_int] = o
+
+    return o
+end
+function mod.NewHero(o, properties) return hero_class:new(o, properties) end
+
+function hero_class:Upgrade()
+    LoadData()
+    if mod.currencies.gold:Decrease(self:GetCost()) then
+        self.level = self.level + 1
+        mods.bank.Save()
+        return true
+    else
+        return false
+    end
+end
+
+function hero_class:GetCost()
+    return math.floor((30 + self.level) * (1 + (self.level / 20)))
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- Currency
+mod.currencies = {}
+currency_class = {
+    index = nil,
+    icon = nil,
+    bank_path = nil,
+    sprite = "",
+    display_in_main = false,
+}
+
+-- Base class method new
+function currency_class:new(o, properties)
+    properties = properties or {}
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    -- Set initial properties
+    for k,v in pairs(properties) do
+        o[k] = v
+    end
+
+    mod.currencies[o.index] = o
+    bank_data.meta.m_currencies.l_value[o.index] = bank_data.meta.m_currencies.l_value[o.index] or 0
+
+    return o
+end
+
+function currency_class:Add(value_add)
+    LoadData()
+    bank_data.meta.m_currencies.l_value[self.index] = bank_data.meta.m_currencies.l_value[self.index] + value_add
+end
+
+function currency_class:Set(value)
+    LoadData()
+    bank_data.meta.m_currencies.l_value[self.index] = value
+end
+
+function currency_class:Decrease(value_decrease)
+    LoadData()
+    if bank_data.meta.m_currencies.l_value[self.index] >= value_decrease then 
+        bank_data.meta.m_currencies.l_value[self.index] = bank_data.meta.m_currencies.l_value[self.index] - value_decrease
+    else
+        -- TODO(Jolly)
+        --mods.ui.DisplayCenterMessage({text = "Not enough " .. DCEI.GetTranslationText("currency/" .. self.index)})
+        return false
+    end
+    return true
+end
+
+function currency_class:Get()
+    LoadData()
+    return bank_data.meta.m_currencies.l_value[self.index]
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- creep
+mod.creeps = {}
+creep_class = {
+    index = nil,
+    unit_type = "",
+    speed = 1,
+    hp = 1,
+    min_wave = 1
+}
+
+-- Base class method new
+function creep_class:new(o, properties)
+    properties = properties or {}
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    o.hp = DCEI.UnitTypeHealth(properties.unit_type)
+
+    -- Set initial properties
+    for k,v in pairs(properties) do
+        o[k] = v
+    end
+
+    mod.creeps[o.index] = o
+
+    return o
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- boss
+mod.bosses = {}
+boss_class = {
+    index = nil,
+    unit_type = "",
+    speed = 1,
+    hp = 1
+}
+
+-- Base class method new
+function boss_class:new(o, properties)
+    properties = properties or {}
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    o.hp = DCEI.UnitTypeHealth(properties.unit_type)
+
+    -- Set initial properties
+    for k,v in pairs(properties) do
+        o[k] = v
+    end
+
+    mod.bosses[o.index] = o
+
+    return o
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- dialogs
+mod.dialogue = {}
+dialogue_class = {
+    index = nil,
+    lines = {},
+}
+
+-- Base class method new
+function dialogue_class:new(o, properties)
+    properties = properties or {}
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+
+    -- Set initial properties
+    for k,v in pairs(properties) do
+        o[k] = v
+    end
+
+    mod.dialogue[o.index] = o
+
+    return o
+end
+
+
+return mod

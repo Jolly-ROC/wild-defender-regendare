@@ -1,0 +1,6 @@
+diff a/wild-defenders/Mods/Waves/Trigger.lua.txt b/wild-defenders/Mods/Waves/Trigger.lua.txt	(rejected hunks)
+@@ -168,3 +168,3 @@
+ function mod.SpawnEnemyUnit(data, index)
+-    local u = DCEI.CreateUnitAsync(-1, -1, data.creep.unit_type, data.points[index].x, game.spawn_center.y)
++    local u = DCEI.CreateUnit(-1, -1, data.creep.unit_type, data.points[index].x, game.spawn_center.y)
+     local pos = DCEI.GetUnitPosition2D(u)

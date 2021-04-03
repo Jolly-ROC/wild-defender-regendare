@@ -1,0 +1,18 @@
+{
+    "play": {
+        "resolution": {
+            "width": 375,
+            "height": 812
+        },
+        "triggerContext": {
+            "isDev": false
+        },
+        "throwTriggerErrorAsException": true,
+        "mapSaveData": [
+            {
+                "key": "",
+                "save": "{\n    \"c_heroes\": \"{\\\"alchemist_musketeer\\\":{\\\"lvl\\\":11},\\\"avalanche_surfer\\\":{\\\"lvl\\\":11},\\\"lionking\\\":{\\\"lvl\\\":24}}\",\n    \"c_loadout\": \"{\\\"captains\\\":[\\\"lionking\\\"],\\\"crew\\\":[\\\"avalanche_surfer\\\",\\\"alchemist_musketeer\\\"]}\",\n    \"c_ship\": \"{\\\"attack\\\":1,\\\"hp\\\":2}\",\n    \"g_current_island_progress\": \"{\\\"stage\\\":17}\",\n    \"bank_version\": 1,\n    \"m_currencies\": \"{\\\"gold\\\":479}\",\n    \"m_sessions\": 68\n}"
+            }
+        ]
+    }
+}

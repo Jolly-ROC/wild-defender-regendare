@@ -1,0 +1,84 @@
+<UI>
+    <Button backgroundImage="frame01" backgroundImageColor="r: 0, g: 0.5, b: 0.8, a: 1" height="40" matchParentWidth="true" leftAlignmentInParent="true" name="_dev_command_btn">
+        <Text id="dev_item_txt" text="command" leftAlignmentInParent="true" fontSize="20" outline="false" />
+    </Button>
+    <Frame padding="2" backgroundImageColor="r: 0.3, g: 0.6, b: 0.8, a: 1" name="_dev_main">
+        <HStack padding="2" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.1" spacing="2">
+            <VScroll id="commands" backgroundImage="border_line02" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.5" spacing="1" matchParentWidth="true" matchParentHeight="true">
+                <Frame matchParentWidth="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3">
+                    <Text text="Available Commands" maxWidth="120" fontSize="17" matchParentWidth="true" topAlignmentInParent="true" leftAlignmentInParent="true" outline="false" />
+                </Frame>
+                <!-- <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" />
+            <include name="_dev_command_btn" /> -->
+            </VScroll>
+            <VStack spacing="2" matchParentHeight="true" matchParentWidth="true">
+                <HStack spacing="2" matchParentWidth="true">
+                    <Button id="run" backgroundImage="frame01" backgroundImageColor="r: 1, g: 0.7, b: 0, a: 1" bottomAlignmentInParent="true" height="40" matchParentWidth="true">
+                        <Text id="run_txt" text="Run&#10;Command" matchParentWidth="true" fontSize="15" outline="false" color="r: 0.2, g: 0.3, b: 0.3, a: 1" />
+                    </Button>
+                    <!-- Following frame exists just to make sure above item is 50% width -->
+                    <Frame />
+                </HStack>
+                <Text text="Parameters:" fontSize="17" matchParentWidth="true" outline="false" />
+                <Input id="input" matchParentHeight="true" matchParentWidth="true" topAlignmentInParent="true" fontSize="15" color="r: 0.4, g: 0.4, b: 0.4, a: 1" />
+                <VScroll id="suggestions" spacing="2" backgroundImage="border_line02" matchParentHeight="true" matchParentWidth="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.5">
+                    <Frame matchParentWidth="true" padding="2" leftAlignmentInParent="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3">
+                        <Text id="description_txt" text="Description:" maxWidth="120" fontSize="17" matchParentWidth="true" topAlignmentInParent="true" leftAlignmentInParent="true" outline="false" />
+                    </Frame>
+                    <Frame matchParentWidth="true" padding="2" leftAlignmentInParent="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3">
+                        <Text text="Available Parameters:" maxWidth="120" fontSize="17" topAlignmentInParent="true" matchParentWidth="true" leftAlignmentInParent="true" outline="false" />
+                    </Frame>
+                    <!-- <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" />
+                <include name="_dev_command_btn" /> -->
+                </VScroll>
+            </VStack>
+        </HStack>
+        <Button id="close" backgroundImage="frame01" rightAlignmentInParent="true" topAlignmentInParent="true" width="40" height="40" backgroundImageColor="r: 1, g: 0.3, b: 0.3, a: 1">
+            <Text text="X" matchParentWidth="true" fontSize="20" outline="false" color="r: 1, g: 1, b: 1, a: 1" />
+        </Button>
+    </Frame>
+</UI>

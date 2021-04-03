@@ -1,0 +1,482 @@
+<UI>
+    <Frame width="80" height="90" name="_card_level">
+        <Frame backgroundImage="icon_shield_gold" backgroundImageColor="r: 0, g: 0, b: 0, a: 1" matchParentHeight="true" matchParentWidth="true" padding="6">
+            <Frame id="lvl_background" backgroundImage="icon_shield_gold" matchParentHeight="true" matchParentWidth="true" padding="16" />
+        </Frame>
+        <Frame padding="22">
+            <Text id="txt" text="7" fontSizeMax="999" fontSizeMin="0" matchParentWidth="true" matchParentHeight="true" />
+        </Frame>
+    </Frame>
+    <HStack spacing="10" name="_card_power_item">
+        <Text text="DAMAGE: " />
+        <Frame height="30" backgroundImage="loading_bar_empty" padding="3" spacing="-15" rightAlignmentInParent="true">
+            <Frame id="level_fill" matchParentWidth="true" matchParentHeight="true" backgroundImageColor="r: 1, g: 1, b: 0, a: 1" backgroundImage="loading_bar_fill" backgroundImageFillAmount="0.5" leftAlignmentInParent="true" />
+        </Frame>
+    </HStack>
+    <Frame backgroundImage="ui_ingame_hub" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.6" padding="10" name="_feedback_msg">
+        <Text id="txt" text="test" maxWidth="605" maxHeight="192" />
+    </Frame>
+    <VStack bottomAlignmentInParent="true" rightAlignmentInParent="true" spacing="15" verticalOffsetInParent="110" name="_game_abilities">
+        <!-- <include name="_game_hero_ability" />
+    <include name="_game_hero_ability" />
+    <include name="_game_hero_ability" />
+    <include name="_game_hero_ability" /> -->
+    </VStack>
+    <Button width="110" height="110" padding="5" backgroundImageColor="r: 0, g: 0, b: 0, a: 0" name="_game_hero_ability">
+        <Frame matchParentHeight="true" matchParentWidth="true" padding="-10">
+            <Mask matchParentHeight="true" matchParentWidth="true" backgroundImage="circle_mask">
+                <Frame matchParentHeight="true" matchParentWidth="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 1" />
+            </Mask>
+        </Frame>
+        <Frame matchParentHeight="true" matchParentWidth="true" padding="-8">
+            <Mask matchParentHeight="true" matchParentWidth="true" backgroundImage="circle_mask">
+                <Frame id="ability_active" active="false" matchParentHeight="true" matchParentWidth="true" backgroundImageColor="r: 1, g: 0.8, b: 0, a: 1" />
+            </Mask>
+        </Frame>
+        <Frame matchParentHeight="true" matchParentWidth="true" padding="-15">
+            <Mask matchParentHeight="true" matchParentWidth="true" backgroundImage="circle_mask">
+                <Frame id="fill" backgroundImage="circle_mask" backgroundImageColor="r: 1, g: 1, b: 1, a: 0.6" matchParentHeight="true" matchParentWidth="true" backgroundImageFillAmount="0.6" backgroundImageFillRadial="true" />
+            </Mask>
+        </Frame>
+        <Mask matchParentHeight="true" matchParentWidth="true" backgroundImage="circle_mask">
+            <Frame id="img" width="120" height="143" backgroundImage="card_hero_beemistress_thief" verticalOffsetInParent="-8" horizontalOffsetInParent="1" />
+        </Mask>
+    </Button>
+    <Frame matchParentHeight="true" matchParentWidth="true" padding="45" name="_game_victory">
+        <VStack matchParentHeight="true" matchParentWidth="true">
+            <Text id="victory_title" text="7th Victory!" matchParentHeight="true" topAlignmentInParent="true" alignment="top" fontSize="75" />
+            <Frame bottomAlignmentInParent="true" matchParentHeight="true" matchParentWidth="true" paddingTop="150" paddingBottom="150">
+                <Text text="Rewards:" fontSize="35" topAlignmentInParent="true" verticalOffsetInParent="45" />
+                <VScroll id="reward_scroll" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3" matchParentWidth="true" matchParentHeight="true" padding="5" spacing="25">
+                    <ScrollContent spacing="25" padding="15" />
+                    <!-- <include name="_victory_reward_line" /> -->
+                </VScroll>
+            </Frame>
+        </VStack>
+        <Frame matchParentWidth="true" height="300" bottomAlignmentInParent="true" padding="-50">
+            <Button id="continue_btn" matchParentWidth="true" matchParentHeight="true" bottomAlignmentInParent="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0" />
+        </Frame>
+        <HStack height="150" bottomAlignmentInParent="true">
+            <Frame backgroundImage="icon_ship" width="100" height="100" />
+            <Text text="Continue..." />
+        </HStack>
+    </Frame>
+    <Button width="100" height="100" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.00" padding="-35" name="_hero_status">
+        <Mask matchParentHeight="true" matchParentWidth="true" backgroundImage="bar_ring00_fill">
+            <Frame id="abil_fill_1" backgroundImage="circle_mask" backgroundImageColor="r: 1, g: 1, b: 1, a: 0.3" width="500" height="500" backgroundImageFillAmount="0.3" backgroundImageFillRadial="true" />
+        </Mask>
+        <Frame id="status" backgroundImage="bar_reward00_pin" width="35" height="40" topAlignmentInParent="true" rightAlignmentInParent="true" />
+    </Button>
+    <Frame width="120" height="16" topAlignmentInParent="true" name="_hp_bar">
+        <Frame id="container" backgroundImage="health_bar_boss_special_white" matchParentHeight="true" width="120" padding="2" backgroundImageColor="r: 0.25, g: 0.2, b: 0, a: 1">
+            <Frame id="fill" matchParentWidth="true" height="16" backgroundImage="health_bar_boss_special_white" padding="40" backgroundImageFillAmount="0.5" />
+        </Frame>
+    </Frame>
+    <Frame matchParentWidth="true" matchParentHeight="true" bottomAlignmentInParent="true" padding="-15" name="_meta_build_menu">
+        <!-- Frame Contents -->
+        <VStack spacing="15" matchParentWidth="true" matchParentHeight="false" height="600" bottomAlignmentInParent="true">
+            <!-- Name  -->
+            <Text id="title" text="BUILD" fontSize="50" color="r: 0.5, g: 0.35, b: 0, a: 1" outline="false" height="65" />
+            <!-- Navigation and Info -->
+            <VStack matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" backgroundImageColor="r: 0.9, g: 0.9, b: 0.9, a: 1" padding="32">
+                <HStack spacing="0" matchParentWidth="true" matchParentHeight="true">
+                    <!-- Back B utton -->
+                    <Frame paddingRight="20" paddingBottom="40">
+                        <Button id="back_btn" matchParentWidth="true" matchParentHeight="true" padding="25" backgroundImage="btn_grey">
+                            <Frame matchParentWidth="true" matchParentHeight="true" padding="5" paddingBottom="25" paddingTop="-15" topAlignmentInParent="true">
+                                <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="arrow_02" rotation3d="x: 0, y: 45, z: 270" backgroundImageColor="r: 0, g: 1, b: 0, a: 1" />
+                            </Frame>
+                            <Text text="Back" fontSize="35" bottomAlignmentInParent="true" />
+                        </Button>
+                    </Frame>
+                    <Frame paddingBottom="40" matchParentWidth="true" matchParentHeight="true">
+                        <Frame backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3" matchParentWidth="true" matchParentHeight="true" />
+                        <Frame backgroundImage="frame03_arrow" width="50" height="50" horizontalOffsetInParent="25" verticalOffsetInParent="-50" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3" bottomAlignmentInParent="true" rightAlignmentInParent="true" />
+                    </Frame>
+                    <Frame paddingBottom="40" matchParentWidth="true" matchParentHeight="true">
+                        <Frame backgroundImageColor="r: 0, g: 0, b: 0, a: 0.3" matchParentWidth="true" matchParentHeight="true" />
+                    </Frame>
+                </HStack>
+                <!-- Buttons -->
+                <HScroll spacing="15" matchParentWidth="true" matchParentHeight="true" reverse="true" contentAlignment="right">
+                    <ScrollContent spacing="15" />
+                    <!-- <Button id="tower_btn" width="200" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                    <Frame matchParentWidth="true" matchParentHeight="true" padding="5" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                        <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="btn_unit_wildsky_arrowtower_rank03" />
+                    </Frame>
+                    <Text text="Tower" fontSize="35" bottomAlignmentInParent="true" fontSizeMin="1" />
+                </Button>
+                <Button id="tent_btn" width="200" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                    <Frame matchParentWidth="true" matchParentHeight="true" padding="5" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                        <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="btn_unit_wildsky_forestworld_battletent00" />
+                    </Frame>
+                    <Text text="Tent" fontSize="35" bottomAlignmentInParent="true" fontSizeMin="1" />
+                </Button>
+                <Button id="shop_btn" width="200" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                    <Frame matchParentWidth="true" matchParentHeight="true" padding="5" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                        <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="icon_chest" />
+                    </Frame>
+                    <Text text="Shop" fontSize="35" bottomAlignmentInParent="true" fontSizeMin="1" />
+                </Button> -->
+                    <Button id="armory_btn" width="200" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                        <Frame matchParentWidth="true" matchParentHeight="true" padding="5" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                            <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="btn_unit_wildsky_dragoonbarracks_rank3" />
+                        </Frame>
+                        <Text text="Shipyard" fontSize="35" bottomAlignmentInParent="true" fontSizeMin="1" />
+                    </Button>
+                    <Button id="temple_btn" width="200" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                        <Frame matchParentWidth="true" matchParentHeight="true" padding="5" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                            <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="btn_unit_wildsky_lavaooze_barracks_rank3" />
+                        </Frame>
+                        <Text text="Hero Temple" fontSize="35" bottomAlignmentInParent="true" fontSizeMin="1" />
+                    </Button>
+                </HScroll>
+            </VStack>
+        </VStack>
+    </Frame>
+    <Frame matchParentWidth="true" height="500" bottomAlignmentInParent="true" padding="5" name="_meta_building_select">
+        <VStack padding="32" spacing="15" matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01">
+            <!-- Name  -->
+            <Text text="Level 1 Farm" fontSize="50" color="r: 0.5, g: 0.35, b: 0, a: 1" outline="false" topAlignmentInParent="true" matchParentHeight="true" />
+            <!-- Description -->
+            <Text text="Supplies food for heroes, troops, and civilians" fontSize="50" fontSizeMin="1" maxHeight="25" color="r: 0.7, g: 0.55, b: 0.2, a: 1" outline="false" topAlignmentInParent="true" matchParentHeight="true" />
+            <!-- Buttons -->
+            <HStack spacing="55" matchParentWidth="true" matchParentHeight="true">
+                <Button matchParentWidth="true" matchParentHeight="true" padding="5">
+                    <Text text="Visit" fontSize="35" />
+                </Button>
+                <Button matchParentWidth="true" matchParentHeight="true" padding="5">
+                    <Text text="Upgrade" fontSize="35" />
+                </Button>
+            </HStack>
+        </VStack>
+    </Frame>
+    <Button width="210" height="270" backgroundImage="card_hero_lionking" padding="0" name="_meta_hero_button">
+        <!-- <Frame bottomAlignmentInParent="true" backgroundImage="banner_vertical_01" padding="20" rotation3d="x: 0, y: 0, z: 180" leftAlignmentInParent="true">
+    </Frame> -->
+        <Mask matchParentHeight="true" matchParentWidth="true" backgroundImage="card_hero_lionking">
+            <Frame matchParentWidth="true" bottomAlignmentInParent="true">
+                <HStack backgroundImageColor="r: 0, g: 0, b: 0, a: 0.4" height="60" padding="20" paddingBottom="40" bottomAlignmentInParent="true" spacing="5">
+                    <Text translationKey="ui/level" fontSizeMax="999" fontSizeMin="1" height="40" outline="false" alignment="end" />
+                    <Text id="lvl" text="7" fontSizeMax="999" fontSizeMin="1" height="40" outline="false" alignment="start" />
+                </HStack>
+            </Frame>
+        </Mask>
+    </Button>
+    <Frame matchParentWidth="true" matchParentHeight="true" name="_meta_hero_upgrade">
+        <Frame matchParentWidth="true" matchParentHeight="true" />
+        <Camera id="cam" matchParentWidth="true" matchParentHeight="true" autoSize="true" cameraBackgroundColor="r: 0, g: 0, b: 0, a: 0.1" />
+        <!-- Hero info -->
+        <Frame height="250" matchParentWidth="true" padding="15" paddingRight="210" bottomAlignmentInParent="true" verticalOffsetInParent="510">
+            <HStack spacing="15">
+                <Frame bottomAlignmentInParent="true" width="20" height="80" />
+                <VScroll matchParentWidth="true" contentAlignment="bottom">
+                    <ScrollContent spacing="3" />
+                    <include id="damage" name="_card_power_item" />
+                    <!-- <include name="_card_power_item" />
+                <include name="_card_power_item" /> -->
+                </VScroll>
+            </HStack>
+        </Frame>
+        <VStack matchParentWidth="true" matchParentHeight="true" bottomAlignmentInParent="true" padding="-15">
+            <!-- Frame Contents -->
+            <Frame spacing="15" matchParentWidth="true" matchParentHeight="true">
+                <VStack matchParentWidth="true" height="600" bottomAlignmentInParent="true">
+                    <!-- Name  -->
+                    <!--  color="r: 0.5, g: 0.35, b: 0, a: 1"  -->
+                    <Frame matchParentWidth="true" paddingBottom="15" paddingRight="25" paddingLeft="25" maxHeight="70">
+                        <include id="play_btn" name="_play_button" />
+                    </Frame>
+                    <!-- Navigation and Info -->
+                    <VStack backgroundImage="dialog_frame_01" backgroundImageColor="r: 0.9, g: 0.9, b: 0.9, a: 1" padding="20">
+                        <HStack spacing="0" matchParentWidth="true" height="200">
+                            <!-- Back Button -->
+                            <Button id="back_btn" matchParentWidth="true" matchParentHeight="true" padding="25" backgroundImage="btn_grey" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                                <Frame width="150" height="150" backgroundImage="icon_back" />
+                                <!-- <Text text="Back" fontSize="35" bottomAlignmentInParent="true" /> -->
+                            </Button>
+                            <Button id="info_btn" matchParentWidth="true" matchParentHeight="true" padding="25" backgroundImage="btn_grey" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                                <Frame width="90" height="120" backgroundImage="icon_guide" horizontalOffsetInParent="-50" />
+                                <!-- <Text text="Info" fontSize="35" bottomAlignmentInParent="true" /> -->
+                            </Button>
+                            <Frame padding="25" paddingLeft="-40" paddingRight="15">
+                                <Button id="upgrade_btn" matchParentWidth="true" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                                    <Frame width="75" height="90" backgroundImage="arrow_02" rotation3d="x: 0, y: 0, z: 180" backgroundImageColor="r: 0.5, g: 1, b: 0, a: 1" horizontalOffsetInParent="25" rightAlignmentInParent="true" />
+                                    <VStack spacing="15" leftAlignmentInParent="true">
+                                        <Text translationKey="ui/upgrade" text="Upgrade" matchParentWidth="true" fontSize="35" fontSizeMin="15" alignment="start" leftAlignmentInParent="true" />
+                                        <HStack spacing="4" leftAlignmentInParent="true">
+                                            <Frame backgroundImage="icon_coin00" width="40" height="40" leftAlignmentInParent="true" />
+                                            <Text id="upgrade_txt" text="500" fontSize="35" fontSizeMin="15" />
+                                        </HStack>
+                                    </VStack>
+                                </Button>
+                            </Frame>
+                        </HStack>
+                        <!-- Buttons -->
+                        <HScroll id="hero_scroll" spacing="10" matchParentWidth="true" reverse="true" contentAlignment="right" height="290">
+                            <ScrollContent spacing="10" />
+                            <!-- <include name="_meta_hero_button" />
+                        <include name="_meta_hero_button" />
+                        <include name="_meta_hero_button" /> -->
+                        </HScroll>
+                    </VStack>
+                </VStack>
+            </Frame>
+        </VStack>
+        <!-- Title -->
+        <VStack padding="5" topAlignmentInParent="true" spacing="10" verticalOffsetInParent="-50">
+            <Text id="title" translationKey="heroes" fontSize="50" height="45" alignment="top" />
+            <HStack spacing="5">
+                <Text translationKey="ui/level" fontSize="30" height="45" alignment="top" outline="false" />
+                <Text id="level" text="666" fontSize="30" height="45" alignment="top" outline="false" />
+                <!--  -->
+            </HStack>
+        </VStack>
+        <!-- Speech Bubble -->
+        <Frame id="bubble" matchParentWidth="true" topAlignmentInParent="true" padding="32" active="false">
+            <Frame backgroundImage="dialog_frame_01" matchParentWidth="true" topAlignmentInParent="true" padding="25">
+                <!-- Portrait -->
+                <Frame topAlignmentInParent="true" leftAlignmentInParent="true" horizontalOffsetInParent="-20" verticalOffsetInParent="14">
+                    <!-- <Frame width="100" height="100" topAlignmentInParent="true" leftAlignmentInParent="true" horizontalOffsetInParent="-25" verticalOffsetInParent="25">
+                    <Mask width="100" height="100" backgroundImage="circle_mask" bottomAlignmentInParent="true" rightAlignmentInParent="true">
+                        <Frame id="fill2" backgroundImage="circle_mask" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 0" matchParentHeight="true" matchParentWidth="true" />
+                        <Frame padding="5">
+                            <Mask padding="-25" backgroundImage="circle_mask" matchParentHeight="true" matchParentWidth="true">
+                                <Frame id="portrait2" backgroundImage="1F602" width="110" height="110" horizontalOffsetInParent="0" verticalOffsetInParent="-0" active="true" />
+                            </Mask>
+                        </Frame>
+                    </Mask>
+                </Frame> -->
+                    <Frame width="110" height="110" horizontalOffsetInParent="-65" verticalOffsetInParent="35" active="true" padding="2">
+                        <Frame id="bubble_emoji" backgroundImage="1F602" matchParentHeight="true" matchParentWidth="true" />
+                    </Frame>
+                    <!-- <Frame width="100" height="100" padding="5" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 1" backgroundImage="1F604" topAlignmentInParent="true" leftAlignmentInParent="true" horizontalOffsetInParent="30" verticalOffsetInParent="-10">
+                    <Frame  matchParentHeight="true" matchParentWidth="true" backgroundImage="1F604" />
+                </Frame> -->
+                    <Text id="bubble_name" text="Lion King" outline="false" color="r: 0.7, g: 0.55, b: 0.2, a: 0.5" fontSize="35" topAlignmentInParent="true" leftAlignmentInParent="true" horizontalOffsetInParent="80" verticalOffsetInParent="-14" />
+                </Frame>
+                <!-- Text -->
+                <Frame paddingTop="50" paddingLeft="0">
+                    <Frame>
+                        <Text id="bubble_text" text="Hey, thanks for leveling me up! Hey, thanks for leveling me up! Hey, thanks for leveling me up! Hey, thanks for leveling me up! " matchParentWidth="true" outline="false" color="r: 0.4, g: 0.30, b: 0.1, a: 1" alignment="start" />
+                    </Frame>
+                </Frame>
+            </Frame>
+            <!-- Arrow -->
+            <Frame width="50" height="50" backgroundImage="dialog_frame_03" bottomAlignmentInParent="true" verticalOffsetInParent="-30" />
+        </Frame>
+    </Frame>
+    <Frame matchParentWidth="true" matchParentHeight="true" bottomAlignmentInParent="true" padding="-15" name="_meta_navigation">
+        <VStack height="600" bottomAlignmentInParent="true" matchParentWidth="true">
+            <Frame matchParentWidth="true" matchParentHeight="true" />
+            <Frame padding="27" paddingBottom="0" paddingTop="34" matchParentWidth="true">
+                <HStack spacing="10" rightAlignmentInParent="true" matchParentHeight="true" reverse="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.0">
+                    <include id="play_btn" name="_play_button" />
+                </HStack>
+                <HStack spacing="10" width="500" leftAlignmentInParent="true" matchParentHeight="true" reverse="true" backgroundImageColor="r: 0, g: 0, b: 0, a: 0.0">
+                    <Button id="ship_toggle" matchParentHeight="true" backgroundImageColor="r: 1, g: 1, b: 1, a: 0.5" leftAlignmentInParent="true">
+                        <Text id="ship_toggle_txt" text="Ship STILL" fontSizeMin="29" color="r: 1, g: 1, b: 1, a: 0.5" />
+                    </Button>
+                    <Button id="bank_reset" matchParentHeight="true" backgroundImageColor="r: 1, g: 1, b: 1, a: 0.5" leftAlignmentInParent="true">
+                        <Text text="Reset Save Data" fontSizeMin="29" color="r: 1, g: 1, b: 1, a: 0.5" />
+                    </Button>
+                </HStack>
+            </Frame>
+            <!-- Frame Contents -->
+            <VStack padding="17" paddingBottom="24" spacing="15" matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" backgroundImageColor="r: 0.9, g: 0.9, b: 0.9, a: 0.9">
+                <!-- Buttons -->
+                <HScroll spacing="10" matchParentWidth="true" matchParentHeight="true" reverse="true" contentAlignment="right">
+                    <ScrollContent spacing="5" />
+                    <Frame width="170" matchParentHeight="true" padding="-4" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                        <Button id="hero_btn" matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" padding="15">
+                            <Mask matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01">
+                                <Frame backgroundImage="unlock_hero_lionking" width="250" height="250" horizontalOffsetInParent="35" verticalOffsetInParent="-60" />
+                            </Mask>
+                        </Button>
+                    </Frame>
+                    <Frame width="170" matchParentHeight="true" padding="-4" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                        <Button id="ship_btn" matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" padding="5">
+                            <Frame width="120" height="120" backgroundImage="icon_ship" />
+                        </Button>
+                    </Frame>
+                    <!-- <Button id="armory_btn" width="170" matchParentHeight="true" padding="-4" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                    <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" padding="25">
+                        <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="icon_tower_symbol" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 1" />
+                    </Frame>
+                </Button>
+                <Button id="armory_btn" width="170" matchParentHeight="true" padding="-4" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                    <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" padding="25">
+                        <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="talent_castle_defense" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 1" />
+                    </Frame>
+                </Button>
+                <Button id="armory_btn" width="170" matchParentHeight="true" padding="-4" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                    <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="dialog_frame_01" padding="25">
+                        <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="icon_spell_symbol" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 1" />
+                    </Frame>
+                </Button> -->
+                </HScroll>
+            </VStack>
+        </VStack>
+    </Frame>
+    <Frame matchParentWidth="true" matchParentHeight="true" name="_meta_ship_upgrade">
+        <Frame matchParentWidth="true" matchParentHeight="true" />
+        <!-- <Camera id="cam" matchParentWidth="true" matchParentHeight="true" autoSize="true" cameraBackgroundColor="r: 0, g: 0, b: 0, a: 1" /> -->
+        <VStack matchParentWidth="true" matchParentHeight="true" bottomAlignmentInParent="true" padding="-15">
+            <!-- Frame Contents -->
+            <Frame spacing="15" matchParentWidth="true" matchParentHeight="true">
+                <VStack matchParentWidth="true" height="600" bottomAlignmentInParent="true">
+                    <!-- Name  -->
+                    <!--  color="r: 0.5, g: 0.35, b: 0, a: 1"  -->
+                    <Frame matchParentWidth="true" paddingRight="25" paddingLeft="25" maxHeight="70">
+                        <Text id="title" translationKey="ship" fontSize="50" height="65" />
+                        <include id="play_btn" name="_play_button" />
+                    </Frame>
+                    <!-- Navigation and Info -->
+                    <VStack backgroundImage="dialog_frame_01" backgroundImageColor="r: 0.9, g: 0.9, b: 0.9, a: 1" padding="20">
+                        <HStack spacing="0" height="200" leftAlignmentInParent="true">
+                            <!-- Back Button -->
+                            <Button id="back_btn" width="200" height="150" padding="25" backgroundImage="btn_grey" backgroundImageColor="r: 0, g: 0, b: 0, a: 0">
+                                <Frame width="150" height="150" backgroundImage="icon_back" />
+                                <!-- <Text text="Back" fontSize="35" bottomAlignmentInParent="true" /> -->
+                            </Button>
+                            <VStack spacing="5">
+                                <Frame backgroundImageColor="r: 0, g: 0, b: 0, a: 0.5" padding="15" matchParentWidth="true">
+                                    <Text id="weapon_txt" translationKey="ship/weapon" fontSize="32" alignment="left" leftAlignmentInParent="true" />
+                                </Frame>
+                                <Frame backgroundImageColor="r: 0, g: 0, b: 0, a: 0.5" padding="15" matchParentWidth="true">
+                                    <Text id="hp_txt" translationKey="ship/hp" alignment="left" leftAlignmentInParent="true" fontSize="32" />
+                                </Frame>
+                            </VStack>
+                        </HStack>
+                        <!-- Buttons -->
+                        <HStack id="hero_scroll" spacing="20" matchParentWidth="true" height="280" padding="20">
+                            <Button id="upgrade_weapon_btn" matchParentWidth="true" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                                <Frame matchParentWidth="true" matchParentHeight="true" padding="15" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                                    <Frame width="150" height="150" backgroundImage="icon_gear_ship_cannon_02" topAlignmentInParent="true" verticalOffsetInParent="20" />
+                                    <Frame width="110" height="110" backgroundImage="arrow_02" rotation3d="x: 0, y: 0, z: 180" backgroundImageColor="r: 0, g: 1, b: 0, a: 1" leftAlignmentInParent="true" />
+                                </Frame>
+                                <Text text="Upgrade Attacks" fontSize="35" fontSizeMin="1" bottomAlignmentInParent="true" />
+                            </Button>
+                            <Button id="upgrade_hp_btn" matchParentWidth="true" matchParentHeight="true" padding="25" backgroundImage="btn_yellow_pressed">
+                                <Frame matchParentWidth="true" matchParentHeight="true" padding="15" paddingBottom="45" paddingTop="-15" topAlignmentInParent="true">
+                                    <Frame width="150" height="150" backgroundImage="talent_castle_defense" topAlignmentInParent="true" verticalOffsetInParent="20" />
+                                    <Frame width="110" height="110" backgroundImage="arrow_02" rotation3d="x: 0, y: 0, z: 180" backgroundImageColor="r: 0, g: 1, b: 0, a: 1" leftAlignmentInParent="true" />
+                                </Frame>
+                                <Text text="Upgrade Health" fontSize="35" fontSizeMin="1" bottomAlignmentInParent="true" />
+                            </Button>
+                        </HStack>
+                    </VStack>
+                </VStack>
+            </Frame>
+        </VStack>
+    </Frame>
+    <Frame width="120" height="120" paddingBottom="0" backgroundImageColor="r: 0, g: 0, b: 0, a: 0" rightAlignmentInParent="true" verticalOffsetInParent="25" name="_play_button">
+        <Frame id="glow" width="200" height="200" backgroundImage="icon_glow_for_bundle" verticalOffsetInParent="25" horizontalOffsetInParent="-25" backgroundImageColor="r: 0.95, g: 1, b: 0.95, a: 0.8" />
+        <Frame matchParentWidth="true" matchParentHeight="true" padding="-8">
+            <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="btn_play" backgroundImageColor="r: 1, g: 0.65, b: 1, a: 1">
+                <!-- <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="arrow" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 1" /> -->
+            </Frame>
+        </Frame>
+        <Button id="play_btn" matchParentWidth="true" matchParentHeight="true" backgroundImage="btn_play" padding="25">
+            <!-- <Frame matchParentWidth="true" matchParentHeight="true" backgroundImage="arrow" backgroundImageColor="r: 0.5, g: 0.35, b: 0, a: 1" /> -->
+            <Text id="play_btn_text" translationKey="meta/play_btn_txt" fontSize="50" fontSizeMin="1" horizontalOffsetInParent="-12" verticalOffsetInParent="6" />
+        </Button>
+    </Frame>
+    <Frame matchParentHeight="true" matchParentWidth="true" name="_ship_transition">
+        <Frame matchParentHeight="true" matchParentWidth="true" backgroundImage="gradient 64x64">
+            <Camera id="cam" matchParentWidth="true" matchParentHeight="true" autoSize="true" />
+        </Frame>
+    </Frame>
+    <HStack spacing="5" name="_victory_reward_line">
+        <Frame id="icon" width="50" height="50" backgroundImage="icon_coin00" />
+        <Text id="text" text="500" fontSize="25" alignment="start" matchParentWidth="true" />
+    </HStack>
+    <Frame matchParentHeight="true" matchParentWidth="true" name="all">
+        <!-- Background Layer -->
+        <Frame id="layer0" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+        </Frame>
+        <!-- Content Lower Layer -->
+        <Frame id="layer1" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+        </Frame>
+        <!-- Content Upper Layer -->
+        <Frame id="layer2" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+            <HStack height="50" topAlignmentInParent="true" rightAlignmentInParent="true">
+                <HStack backgroundImageColor="r: 0, g: 0, b: 0, a: 0.1" matchParentHeight="true" width="200">
+                    <Frame id="gold_icon" backgroundImage="icon_coin00" width="40" height="40" leftAlignmentInParent="true" />
+                    <Text id="gold" text="0" fontSize="30" />
+                </HStack>
+            </HStack>
+        </Frame>
+        <!-- Overlays -->
+        <Frame id="layer3" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+            <include id="ship_travel" name="_ship_transition" />
+            <include id="victory_screen" name="_game_victory" />
+        </Frame>
+    </Frame>
+    <Frame matchParentHeight="true" matchParentWidth="true" name="ingame">
+        <!-- <Mask width="100" height="100" backgroundImage="circle_mask" bottomAlignmentInParent="true" leftAlignmentInParent="true">
+        <Frame id="portrait1" backgroundImage="unlock_hero_lionking" width="250" height="250" horizontalOffsetInParent="30" verticalOffsetInParent="-70" active="true" />
+        <Frame id="fill1" backgroundImage="circle_mask" backgroundImageColor="r: 1, g: 1, b: 1, a: 0.5" matchParentHeight="true" matchParentWidth="true" backgroundImageFillAmount="0.3" backgroundImageFillRadial="true" />
+    </Mask>
+    <Mask width="100" height="100" backgroundImage="circle_mask" bottomAlignmentInParent="true" rightAlignmentInParent="true">
+        <Frame id="portrait2" backgroundImage="unlock_hero_iceMage" width="380" height="380" horizontalOffsetInParent="0" verticalOffsetInParent="-120" active="true" />
+        <Frame id="fill2" backgroundImage="circle_mask" backgroundImageColor="r: 1, g: 1, b: 1, a: 0.5" matchParentHeight="true" matchParentWidth="true" backgroundImageFillAmount="0.3" backgroundImageFillRadial="true" />
+    </Mask> -->
+        <!-- Background Layer -->
+        <Frame id="layer0" active="true" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+            <!-- <Frame id="fake_bg" backgroundImage="bg_grass_1" width="3428" height="2578" rotation3d="x: 40, y: 0, z: 0" />
+        <Camera id="in_game_camera" matchParentHeight="true" matchParentWidth="true" autoSize="true" /> -->
+        </Frame>
+        <!-- Content Lower Layer -->
+        <Frame id="layer1" matchParentHeight="true" matchParentWidth="true" padding="15">
+            <include id="abilities" name="_game_abilities" />
+        </Frame>
+        <!-- Content Upper Layer -->
+        <Frame id="layer2" matchParentHeight="true" matchParentWidth="true">
+            <Frame bottomAlignmentInParent="true" leftAlignmentInParent="true" paddingLeft="1" paddingRight="1" height="300" verticalOffsetInParent="110" padding="15">
+                <!-- Health Bar -->
+                <Frame matchParentHeight="true" width="50" backgroundImage="loading_bar_empty" padding="5">
+                    <Frame id="bar_fill" matchParentWidth="true" matchParentHeight="true" backgroundImage="loading_bar_fill_vertical" backgroundImageColor="r: 0.3, g: 1, b: 0.3, a: 1" leftAlignmentInParent="true" backgroundImageFillAmount="0.5" backgroundImageFillVertical="true" />
+                </Frame>
+            </Frame>
+            <HStack topAlignmentInParent="true" leftAlignmentInParent="true" padding="15" spacing="15">
+                <Text id="stage" text="18" fontSize="60" />
+                <Frame height="50" width="250" backgroundImage="loading_bar_empty" padding="5" paddingLeft="40" spacing="-15" rightAlignmentInParent="true">
+                    <Frame id="level_fill" matchParentWidth="true" matchParentHeight="true" backgroundImageColor="r: 1, g: 1, b: 0, a: 1" backgroundImage="loading_bar_fill" backgroundImageFillAmount="0.5" backgroundImageFillVertical="false" rightAlignmentInParent="true" backgroundImageFillOrigin="1" />
+                    <Frame id="prog_icon" width="80" height="80" backgroundImage="icon_boss" rightAlignmentInParent="true" horizontalOffsetInParent="20" />
+                </Frame>
+            </HStack>
+        </Frame>
+        <!-- Overlays -->
+        <Frame id="layer3" matchParentHeight="true" matchParentWidth="true">
+            <!-- s -->
+        </Frame>
+    </Frame>
+    <Frame matchParentHeight="true" matchParentWidth="true" name="meta">
+        <!-- Background Layer -->
+        <Frame id="layer0" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+        </Frame>
+        <!-- Content Lower Layer -->
+        <Frame id="layer1" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+        </Frame>
+        <!-- Content Upper Layer -->
+        <Frame id="layer2" matchParentHeight="true" matchParentWidth="true">
+            <include id="select_menu" name="_meta_building_select" active="false" />
+            <include id="build_menu" name="_meta_build_menu" active="false" />
+            <include id="hero_upgrade" name="_meta_hero_upgrade" active="false" />
+            <include id="ship_upgrade" name="_meta_ship_upgrade" active="false" />
+            <include id="meta_nav" name="_meta_navigation" active="false" />
+        </Frame>
+        <!-- Overlays -->
+        <Frame id="layer3" matchParentHeight="true" matchParentWidth="true">
+            <!-- Content -->
+        </Frame>
+    </Frame>
+</UI>

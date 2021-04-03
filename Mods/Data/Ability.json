@@ -1,0 +1,71 @@
+{
+    "abilities": {
+        "_target_spell": {
+            "abilityType": 1,
+            "effect": "DoNothing",
+            "stats": {
+                "period": 1,
+                "range": 30
+            },
+            "targetFilter": {
+                "enemy": 1
+            }
+        },
+        "ability_snowstorm": {
+            "abilityType": 1,
+            "effect": "ability_snowstorm_create",
+            "stats": {
+                "period": 15,
+                "range": 30
+            },
+            "targetingValidCursorActor": "aoe_ability_target"
+        },
+        "ability_magmafall": {
+            "abilityType": 1,
+            "effect": "DoNothing",
+            "stats": {
+                "period": 1,
+                "range": 30
+            }
+        },
+        "ability_lionking": {
+            "parent": "_target_spell",
+            "effect": "ability_fireball_persistent",
+            "stats": {
+                "period": 15
+            },
+            "targetFilter": {
+                "player": 2,
+                "ally": 2,
+                "enemy": 1
+            },
+            "targetingValidCursorActor": "aoe_ability_target_ring"
+        },
+        "ability_alchemist_musketeer": {
+            "parent": "_target_spell",
+            "effect": "ability_alchemist_musketeer_persistent",
+            "stats": {
+                "period": 15
+            },
+            "targetFilter": {
+                "player": 2,
+                "ally": 2,
+                "enemy": 1
+            },
+            "targetingValidCursorActor": "aoe_ability_target_rectangle"
+        },
+        "ability_avalanche_surfer": {
+            "parent": "_target_spell",
+            "effect": "ability_avalanche_surfer_persistent",
+            "stats": {
+                "period": 15
+            },
+            "targetFilter": {
+                "player": 2,
+                "ally": 2,
+                "enemy": 1
+            },
+            "targetingValidCursorActor": "aoe_ability_target_square"
+        }
+    }
+}

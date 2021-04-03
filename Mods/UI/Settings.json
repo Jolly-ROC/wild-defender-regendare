@@ -1,0 +1,32 @@
+{
+    "settings": {
+        "type": 1,
+        "dependencies": [
+            "Mods/Main"
+        ]
+    },
+    "displaySettings": {
+        "orientation": 1
+    },
+    "triggerSettings": {
+        "usedAtlasAssets": [
+            "Assets/Bundles/UI/Atlas/VictoryPage.spriteatlas",
+            "Assets/Bundles/UI/Atlas/TournamentAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/ShopAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/IslandsDiorama.spriteatlas",
+            "Assets/Bundles/UI/Atlas/GearsAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/ShipPage.spriteatlas",
+            "Assets/Bundles/UI/Atlas/BaseUIAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/MapEventAtlas.spriteatlas",
+            "Assets/Bundles/UI/Atlas/GuildlAtlas.spriteatlas"
+        ],
+        "usedSpriteAssets": [
+            "unlock_hero_iceMage",
+            "unlock_hero_smith",
+            "unlock_unit_skeletonwarrior",
+            "unlock_unit_barracks_troop_rank03",
+            "unlock_hero_lionking",
+            "hero_lionking"
+        ]
+    }
+}

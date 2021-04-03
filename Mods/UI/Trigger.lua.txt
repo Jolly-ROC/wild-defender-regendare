@@ -1,0 +1,1347 @@
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // Mods/UI
+-- For the game logic aspect of UI. The rest should be done in XML (Data Editor > UI)
+local ui = {}
+local xml = {}
+local mod = {}
+mod.animate = {}
+local lf = {}
+
+local mods = nil
+local bank_data = nil
+local CreateUnit
+local game = nil
+
+local function LoadData()
+    if bank_data == nil then
+        mods = {
+            core = GameModules["Arcade/Core"],
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            meta = GameModules["Mods/Meta"]
+        }
+        bank_data = mods.bank.GetBankData()
+        CreateUnit = mods.gameplay.CreateUnit
+        game = mods.gameplay.game()
+    end
+end
+
+local player_ui_data = {}
+player_ui_data.current_tab = "base"
+player_ui_data.previous_tab = "base"
+player_ui_data.selected_unit = nil
+
+local log_settings = {
+    logging_on = true,
+    filter = 1 -- 1 = all, 2 = some, 3 = strict
+}
+local function log(message)
+    mods.utility.print(message, {priority = 3, type="error"}, log_settings)
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- CONSTANTS
+
+
+ui.CONSTANT = {
+    SIZE = DCEI.GetUiCanvasSize()
+}
+ui.SIZE = {
+    HUGE = "<size=400%>",
+    GIANT = "<size=210%>",
+    BIG = "<size=140%>",
+    NORMAL = "<size=100%>",
+    SMALL = "<size=65%>"
+}
+-- ui.T_STYLE = {
+--     HUGE = {COLOR = ui.COLOR.WHITE.HEX, SIZE = ui.SIZE.HUGE},
+--     BIG_title = {COLOR = ui.COLOR.WHITE.HEX, SIZE = ui.SIZE.GIANT},
+--     H_TITLE = {COLOR = ui.COLOR.WHITE.HEX, SIZE = ui.SIZE.BIG},
+--     BODY = {COLOR = ui.COLOR.WHITE.HEX, SIZE = ui.SIZE.NORMAL},
+--     BODY_title = {COLOR = ui.COLOR.GREEN.HEX, SIZE = ui.SIZE.NORMAL}
+-- }
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- VARIABLES
+
+-- Layers
+ui.root = DCEI.GetUiRoot()
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- FUNCTIONS - Main
+function mod.Initialize(flag)
+    LoadData()
+
+    -- Adds new animations to GMUI 
+    lf.ExtendGMUI()
+
+    -- Creates all the xml UI
+    lf.HookupAllXml()
+
+    DCEI.Wait(0)
+
+    lf.InitializeGameUI()
+    lf.InitializeMetaUI()
+
+    xml.all:Show()
+    xml.meta:Hide()
+    xml.ingame:Hide()
+
+    DCEI.MoveToTop(xml.all.Frame)
+
+    DCEI.SetTextExpression(xml.all.gold, "{bank_data.meta.m_currencies.l_value.gold}")
+
+    if mods.utility.PlayingEditorMode() then
+        local dev = mods.dev.CreateDevPanel()
+        local dev_btn = DCEI.NewButton(DCEI.GetUiRoot())
+        DCEI.SetSize(dev_btn, 50, 50)
+        DCEI.SetBottomAlignmentInParent(dev_btn)
+        DCEI.SetLeftAlignmentInParent(dev_btn)
+        local dev_txt = DCEI.NewText(dev_btn)
+        DCEI.SetText(dev_txt, "dev")
+    DCEI.SetOnClickCallback(dev_btn, function() dev.Show(true) end)
+    end
+end
+
+function lf.HookupAllXml()
+    local all_ui = DCEI.GetXmlFrames()
+    -- For all XML frames
+    for top_key, top_value in pairs(all_ui) do
+        -- Exclude Templates and constants
+        if string.sub(top_value.name, 1, 1) ~= "_" and string.sub(top_value.name, 1, 1) ~= "#" and string.sub(top_value.name, 1, 9) ~= "Standard/" then
+            --DCEI.LogError(top_value.name)
+            -- Hookup this frame; hide it by default
+            xml[top_value.name] = mods.gmui.Layout:New({parent = ui.upper, name = top_value.name, recursive_hookup=true})
+            xml[top_value.name]:Hide()
+            
+            -- if top_value.name ~= "meta" then
+            --     xml[top_value.name]:HideImmediate()
+            -- end
+
+            -- Retrieve children
+            -- local children = DCEI.GetXmlUiChildrenFrames(xml[top_value.name].Frame)
+            -- for k, v in pairs(children) do
+            --     -- Hookup children and their children too
+            --     lf.RecursiveHookup(xml, top_value.name, v)
+            -- end
+        end
+    end
+end
+
+function lf.RecursiveHookup(parent_table, parent_name, data)
+    local children = {}
+
+    --DCEI.LogError(data.id)
+    local frame = DCEI.FindXmlUiById( parent_table[parent_name].Frame, data.id)
+    parent_table[parent_name][data.id] = mods.gmui.Layout:New({frame = frame, parent=parent_table[parent_name].Frame})
+
+    if parent_name == "meta" then
+        --DCEI.LogError("Show " .. data.id)
+        DCEI.SetActive(parent_table[parent_name][data.id].Frame, true)
+        parent_table[parent_name][data.id]:Show()
+        -- if data.id == "loading_screen" then
+        --     --DCEI.LogError("Hiding " .. data.id)
+        --     DCEI.TriggerAddTimerEventElapsed(function()  parent_table[parent_name][data.id]:HideImmediate() end, 1.1, true, false)
+        -- end
+    elseif string.sub(parent_name, 1, 6) == "layer3" or string.sub(parent_name, 1, 6) == "layer1" then
+        --DCEI.LogError("Show " .. data.id)
+        DCEI.SetActive(parent_table[parent_name][data.id].Frame, true)
+        parent_table[parent_name][data.id]:Show()
+        -- if data.id ~= "base" then
+        --     --DCEI.LogError("Hiding " .. data.id)
+        --     DCEI.TriggerAddTimerEventElapsed(function()  parent_table[parent_name][data.id]:HideImmediate() end, 1.0, true, false)
+        -- end
+    end 
+    --DCEI.LogError(string.sub(parent_name, 1, 5))
+
+    local function GetChildren()
+        children = DCEI.GetXmlUiChildrenFrames(DCEI.FindXmlUiById(parent_table[parent_name].Frame, data.id))
+    end
+    
+    if pcall(GetChildren) then
+        --Children
+    else 
+        --No Children
+    end
+  
+    -- Hookup children and their children too
+    for k, v in pairs(children) do
+        lf.RecursiveHookup(parent_table[parent_name], data.id, v)
+    end
+end
+
+function lf.InitializeGameUI()
+    lf.HeroAbilities()
+
+    ui.victory_screen = lf.VictoryScreen()
+end
+
+function lf.InitializeMetaUI()
+    mod.CustomCallback(xml.meta.ship_upgrade.back_btn, function() mods.meta.ShipUpgradeExit() end)
+
+
+    mod.CustomCallback(xml.meta.meta_nav.ship_btn, function() mods.meta.ShipUpgradeEnter() end)
+    mod.CustomCallback(xml.meta.meta_nav.hero_btn, function() mods.meta.HeroUpgradeEnter() end)
+    mod.CustomCallback(xml.meta.meta_nav.bank_reset, function() 
+        mods.bank.Reset() 
+        DCEI.Wait(0)
+        DCEI.PlayLevel("Levels/entry_level", "Main Game")
+    end)
+
+    mod.CustomCallback(xml.meta.meta_nav.ship_toggle, function() 
+        if game.ship_stationary then
+            game.ship_stationary = false
+            DCEI.SetBackgroundImageColor(xml.meta.meta_nav.ship_toggle, 1, 0, 0, 0.5)
+            DCEI.SetText(xml.meta.meta_nav.ship_toggle_txt, "Ship MOVE")
+        else
+            game.ship_stationary = true
+            DCEI.SetBackgroundImageColor(xml.meta.meta_nav.ship_toggle, 1, 1, 1, 0.5)
+            DCEI.SetText(xml.meta.meta_nav.ship_toggle_txt, "Ship STILL")
+        end
+    end)
+    
+    
+
+    mod.CustomCallback(xml.meta.meta_nav.play_btn.play_btn, function() mods.main.SwitchState("gameplay", {transition=true, transition_time=2, flip=true}) end)
+    mod.CustomCallback(xml.meta.ship_upgrade.play_btn.play_btn, function() mods.main.SwitchState("gameplay", {transition=true, transition_time=2, flip=true}) end)
+    mod.CustomCallback(xml.meta.hero_upgrade.play_btn.play_btn, function() mods.main.SwitchState("gameplay", {transition=true, transition_time=2, flip=true}) end)
+
+    lf.HeroUpgradeUI() -- xml.meta.hero_upgrade.layout = 
+    lf.ShipUpgradeUI()
+    
+    xml.ship_fly_scene = lf.ShipFlyScene()
+end
+
+function lf.ShipFlyScene() 
+    local frame_table = {}
+    frame_table.cam_location = {150,150}
+    frame_table.units = {}
+    frame_table.scene_active = false
+
+    DCEI.SetActive(xml.all.ship_travel.Frame, true)
+    xml.all:Show()
+    xml.all.ship_travel:Show()
+
+    
+    -- mod.CustomCallback(xml.meta.hero_upgrade.back_btn, function() mods.meta.HeroUpgradeExit() end)
+    -- mod.CustomCallback(xml.meta.hero_upgrade.upgrade_btn, function() frame_table.UpgradeButton() end)
+
+
+    DCEI.SetCameraFramePosition(xml.all.ship_travel.cam, frame_table.cam_location[1], 3.2,  frame_table.cam_location[2] - 4.5) -- 6.5, 2.6, 1.1-- 6.5, 3.5, 0.6 --18.5, 1.5, 16.5
+    DCEI.SetCameraFrameRotation(xml.all.ship_travel.cam, 25, 0, 0)
+
+    function frame_table.SceneActive(offset, quantity)
+        for i=1, quantity do
+            local u =  CreateUnit(1,  "meta_transition_scene_cloud", {frame_table.cam_location[1] + offset + math.random(), frame_table.cam_location[2] + 5}, 90)
+            table.insert(frame_table.units, u)
+            DCEI.Move(u, frame_table.cam_location[1] - 15, frame_table.cam_location[2])
+            
+            DCEI.TriggerAddTimerEventElapsed(function()
+                local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+                local max = math.random(1, 36)
+                for i = 1, max do
+                    actor_string = actor_string .. "\"SOp UpBy Dot25\""
+                    if i ~= max then
+                        actor_string = actor_string .. ","
+                    end
+                end
+                actor_string = actor_string .. "],\"append\": true}}"
+                local id = DCEI.CompileActorAction(actor_string)
+                local id2 = DCEI.CompileActorAction("{\"setModelScale\":{\"modelScale\":".. (2 + (math.random() * math.random(1, 8))) .."}}")
+                DCEI.SendActorAction(u, id)
+                DCEI.SendActorAction(u, id2)
+            end, 0.0625, false, true)
+        end
+
+        DCEI.TriggerAddTimerEventElapsed(function() 
+            if frame_table.scene_active == true then
+                frame_table.SceneActive(5, 1)
+            end
+        end, 0.25, false, true)
+    end
+
+    xml.all.ship_travel.OnShow = function()
+        local index = 1
+        frame_table.scene_active = true
+        frame_table.units[1] = CreateUnit(1,  "meta_ship", {frame_table.cam_location[1], frame_table.cam_location[2]}, 0)
+        DCEI.ApplyBehaviorAsync(frame_table.units[1], "ship_flying")
+        frame_table.SceneActive(0, 5)
+        for i = 1, #bank_data.cards.c_loadout.l_value.crew do
+            local u = CreateUnit(1, mods.data.hero_table[bank_data.cards.c_loadout.l_value.crew[i]].unit_crew, {frame_table.cam_location[1] + (index * 0.30) - 0.4, frame_table.cam_location[2]}, 0)
+            table.insert(frame_table.units, u)
+
+            DCEI.TriggerAddTimerEventElapsed(function()
+                local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+                local max = 7
+                for i = 1, max do
+                    actor_string = actor_string .. "\"SOp UpBy Dot25\""
+                    if i ~= max then
+                        actor_string = actor_string .. ","
+                    end
+                end
+                actor_string = actor_string .. "],\"append\": true}}"
+                local id = DCEI.CompileActorAction(actor_string)
+                local id2 = DCEI.CompileActorAction("{\"setModelScale\":{\"modelScale\":".. 0.7 .."}}")
+                DCEI.SendActorAction(u, id)
+                DCEI.SendActorAction(u, id2)
+            end, 0.0625, false, true)
+            index = index + 1
+        end
+        for i = 1, #bank_data.cards.c_loadout.l_value.captains do
+            local u = CreateUnit(1, mods.data.hero_table[bank_data.cards.c_loadout.l_value.captains[i]].unit_crew, {frame_table.cam_location[1] + (index * 0.30) - 0.4, frame_table.cam_location[2]}, 0)
+            table.insert(frame_table.units, u)
+
+            DCEI.TriggerAddTimerEventElapsed(function()
+                local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+                local max = 7
+                for i = 1, max do
+                    actor_string = actor_string .. "\"SOp UpBy Dot25\""
+                    if i ~= max then
+                        actor_string = actor_string .. ","
+                    end
+                end
+                actor_string = actor_string .. "],\"append\": true}}"
+                local id = DCEI.CompileActorAction(actor_string)
+                local id2 = DCEI.CompileActorAction("{\"setModelScale\":{\"modelScale\":".. 0.9 .."}}")
+                DCEI.SendActorAction(u, id)
+                DCEI.SendActorAction(u, id2)
+            end, 0.0625, false, true)
+            index = index + 1
+        end
+    end
+    xml.all.ship_travel.OnHide = function()
+        for k, v in pairs(frame_table.units) do
+            frame_table.scene_active = false
+            DCEI.RemoveUnit(v) 
+            frame_table.units[k] = nil
+        end
+    end
+
+    xml.all.ship_travel:Hide()
+    return frame_table    
+end
+
+function lf.VictoryScreen()
+    local frame_table = {}
+    frame_table.items = {}
+ 
+    mod.CustomCallback(xml.all.victory_screen.continue_btn, function() 
+        xml.all.victory_screen:Hide()
+        mods.main.SwitchState("meta", {transition=true, transition_time=0.5, flip=false})
+    end)
+
+    function frame_table.Show(data)
+        local data = data or {}
+        mods.gameplay.Exit()
+        xml.all.ship_travel:Show()
+        xml.all.victory_screen:Show()
+        DCEI.SetRotation3D(xml.all.ship_travel.Frame, 0, 0, 0)
+
+        for k, v in pairs(frame_table.items) do
+            DCEI.Destroy(v)
+        end
+
+        for k, v in pairs(data.rewards) do
+            log("r: " .. v.text ..  "/" .. v.icon)
+            local frame = DCEI.NewUiFromXml(xml.all.victory_screen.reward_scroll, "_victory_reward_line")
+            table.insert(frame_table.items, frame)
+            DCEI.SetBackgroundImage(DCEI.FindXmlUiById(frame, "icon"), v.icon)
+            DCEI.SetText(DCEI.FindXmlUiById(frame, "text"), v.text)
+        end
+
+        DCEI.SetText(xml.all.victory_screen.victory_title, DCEI.GetTranslationText("ui/victory", {x=mods.utility.OrdinalNumber(bank_data.game.g_current_island_progress.l_value.stage)}))
+    end
+
+
+    xml.all.victory_screen:Hide()
+    return frame_table
+end
+
+function lf.HeroUpgradeUI() 
+    local frame_table = {}
+    frame_table.selected_hero = nil
+    frame_table.cam_location = {-50,-10}
+    frame_table.unit = nil
+    frame_table.first_time = true
+
+    DCEI.SetActive(xml.meta.hero_upgrade.Frame, true)
+    xml.meta:Show()
+    xml.meta.hero_upgrade:Show()
+
+    xml.meta.hero_upgrade.OnShow = function()
+        if frame_table.first_time == true then
+            frame_table.HeroButtonPress("lionking")
+            frame_table.first_time = false
+        end
+    end
+
+    mod.CustomCallback(xml.meta.hero_upgrade.back_btn, function() mods.meta.HeroUpgradeExit() end)
+    mod.CustomCallback(xml.meta.hero_upgrade.upgrade_btn, function() frame_table.UpgradeButton() end)
+
+    DCEI.SetCameraFramePosition(xml.meta.hero_upgrade.cam, frame_table.cam_location[1], 1.5,  frame_table.cam_location[2] - 3.9) -- 6.5, 2.6, 1.1-- 6.5, 3.5, 0.6 --18.5, 1.5, 16.5
+    DCEI.SetCameraFrameRotation(xml.meta.hero_upgrade.cam, 20, 0, 0)
+
+    for k, v in pairs(mods.data.hero_table) do
+        frame_table[k] =  {}
+        frame_table[k].button = mods.gmui.Layout:New({frame = DCEI.NewUiFromXml(xml.meta.hero_upgrade.hero_scroll, "_meta_hero_button")})
+        DCEI.SetBackgroundImage(frame_table[k].button.Frame, v.icon)
+        DCEI.SetText(frame_table[k].button.lvl, v.level)
+        mod.CustomCallback(frame_table[k].button.Frame, function() frame_table.HeroButtonPress(k) end)
+    end
+
+    function frame_table.HeroButtonPress(index)
+        frame_table.selected_hero = index
+
+        local cost = mods.data.hero_table[frame_table.selected_hero]:GetCost()
+        DCEI.SetText(xml.meta.hero_upgrade.upgrade_txt, cost)
+        if cost > bank_data.meta.m_currencies.l_value["gold"] then
+            DCEI.SetTextColor(xml.meta.hero_upgrade.upgrade_txt, 255, 0, 0)
+        else
+            DCEI.SetTextColor(xml.meta.hero_upgrade.upgrade_txt, 255, 255, 255)
+        end
+        
+        DCEI.SetText(xml.meta.hero_upgrade.title, mods.data.hero_table[index].display_name)
+        DCEI.SetText(xml.meta.hero_upgrade.level, mods.data.hero_table[index].level)
+        if frame_table.unit ~= nil then DCEI.RemoveUnit(frame_table.unit) end
+        frame_table.unit = CreateUnit(1,  mods.data.hero_table[index].unit_crew, {frame_table.cam_location[1], frame_table.cam_location[2]}, 270)
+    end
+
+    function frame_table.UpgradeButton()
+        if mods.data.hero_table[frame_table.selected_hero]:Upgrade() then
+            mod.animate.Pop(xml.meta.hero_upgrade.level)
+            mod.animate.Pop(frame_table[frame_table.selected_hero].button.lvl)
+
+            local id = DCEI.CompileActorAction("{\"playAnimation\":{\"clipId\":0}}")
+            DCEI.SendActorAction(frame_table.unit, id)
+
+            local id = DCEI.CompileActorAction("{\"create\":{\"actor\":\"upgrade_flash\",\"hostSite\": \"SiteHit\"}}")
+            DCEI.SendActorAction(frame_table.unit, id)
+            
+            DCEI.SetText(frame_table[frame_table.selected_hero].button.lvl, mods.data.hero_table[frame_table.selected_hero].level)
+            DCEI.SetText(xml.meta.hero_upgrade.level, mods.data.hero_table[frame_table.selected_hero].level)
+
+            local cost = mods.data.hero_table[frame_table.selected_hero]:GetCost()
+            DCEI.SetText(xml.meta.hero_upgrade.upgrade_txt, cost)
+            if cost > bank_data.meta.m_currencies.l_value["gold"] then
+                DCEI.SetTextColor(xml.meta.hero_upgrade.upgrade_txt, 255, 0, 0)
+            else
+                DCEI.SetTextColor(xml.meta.hero_upgrade.upgrade_txt, 255, 255, 255)
+            end
+        end
+    end
+
+    xml.meta.hero_upgrade:Hide()
+    return frame_table
+end
+
+--[
+                --     {
+                --         "create": {
+                --             "actor": "upgrade_flash",
+                --             "hostSite": "SiteHit"
+                --         }
+                --     }
+                -- ]
+
+-- HeroAbilities
+function lf.HeroAbilities() 
+    local frame_table = {}
+
+    DCEI.SetActive(xml.ingame.abilities.Frame, true)
+    xml.ingame:Show()
+    xml.ingame.abilities:Show()
+
+    -- for k, v in pairs(mods.data.hero_table) do
+    --     frame_table[k] =  {}
+    --     frame_table[k].button = mods.gmui.Layout:New({frame = DCEI.NewUiFromXml(xml.ingame.abilities.Frame, "_game_hero_ability")})
+    --     DCEI.SetBackgroundImage(frame_table[k].button.img, v.icon)
+    --     mod.CustomCallback(frame_table[k].button.Frame, function() frame_table.HeroButtonPress(k) end)
+    -- end
+
+    -- function frame_table.HeroButtonPress(index)
+    --     frame_table.selected_hero = index
+    --     DCEI.SetText(xml.meta.hero_upgrade.title, mods.data.hero_table[index].display_name)
+    --     if frame_table.unit ~= nil then DCEI.RemoveUnit(frame_table.unit) end
+    --     frame_table.unit = CreateUnit(1,  mods.data.hero_table[index].unit_crew, {frame_table.cam_location[1], frame_table.cam_location[2]}, 270)
+    -- end
+
+    return frame_table
+end
+
+function lf.ShipUpgradeUI()
+    local frame_table = {}
+
+    DCEI.SetActive(xml.meta.ship_upgrade.Frame, true)
+    xml.meta:Show()
+    xml.meta.ship_upgrade:Show()
+
+    mod.CustomCallback(xml.meta.ship_upgrade.upgrade_weapon_btn, function() frame_table.WeaponUpgrade() end)
+    mod.CustomCallback(xml.meta.ship_upgrade.upgrade_hp_btn, function() frame_table.HPUpgrade() end)
+    DCEI.SetText(xml.meta.ship_upgrade.hp_txt, DCEI.GetTranslationText("ship/hp", {x=bank_data.cards.c_ship.l_value.hp or 0}))
+    DCEI.SetText(xml.meta.ship_upgrade.weapon_txt, DCEI.GetTranslationText("ship/weapon", {x=bank_data.cards.c_ship.l_value.attack or 0}))
+
+    function frame_table.HPUpgrade()
+        if mods.data.currencies.gold:Decrease(30) then
+            if bank_data.cards.c_ship.l_value.hp == nil then bank_data.cards.c_ship.l_value.hp = 0 end
+            bank_data.cards.c_ship.l_value.hp = bank_data.cards.c_ship.l_value.hp + 1
+            DCEI.SetText(xml.meta.ship_upgrade.hp_txt, DCEI.GetTranslationText("ship/hp", {x=bank_data.cards.c_ship.l_value.hp}))
+            mods.bank.Save()
+        end
+    end
+
+    function frame_table.WeaponUpgrade()
+        if mods.data.currencies.gold:Decrease(30) then
+            if bank_data.cards.c_ship.l_value.attack == nil then bank_data.cards.c_ship.l_value.attack = 0 end
+            bank_data.cards.c_ship.l_value.attack = bank_data.cards.c_ship.l_value.attack + 1
+            DCEI.SetText(xml.meta.ship_upgrade.weapon_txt, DCEI.GetTranslationText("ship/weapon", {x=bank_data.cards.c_ship.l_value.attack}))
+            mods.bank.Save()
+        end
+    end
+
+    xml.meta.ship_upgrade:Hide()
+    return frame_table
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- GENERAL
+
+
+function mod.animate.Pop(frame, scale)
+    local scale = scale or 3
+    local animation = DCEI.AnimateScale(frame, {x = 1, y = 1, z = 1}, {x = scale, y = scale, z = scale}, 0.0625, "easeInSine")
+    DCEI.SetAnimationLoops(animation, 2, "Yoyo")
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- TODO(Jolly) improve
+function mod.AnimateAtoB(pos1, pos2, frame, loop)
+    local rootpos = DCEI.GetUiPosition3D(ui.root)
+    local animations = {}
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local curpos = DCEI.GetUiPosition3D(frame)
+            animations[1] =
+                DCEI.AnimateHorizontalOffset(
+                frame,
+                pos1.x - rootpos.x,
+                pos2.x - curpos.x + pos1.x - rootpos.x,
+                0.4,
+                "InOutSine"
+            )
+            animations[2] =
+                DCEI.AnimateVerticalOffset(
+                frame,
+                pos1.y - rootpos.y,
+                pos2.y - curpos.y + pos1.y - rootpos.y,
+                0.4,
+                "InOutSine"
+            )
+            if loop then
+                DCEI.SetAnimationLoops(animations[1], -1, "Restart")
+                DCEI.SetAnimationLoops(animations[2], -1, "Restart")
+            end
+        end,
+        0.0625
+    )
+end
+
+function mod.BighandBetweenUnits(unit1, unit2, loop)
+    local bighand = mods.gmui.NewBigHand()
+
+    mod.AnimateAtoBUnit(unit1, unit2, bighand.Frame, loop)
+
+    return bighand
+end
+
+function mod.AnimateAtoBUnit(unit1, unit2, frame, loop)
+    local rootpos = DCEI.GetUiPosition3D(ui.root)
+    local animations = {}
+    local u_frames = {}
+
+    local o_frame_pos = DCEI.GetUiPosition3D(frame)
+
+    -- Create unit frames
+    u_frames[1] = DCEI.NewFrame(ui.root)
+    -- DCEI.SetBackgroundImageColor(u_frames[1], 1, 1, 1, 1)
+    -- DCEI.SetSize(u_frames[1], 25, 25)
+    DCEI.AttachToUnit(u_frames[1], unit1, {offset = {up = 0, right = 1}})
+    u_frames[2] = DCEI.NewFrame(ui.root)
+    -- DCEI.SetBackgroundImageColor(u_frames[2], 1, 1, 1, 1)
+    -- DCEI.SetSize(u_frames[2], 25, 25)
+    DCEI.AttachToUnit(u_frames[2], unit2, {offset = {up = 0, right = 1}})
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local modifier = {50, 50}
+            local pos1 = DCEI.GetUiPosition3D(u_frames[1])
+            local pos2 = DCEI.GetUiPosition3D(u_frames[2])
+            local start_x = pos1.x - o_frame_pos.x
+            local start_y = pos1.y - o_frame_pos.y
+
+            local dx = pos2.x - pos1.x
+            local dy = pos2.y - pos1.y
+
+            local curpos = DCEI.GetUiPosition3D(frame)
+            animations[1] =
+                DCEI.AnimateHorizontalOffset(frame, start_x + modifier[1], start_x + dx + modifier[1], 1.5, "InOutSine")
+            animations[2] =
+                DCEI.AnimateVerticalOffset(frame, start_y + modifier[2], start_y + dy + modifier[2], 1.5, "InOutSine")
+            if loop then
+                DCEI.SetAnimationLoops(animations[1], -1, "Restart")
+                DCEI.SetAnimationLoops(animations[2], -1, "Restart")
+            end
+
+            DCEI.Destroy(u_frames[1])
+            DCEI.Destroy(u_frames[2])
+        end,
+        0.0625
+    )
+end
+
+function mod.Flash(color, duration) -- Flash the screen a given color
+    local flash = DCEI.NewFrame(DCEI.GetUiRoot())
+    DCEI.SetMatchParent(flash, true, true)
+    DCEI.SetBackgroundImage(flash, "ui_mask_blurry")
+    DCEI.SetBackgroundImageColor(flash, color[1], color[2], color[3], color[4])
+    DCEI.AnimateAlpha(flash, 0, 1, duration, "Linear")
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            DCEI.AnimateAlpha(flash, 1, 0, duration, "Linear")
+            DCEI.TriggerAddTimerEventElapsed(
+                function()
+                    DCEI.Destroy(flash)
+                end,
+                duration
+            )
+        end,
+        duration
+    )
+end
+
+function mod.NewScreenMaskFocus(options) -- Create a mask that highlights an area of the screen (for tutorial purposes)
+    local frame = DCEI.NewFrame(options.parent or ui.super)
+    DCEI.SetMatchParent(frame, true, true)
+    DCEI.MoveToTop(frame)
+    local mask = DCEI.NewMask(frame)
+    DCEI.SetSize(mask, 6000, 6000)
+    DCEI.SetBackgroundImage(mask, "tutorial_mask")
+    local content = DCEI.NewFrame(mask)
+    DCEI.SetSize(content, 6000, 6000)
+    DCEI.SetBackgroundImage(content, "shape_square_sharp_32x32")
+    DCEI.SetBackgroundImageColor(content, 0, 0, 0, 0.4)
+
+    DCEI.SetVerticalOffsetInParent(mask, options.y or 0)
+    DCEI.SetHorizontalOffsetInParent(mask, options.x or 0)
+    -- DCEI.SetBottomAlignmentInParent(mask)
+    -- DCEI.SetLeftAlignmentInParent(mask)
+    return {frame = frame}
+end
+
+function mod.CustomCallback(button, callback) -- Hookup Tutorial / Meta callback on top of normal callback
+    LoadData()
+    DCEI.SetButtonClickSound(button, "ui_pop_4")
+    DCEI.SetOnClickCallback(
+        button,
+        function()
+            callback()
+            mods.meta.MetaButtonPressed()
+            game.mouse_down = false
+        end
+    )
+end
+
+-- Usage: Require player to click anywhere > run function   —   Example:  mod.ClickToContinue({action=function() code end})
+function mod.ClickToContinue(content)
+    local button = DCEI.NewButton(ui.super)
+    DCEI.SetMatchParent(button, true, true)
+    DCEI.SetBackgroundImageColor(button, 0, 0, 0, 0)
+    mod.CustomCallback(
+        button,
+        function()
+            content.action()
+            DCEI.Destroy(button)
+        end
+    )
+end
+
+-- A custom Health Bar function
+local BAR_INDEX = 0
+function mod.CustomHPBar(target_unit)
+    local colors = {{0,1,0}, {0,1,0}}
+    local uniqueID = DCEI.UnitName(target_unit) .. BAR_INDEX
+    local p = DCEI.GetUnitTeamId(target_unit)
+    BAR_INDEX = BAR_INDEX + 1
+    DCEI.BindUnit(uniqueID, target_unit)
+
+    -- create root health bar frame
+    local anchor = DCEI.NewUiFromXml(DCEI.GetUiRoot(), "_hp_bar")
+    DCEI.MoveToBottom(anchor)
+
+    -- Health fill
+    DCEI.SetBackgroundImageFillAmountExpression(DCEI.FindXmlUiById(anchor, "fill"), uniqueID .. ".Health.Fraction")
+    DCEI.SetBackgroundImageColor(DCEI.FindXmlUiById(anchor, "fill"), colors[p][1], colors[p][2], colors[p][3], 1)
+
+    -- Bind to unit
+    -- DCEI.TriggerAddUnitDamageEvent(
+    --     target_unit,
+    --     function()
+    --         DCEI.SetActive(anchor, true)
+    --     end
+    -- )
+
+    DCEI.AttachToUnit(anchor, target_unit, {offset = {up = 1.8}})
+    DCEI.TriggerAddUnitDiedEvent(
+        target_unit,
+        function()
+            DCEI.Destroy(anchor)
+        end,
+        true
+    )
+    DCEI.TriggerAddUnitRemovedEvent(
+        target_unit,
+        function()
+            DCEI.Destroy(anchor)
+        end,
+        true
+    )
+
+    --DCEI.SetActive(anchor, false)
+
+    return {
+        frame = anchor,
+        Destroy = function()
+            DCEI.Destroy(anchor)
+        end,
+        index = BAR_INDEX - 1
+    }
+end
+
+function mod.ShowFeedbackMessage(text)
+    local layout = {}
+    
+    -- destroy any existing feedback messages
+    if xml.feedback_msg then
+        xml.feedback_msg:Destroy()
+    end
+    
+    -- layout
+    xml.feedback_msg = mods.gmui.Layout:New({parent = DCEI.GetUiRoot(), name = "_feedback_msg", on_show_animation = mods.gmui.Animations.ZoomDownIn,on_hide_animation = mods.gmui.Animations.ZoomUpOut,})
+    DCEI.SetText(xml.feedback_msg.txt, text)
+
+    local duration = 1.1875
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            xml.feedback_msg:Hide()
+        end,
+        duration,
+        true
+    )
+end
+
+-- Todo: these following Review functions were created with old UI style rather than XML + gmui hookups
+-- Need to rework
+function mod.NewReviewAsk(callbacks)
+    ui.screen_mask.upper:Show()
+
+    local offset = 80
+    local text = DCEI.GetTranslationText("ui/review/ask")
+    local prompt = mod.NewPromptMessage(text, offset)
+
+    DCEI.SetSize(prompt.background, 320*2, 166*1.8)
+    DCEI.SetTopAlignmentInParent(prompt.label_container)
+    DCEI.SetVerticalOffsetInParent(prompt.label_container, -18)
+
+    local container = DCEI.NewHStack(prompt.frame)
+    DCEI.SetBackgroundImage(container, "frame_dark_stroke02")
+    DCEI.SetBackgroundImageColor(container, 0.1, 0.1, 0.1, 0.5)
+    DCEI.SetBottomAlignmentInParent(container)
+    DCEI.SetVerticalOffsetInParent(container, 36)
+    DCEI.SetPaddingLeft(container, 40)
+    DCEI.SetPaddingRight(container, 40)
+    DCEI.SetSpacing(container, 26)
+    DCEI.SetSize(container, 292*2, 60*2)
+
+    local stars = {}
+    for n = 1, 5 do
+        local star = {index = n}
+        star.button = DCEI.NewButton(container)
+        DCEI.SetBackgroundImage(star.button, "star01_slot")
+        DCEI.SetSize(star.button, 80, 80)
+        table.insert(stars, star)
+
+        if n == 5 then
+            star.callback = callbacks.on_five_star
+        else
+            star.callback = callbacks.on_less_star
+        end
+    end
+
+    local function OnPress(rating)
+        for n = 1, 5 do
+            DCEI.SetBackgroundImage(stars[n].button, "star01_slot")
+            DCEI.SetBlockInput(stars[n].button, false)
+        end
+        for n = 1, rating do
+            DCEI.SetBackgroundImage(stars[n].button, "star01")
+        end
+
+        local callback = stars[rating].callback
+        if callback then
+            callback()
+        end
+
+        -- culled Review Ask event awhile ago, replaced with user property for 0.0.117
+        -- DCEI.Event.Log("Review Ask", {RatedStar = rating})
+        DCEI.Event.SetUserProperty("Review Ask", rating)
+        DCEI.Event.SetUserProperty("Review Accept", tostring(false))
+
+        DCEI.TriggerAddTimerEventElapsed(prompt.Close, 0.25, true)
+    end
+
+    for n = 1, 5 do
+        DCEI.SetOnClickCallback(
+            stars[n].button,
+            function()
+                OnPress(n)
+            end
+        )
+    end
+end
+
+function mod.NewPromptMessage(text, offset, on_close, parent, soft_anim_in)
+    local layout = {}
+    layout.closed = false
+
+    -- default parameter values
+    parent = parent or ui.upper
+    offset = offset or 0
+
+    -- layout
+    local frame = DCEI.NewFrame(parent)
+    DCEI.SetVerticalOffsetInParent(frame, offset)
+
+    local background = DCEI.NewFrame(frame)
+    DCEI.SetSize(background, 640*2, 192*2)
+    DCEI.SetBackgroundImage(background, "frame_slot01")
+
+    local label_container = DCEI.NewFrame(frame)
+    DCEI.SetVerticalOffsetInParent(label_container, 18)
+
+    local label = DCEI.NewText(label_container)
+    DCEI.SetTopAlignmentInParent(label)
+    DCEI.SetVerticalOffsetInParent(label, -10)
+    DCEI.SetMaxSize(label, 292*2, 50*2)
+    DCEI.SetText(label, text)
+    DCEI.SetTextFontSizeMax(label, 37)
+    DCEI.SetTextFontSizeMin(label, 12)
+
+    -- animate in
+    if soft_anim_in then
+        DCEI.AnimateAlpha(frame, 0, 1, 0.2, "Linear")
+    else
+        DCEI.AnimateAlpha(frame, 0, 1, 0.3, "OutBack")
+        DCEI.AnimateScale(frame, {x = 0.4, y = 0.4, z = 0.4}, {x = 1, y = 1, z = 1}, 0.3, "OutBack")
+    end
+
+    -- functions
+    local function OnClose()
+        if layout and not layout.closed then
+            layout.closed = true
+            layout = nil
+
+            if on_close then
+                on_close()
+            end
+
+            -- animate out
+            DCEI.AnimateAlpha(frame, 1, 0, 0.3, "OutBack")
+            DCEI.AnimateScale(frame, {x = 1, y = 1, z = 1}, {x = 0.4, y = 0.4, z = 0.4}, 0.3, "InOutCirc")
+            DCEI.TriggerAddTimerEventElapsed(
+                function()
+                    DCEI.Destroy(frame)
+                end,
+                0.3
+            )
+        end
+    end
+
+    -- export
+    DCEI.MoveToTop(frame)
+    layout.frame = frame
+    layout.background = background
+    layout.label_container = label_container
+    layout.label = label
+    layout.Close = OnClose
+    return layout
+end
+
+-- TRIGGERS
+function lf.NewPauseButton(parent) -- TODO(Jolly) rework
+    local c = ui.COLOR.PLAYER_1.RGBA
+    local layout = {}
+
+    -- layout
+    local button = DCEI.NewButton(parent)
+    DCEI.SetBackgroundImageColor(button, 1, 1, 1, 0)
+    DCEI.SetBottomAlignmentInParent(button)
+    DCEI.SetLeftAlignmentInParent(button)
+    DCEI.SetVerticalOffsetInParent(button, 10)
+    --DCEI.SetHorizontalOffsetInParent(button, -10)
+    DCEI.SetPadding(button, 0)
+    DCEI.SetSize(button, 52, 52)
+
+    local icon = DCEI.NewFrame(button)
+    DCEI.SetBackgroundImage(icon, "setting")
+    DCEI.SetBackgroundImageColor(icon, c[1], c[2], c[3], 1)
+    DCEI.SetSize(icon, 52, 52)
+
+    -- callbacks
+    DCEI.SetPauseButton(button)
+
+    local baseframe = DCEI.NewFrame(parent)
+    DCEI.SetBackgroundImageColor(baseframe, 0, 0, 0, 0.5)
+    DCEI.SetSize(baseframe, ui.CONSTANT.SIZE.x, ui.CONSTANT.SIZE.y)
+    DCEI.SetBlockInput(baseframe, true)
+
+    local resume_btn = DCEI.NewButton(baseframe)
+    DCEI.SetBackgroundImage(resume_btn, "btn_green")
+    DCEI.SetSize(resume_btn, 300, 100)
+    --DCEI.SetBottomAlignmentInParent(resume_btn)
+    DCEI.SetVerticalOffsetInParent(resume_btn, -50)
+    local temp_text = DCEI.NewText(resume_btn)
+    DCEI.SetTextFontSize(temp_text, 40)
+    DCEI.SetText(temp_text, "Resume")
+    DCEI.SetPauseMenuResumeButton(resume_btn)
+
+    local exit_btn = DCEI.NewButton(baseframe)
+    DCEI.SetBackgroundImage(exit_btn, "btn_red")
+    DCEI.SetSize(exit_btn, 300, 100)
+    --DCEI.SetBottomAlignmentInParent(exit_btn)
+    DCEI.SetVerticalOffsetInParent(exit_btn, 70)
+    local temp_text = DCEI.NewText(exit_btn)
+    DCEI.SetTextFontSize(temp_text, 40)
+    DCEI.SetText(temp_text, "Exit")
+    DCEI.SetPauseMenuQuitButton(exit_btn)
+
+    local restart_btn = DCEI.NewButton(baseframe)
+    DCEI.SetBackgroundImage(restart_btn, "btn_red")
+    DCEI.SetSize(restart_btn, 300, 100)
+    --DCEI.SetBottomAlignmentInParent(restart_btn)
+    DCEI.SetVerticalOffsetInParent(restart_btn, 190)
+    local temp_text = DCEI.NewText(restart_btn)
+    DCEI.SetTextFontSize(temp_text, 40)
+    DCEI.SetText(temp_text, "Restart")
+    DCEI.SetPauseMenuRestartButton(restart_btn)
+
+    local setting_btn = DCEI.NewButton(baseframe)
+    DCEI.SetBackgroundImage(setting_btn, "btn_red")
+    DCEI.SetSize(setting_btn, 300, 100)
+    --DCEI.SetBottomAlignmentInParent(setting_btn)
+    DCEI.SetVerticalOffsetInParent(setting_btn, 310)
+    local temp_text = DCEI.NewText(setting_btn)
+    DCEI.SetTextFontSize(temp_text, 40)
+    DCEI.SetText(temp_text, "Settings")
+    DCEI.SetPauseMenuSettingsButton(setting_btn)
+
+    DCEI.SetPauseMenu(baseframe)
+    -- export
+    layout.button = button
+    return layout
+end
+
+function mod.CreateFeedbackThanks(text)
+    local duration = 2
+
+    local frame = DCEI.NewFrame(ui.upper)
+    DCEI.SetVerticalOffsetInParent(frame, 80)
+    DCEI.SetBackgroundImage(frame, "ui_ingame_hub")
+    DCEI.SetBackgroundImageColor(frame, 1, 1, 1, 0.5)
+    DCEI.SetPadding(frame, 12)
+
+    local label = DCEI.NewText(frame)
+    DCEI.SetTextFontSize(label, 26)
+    DCEI.SetMaxSize(label, 240, 56)
+
+    DCEI.SetText(label, text)
+
+    -- animate
+    DCEI.AnimateScale(frame, {x = 0.8, y = 0.8, z = 0.8}, {x = 1, y = 1, z = 1}, 0.6, "OutBack")
+    DCEI.AnimateAlpha(frame, 0, 1, 0.2, "OutBack")
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            DCEI.AnimateAlpha(frame, 1, 0, 0.4, "OutBack")
+        end,
+        1,
+        true
+    )
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            DCEI.Destroy(frame)
+        end,
+        duration,
+        true
+    )
+end
+
+function mod.NewPromptMessageClosable(text, offset, on_close, parent)
+    local prompt = mod.NewPromptMessage(text, offset, on_close, parent)
+
+    local close_button = DCEI.NewButton(prompt.frame)
+    DCEI.SetBackgroundImage(close_button, "btn_close")
+    DCEI.SetTopAlignmentInParent(close_button)
+    DCEI.SetRightAlignmentInParent(close_button)
+    DCEI.SetHorizontalOffsetInParent(close_button, 15)
+    DCEI.SetVerticalOffsetInParent(close_button, 20)
+    DCEI.SetSize(close_button, 38, 38)
+
+    -- on close
+    DCEI.SetOnClickCallback(close_button, prompt.Close)
+
+    return prompt
+end
+
+function mod.NewReviewInvite(callbacks)
+    ui.screen_mask.upper:Show()
+
+    local offset = 80
+    local text = DCEI.GetTranslationText("ui/review/invite")
+    local prompt = mod.NewPromptMessage(text, offset)
+
+    DCEI.SetSize(prompt.background, 320*2, 256*1.8)
+    DCEI.SetMaxSize(prompt.label, 280*2, 300)
+    DCEI.SetCenterAlignmentInParent(prompt.label)
+
+    DCEI.SetBackgroundImage(prompt.label_container, "frame_dark_stroke02")
+    DCEI.SetBackgroundImageColor(prompt.label_container, 0.1, 0.1, 0.1, 0.5)
+    DCEI.SetTopAlignmentInParent(prompt.label_container)
+    DCEI.SetVerticalOffsetInParent(prompt.label_container, -34)
+    DCEI.SetMinSize(prompt.label_container, 292, 172)
+
+    local container = DCEI.NewHStack(prompt.background)
+    DCEI.SetBottomAlignmentInParent(container)
+    DCEI.SetVerticalOffsetInParent(container, 24*2)
+    DCEI.SetPaddingLeft(container, 32*2)
+    DCEI.SetPaddingRight(container, 32*2)
+    DCEI.SetSpacing(container, 40*2)
+
+    local button_no = DCEI.NewButton(container)
+    DCEI.SetBackgroundImage(button_no, "btn_grey")
+    DCEI.SetSize(button_no, 200, 128)
+
+    local label_no = DCEI.NewText(button_no)
+    local text = DCEI.GetTranslationText("ui/review/decline")
+    DCEI.SetText(label_no, text)
+    DCEI.SetTextFontSizeMax(label_no, 18*2)
+    DCEI.SetTextFontSizeMin(label_no, 10)
+    DCEI.SetMaxSize(label_no, 72*2, 24*2)
+
+    local button_yes = DCEI.NewButton(container)
+    DCEI.SetBackgroundImage(button_yes, "btn_green")
+    DCEI.SetSize(button_yes, 120*2, 76*2)
+
+    local label_yes = DCEI.NewText(button_yes)
+    local text = DCEI.GetTranslationText("ui/review/accept")
+    DCEI.SetText(label_yes, text)
+    DCEI.SetTextFontSizeMax(label_yes, 52)
+    DCEI.SetTextFontSizeMin(label_yes, 16)
+    DCEI.SetMaxSize(label_yes, 92*2, 32*2)
+
+    if callbacks then
+        DCEI.SetOnClickCallback(
+            button_yes,
+            function()
+                prompt.Close()
+                callbacks.on_accept()
+            end
+        )
+        DCEI.SetOnClickCallback(
+            button_no,
+            function()
+                prompt.Close()
+                callbacks.on_decline()
+            end
+        )
+    end
+end
+
+function mod.CreateReviewInvite()
+    local function ThankForFeedback(delay)
+        delay = delay or 0.375
+
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                ui.screen_mask.Hide()
+                bank_data.meta.review_state.l_value=true
+                local text = DCEI.GetTranslationText("ui/review/thanks")
+                mod.CreateFeedbackThanks(text)
+            end,
+            delay,
+            true
+        )
+    end
+
+    local function OnAcceptInvite()
+        -- culled Review Accept event awhile ago, replaced with user property for 0.0.117
+        mods.meta.LogEvent(mods.meta.LogEvents.review_accepted)
+        DCEI.Event.SetUserProperty("Review Accept", tostring(true))
+
+        DCEI.OpenUrl("market://details?id=com.wildsky.wildarmydraft")
+        ThankForFeedback(0.125)
+    end
+
+    local function OnFiveStar()
+        local callbacks = {
+            on_accept = OnAcceptInvite,
+            on_decline = ThankForFeedback
+        }
+
+        DCEI.Event.LogRating("Rating", rating)
+        bank_data.meta.review_state.l_value=true
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                if mods.utility.PlayingAndroidVersion() then
+                    -- for android, create a prompt asking if they wish to review
+                    mod.NewReviewInvite(callbacks)
+                elseif mods.utility.PlayingiOSVersion() then
+                    -- for ios, request app store review
+                    ui.screen_mask.Hide()
+                    DCEI.RequestAppStoreReview()
+                else--if mods.utility.PlayingEditorMode() then
+                    mod.NewReviewInvite(callbacks)
+                end
+            end,
+            0.375,
+            true
+        )
+    end
+
+    local callbacks = {
+        on_five_star = OnFiveStar,
+        on_less_star = ThankForFeedback
+    }
+    mod.NewReviewAsk(callbacks)
+    DCEI.MoveToTop(ui.upper)
+end
+
+function mod.Get()
+    return ui
+end
+
+function lf.AnimateUsedBounce(layout)
+    local duration = 0.5
+    local delay = 0
+    local scale_start = {x = 1, y = 1, z = 1}
+    local scale_end = {x = 1.4, y = 1.4, z = 1.4}
+
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            DCEI.AnimateScale(layout.Frame, scale_start, scale_end, duration / 2, "OutBack")
+            DCEI.TriggerAddTimerEventElapsed(
+                function()
+                    DCEI.SetActive(layout.Frame, true)
+                    DCEI.AnimateScale(layout.Frame, scale_end, scale_start, duration / 2, "OutBack")
+                end,
+                duration / 2,
+                true
+            )
+        end,
+        delay,
+        true
+    )
+end
+
+function lf.AnimateLeftIn(layout)
+    local k1, k2 = 100, 0
+    local duration = 0.25
+    local ease = "OutQuad"
+    DCEI.AnimateHorizontalOffset(layout.Frame, k1, k2, duration, ease)
+
+    local k1, k2 = 0, 1
+    local duration = 0.1875
+    local ease = "OutQuad"
+    DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+end
+
+function lf.AnimateLeftOut(layout)
+    DCEI.SetActive(layout.Frame, true)
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local k1, k2 = 0, -100
+            local duration = 0.125
+            local ease = "InQuad"
+            DCEI.AnimateHorizontalOffset(layout.Frame, k1, k2, duration, ease)
+
+            local k1, k2 = 1, 0
+            local duration = 0.125
+            local ease = "OutQuad"
+            DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+            DCEI.Wait(0.125, true)
+
+            -- reset offset
+            DCEI.AnimateHorizontalOffset(layout.Frame, 0, 0, 0, "Linear")
+            DCEI.SetActive(layout.Frame, false)
+        end,
+        0,
+        true
+    )
+end
+
+-- ANIMATION TEMPLATES
+function lf.AnimateZoomIn(layout)
+    local k1, k2 = 6, 1
+    local duration = 0.375
+    local ease = "InQuad"
+    DCEI.AnimateScale(layout.Frame, {x = k1, y = k1, z = k1}, {x = k2, y = k2, z = k2}, duration, ease)
+
+    local k1, k2 = 0, 1
+    local duration = 0.25
+    local ease = "OutQuad"
+    DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+end
+
+-- ANIMATION TEMPLATES
+function lf.AnimateZoomOut(layout)
+    DCEI.SetActive(layout.Frame, true)
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local k1, k2 = 1, 6
+            local duration = 0.375
+            local ease = "OutQuad"
+            DCEI.AnimateScale(layout.Frame, {x = k1, y = k1, z = k1}, {x = k2, y = k2, z = k2}, duration, ease)
+
+            local k1, k2 = 1, 0
+            local duration = 0.375
+            local ease = "InQuad"
+            DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+
+            -- reset offset
+            DCEI.AnimateHorizontalOffset(layout.Frame, 0, 0, 0, "Linear")
+            DCEI.SetActive(layout.Frame, false)
+        end,
+        0,
+        true
+    )
+end
+
+function lf.AnimateZoomUpIn(layout)
+    local k1, k2 = -1000, 0
+    local duration = 0.375
+    local ease = "OutQuad"
+    DCEI.AnimateVerticalOffset(layout.Frame, k1, k2, duration, ease)
+
+    local k1, k2 = 0, 1
+    local duration = 0.1875
+    local ease = "OutQuad"
+    DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+end
+
+function lf.AnimateZoomUpOut(layout)
+    DCEI.SetActive(layout.Frame, true)
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local k1, k2 = 0, 1000
+            local duration = 0.25
+            local ease = "InQuad"
+            DCEI.AnimateVerticalOffset(layout.Frame, k1, k2, duration, ease)
+
+            -- local k1, k2 = 1, 0
+            -- local duration = 0.25
+            -- local ease = "OutQuad"
+            -- DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+            DCEI.Wait(0.25, true)
+
+            -- reset offset
+            DCEI.AnimateVerticalOffset(layout.Frame, 0, 0, 0, "Linear")
+            DCEI.SetActive(layout.Frame, false)
+        end,
+        0,
+        true
+    )
+end
+
+function lf.AnimateZoomDownIn(layout)
+    local k1, k2 = 1000, 0
+    local duration = 0.375
+    local ease = "OutQuad"
+    DCEI.AnimateVerticalOffset(layout.Frame, k1, k2, duration, ease)
+
+    local k1, k2 = 0, 1
+    local duration = 0.1875
+    local ease = "OutQuad"
+    DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+end
+
+function lf.AnimateZoomDownOut(layout)
+    DCEI.SetActive(layout.Frame, true)
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            local k1, k2 = 0, -1000
+            local duration = 0.25
+            local ease = "InQuad"
+            DCEI.AnimateVerticalOffset(layout.Frame, k1, k2, duration, ease)
+
+            -- local k1, k2 = 1, 0
+            -- local duration = 0.25
+            -- local ease = "OutQuad"
+            -- DCEI.AnimateAlpha(layout.Frame, k1, k2, duration, ease)
+            DCEI.Wait(0.25, true)
+
+            -- reset offset
+            DCEI.AnimateVerticalOffset(layout.Frame, 0, 0, 0, "Linear")
+            DCEI.SetActive(layout.Frame, false)
+        end,
+        0,
+        true
+    )
+end
+
+function lf.ExtendGMUI()
+    -- Add our animations to the gmui animation table. These can be used with "on_show_animation", etc.
+    mods.gmui.Animations.UsedBounce = lf.AnimateUsedBounce
+    mods.gmui.Animations.LeftIn = lf.AnimateLeftIn
+    mods.gmui.Animations.LeftOut = lf.AnimateLeftOut
+    mods.gmui.Animations.ZoomIn = lf.AnimateZoomIn
+    mods.gmui.Animations.ZoomOut = lf.AnimateZoomOut
+    mods.gmui.Animations.ZoomUpIn = lf.AnimateZoomUpIn
+    mods.gmui.Animations.ZoomUpOut = lf.AnimateZoomUpOut
+    mods.gmui.Animations.ZoomDownIn = lf.AnimateZoomDownIn
+    mods.gmui.Animations.ZoomDownOut = lf.AnimateZoomDownOut
+end
+
+function mod.xml()
+    return xml
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+return mod

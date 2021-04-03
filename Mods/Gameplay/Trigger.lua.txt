@@ -1,0 +1,654 @@
+local mods = nil
+local mod = {}
+local lf = {}
+
+-- Log settings for this mod, so we can easily enable/disable/filter log messages on a per-mod basis
+local log_settings = {
+    logging_on = true,
+    filter = 1 -- 1 = all, 2 = some, 3 = strict
+}
+local function log(message)
+    mods.utility.print(message, {priority = 3, type="error"}, log_settings)
+end
+
+-- Data from other mods - local for shorter references
+local bank_data = nil
+local ui = nil
+local xml = nil
+local game_state = nil
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            core = GameModules["Arcade/Core"],
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            meta = GameModules["Mods/Meta"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"],
+            waves = GameModules["Mods/Waves"]
+        }
+        bank_data = mods.bank.GetBankData()
+        ui = mods.ui.Get()
+        xml = mods.ui.xml()
+        game_state = mods.main.game_state()
+    end
+end
+
+-- CONSTANTS
+local C = {} -- Constants
+C.SCREEN_SIZE = DCEI.GetUiCanvasSize()
+C.NUMBER_OF_HEROES = 3
+
+C.MUSIC = {
+    "Battle1",
+    "Battle2",
+    "Battle3",
+    "Boss1",
+    "Hometown1",
+    "pocket legion campaign loop",
+    "Summon Revolt menu full"
+}
+
+-- VARIABLES
+local player = {}
+local game = {}
+
+-- Player
+player.hp = nil
+
+-- Game
+game.game_active = false
+game.ship_stationary = true
+game.music = nil
+game.mouse_down = false
+game.level_center = {220, 220}
+game.spawn_region = DCEI.CreateRegion(game.level_center[1], game.level_center[2] + 19, 6, 2)
+game.spawn_center = DCEI.GetCenterOfRegion(game.spawn_region)
+player.heroes = {}
+game.weapon_cooldown = 0.25
+game.hero_positions = {
+    {x=game.level_center[1], y=game.level_center[2]-2},
+    {x=game.level_center[1], y=game.level_center[2]-1}
+}
+game.ship_offset = {0, -1.4}
+game.ship_weapon_offsets = {
+    {0.80, 0.8},
+}
+game.crew_offsets= {
+    {0.8, -1.5},
+    {-0.8, -1.5},
+    {0.8, -1.5},
+    {-0.8, -1.5},
+    {0.8, -1.5},
+    {-0.8, -1.5},
+}
+game.all_game_units = {}
+game.t = {}
+game.t.weapon = nil
+game.abilities = {}
+game.triple_shot = false
+
+local last_aim_xy = {}
+local weapon_target = nil
+local spell_target_unit = nil
+
+local spawn_tick = 1
+local initialized = false
+function mod.Initialize()
+    initialized = true
+    -- Load other mods
+    LoadData()
+end
+
+function mod.Enter()
+    local u
+
+    if initialized == false then
+        mod.Initialize()
+    end
+
+    -- Health Bar
+    player.hp = mod.CreateUnit(1, "gameplay_ship", {game.hero_positions[1].x + game.ship_offset[1], game.hero_positions[1].y + game.ship_offset[2]}, 90)
+    DCEI.ApplyBehaviorCountAsync(player.hp, "ship_hp_scaling", bank_data.cards.c_ship.l_value.hp)
+    DCEI.TriggerAddUnitDiedEvent(player.hp, function() mod.Defeat() end, true)
+    
+    DCEI.TriggerAddTimerEventElapsed(function() 
+        DCEI.BindUnit("hp", player.hp)
+        DCEI.SetBackgroundImageFillAmountExpression(xml.ingame.bar_fill, "hp.Health.Fraction", false)
+    end, 0.0625, true, true)
+
+    -- mods.ui.CustomHPBar(player.hp)
+
+    game.t.weapon = mods.core.GameTimer:New({tick=mod.TrackWeapon})
+
+
+    player.cannons = {}
+    
+    player.cannons[1] = mod.CreateUnit(1, "ship_cannon", {game.hero_positions[1].x + game.ship_weapon_offsets[1][1], game.hero_positions[1].y + game.ship_weapon_offsets[1][2]}, 90)
+    DCEI.ApplyBehaviorCountAsync(player.cannons[1], "ship_weapon_scaling", bank_data.cards.c_ship.l_value.attack)
+    -- player.cannons[2] = mod.CreateUnit(1, "ship_cannon", {game.level_center[1]+3, game.level_center[2]-4}, 90)
+    -- DCEI.ApplyBehaviorCountAsync(player.cannons[2], "ship_weapon_scaling", bank_data.cards.c_ship.l_value.attack)
+    
+    mod.CreateCrew()
+
+    mod.CreateHeroes()
+
+    -- Camera
+    lf.Camera()
+
+    xml.ingame:Show()
+
+    -- Spawn Enemies
+    mods.waves.StartWave(data)
+
+    -- Events
+    DCEI.TriggerAddEffectEvent("no_target_found", mod.NoTarget, true)
+    DCEI.TriggerAddEffectEvent("no_target_found 2", mod.NoTarget, true)
+    DCEI.TriggerAddBehaviorAddEvent(DCEI.UnitAny,  mod.Target, true)
+    DCEI.TriggerAddMouseDownEvent(0, mod.OnTouchDown)
+    DCEI.TriggerAddMouseUpEvent(0, mod.OnTouchUp)
+    DCEI.TriggerAddSwipeTouchUpEvent(mod.OnTouchUp)
+    DCEI.TriggerAddSwipeTouchDownEvent(mod.OnTouchDown)
+    DCEI.TriggerAddUnitSpawnEvent(DCEI.UnitAny, mod.OnUnitSpawn, true)
+    DCEI.TriggerAddUnitDamageEvent(DCEI.UnitAny, mod.UnitDamage)
+
+    local pos = DCEI.GetCameraCurrentFocalPoint()
+    DCEI.ShowFloatingText({x = pos.x, z = pos.y}, 
+    "<size=300%>Stage  " .. bank_data.game.g_current_island_progress.l_value.stage .. "!",
+    2, 1,-- 3, 1, -- stayDuration, animationType,
+    2, {offset = {up = -0.5}} -- animationDuration, options
+    )
+
+    game.clouds = {}
+    mod.SpawnClouds(1, 1)
+    -- u = mod.CreateUnit(1,  "meta_transition_scene_cloud2", {game.level_center[1] + 50, game.level_center[2] + 50}, 180)
+    -- table.insert(game.clouds, u)
+    u = mod.CreateUnit(1,  "meta_transition_scene_cloud2", {game.level_center[1] + 50, game.level_center[2] + 50}, 180)
+    DCEI.Move(u, game.level_center[1] + 50, game.level_center[2] - 155)
+    table.insert(game.clouds, u)
+    --DCEI.PlayMusic(C.MUSIC[math.random(1, #C.MUSIC)], 0.5)
+    -- UI Update
+    DCEI.SetText(xml.ingame.stage, bank_data.game.g_current_island_progress.l_value.stage or 1)
+
+    game.game_active = true
+end
+
+local max_damage = 0
+function mod.UnitDamage(damage)
+    local u = DCEI.TriggeringEffectContext.target
+    local r =  math.random(1,3)
+    if damage >= max_damage then
+        max_damage = damage
+        local pos = DCEI.GetUnitPosition2D(u)
+        if r == 1 then
+            DCEI.ShowFloatingText({x = pos.x, z = pos.y}, 
+            "<size=100%>" .. math.floor(damage) .. "!",
+            0.3, 2,-- 3, 1, -- stayDuration, animationType,
+            0.3, {offset = {up = -0.5}} -- animationDuration, options
+            )
+        end
+    end
+
+    if u == player.hp then
+        mods.ui.animate.Pop(xml.ingame.bar_fill, 1.5)
+    end
+end
+
+function mod.OnUnitSpawn()
+    local u = DCEI.TriggeringUnit
+    if DCEI.GetUnitTagCount(u, "_summon") >= 1 then
+        table.insert(game.all_game_units, u)
+    end
+end
+
+function mod.CreateHeroes()
+    for i = 1, #bank_data.cards.c_loadout.l_value.captains do
+        player.heroes[i] = mods.data.hero_table[bank_data.cards.c_loadout.l_value.captains[i]]
+        player.heroes[i].last_aim_xy = {x=game.level_center[1], y=game.level_center[2]}
+        player.heroes[i].pos = {x= game.hero_positions[i].x, y=game.hero_positions[i].y}
+
+        player.heroes[i].unit  = mod.CreateUnit(1, mods.data.hero_table[bank_data.cards.c_loadout.l_value.captains[i]].unit_captain, player.heroes[i].pos)
+        DCEI.ApplyBehaviorCountAsync(player.heroes[i].unit , "hero_upgrade_scaling",  mods.data.hero_table[bank_data.cards.c_loadout.l_value.captains[i]].level)
+        --mods.ui.CustomHPBar(player.heroes[i].unit)
+        player.heroes[i].weapon_cooldown = mods.core.GameTimer:New({duration=0})
+        player.heroes[i].weapon_start = mods.core.GameTimer:New({duration=0})
+        DCEI.TriggerAddUnitDiedEvent(player.heroes[i].unit, function() mod.Defeat() end, true)
+        mod.HookupAbilityButton(player.heroes[i])
+
+        DCEI.TriggerAddTimerEventElapsed(function()
+            local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+            local max = 0
+            for i = 1, max do
+                actor_string = actor_string .. "\"SOp UpBy Dot25\""
+                if i ~= max then
+                    actor_string = actor_string .. ","
+                end
+            end
+            actor_string = actor_string .. "],\"append\": true}}"
+            local id = DCEI.CompileActorAction(actor_string)
+            DCEI.SendActorAction(player.heroes[i].unit, id)
+        end, 0.0625, false, true)
+    end
+end
+
+function mod.CreateCrew()
+    player.crew = {}
+    for i = 1, #bank_data.cards.c_loadout.l_value.crew do
+        player.heroes[i+1] = mods.data.hero_table[bank_data.cards.c_loadout.l_value.crew[i]]
+        local pos =  {x=game.hero_positions[1].x, y=game.hero_positions[1].y}
+        pos.x = pos.x  + game.crew_offsets[i][1]
+        pos.y = pos.y  + game.crew_offsets[i][2]
+        player.heroes[i+1].unit = mod.CreateUnit(1, mods.data.hero_table[bank_data.cards.c_loadout.l_value.crew[i]].unit_crew, pos, 90)
+        --mods.ui.CustomHPBar(player.crew[i].unit)
+        DCEI.ApplyBehaviorCountAsync(player.heroes[i+1].unit, "hero_upgrade_scaling",  mods.data.hero_table[bank_data.cards.c_loadout.l_value.crew[i]].level)
+        mod.HookupAbilityButton(player.heroes[i+1])
+        player.heroes[i+1].weapon_cooldown = mods.core.GameTimer:New({duration=0})
+        player.heroes[i+1].weapon_start = mods.core.GameTimer:New({duration=0})
+        player.crew[i] = player.heroes[i+1]
+        
+
+    DCEI.TriggerAddUnitDiedEvent(player.heroes[i+1].unit, function() 
+        player.heroes[i+1].status_ui:Destroy()
+        player.heroes[i+1].status_ui = nil
+    end, true)
+
+        -- DCEI.TriggerAddTimerEventElapsed(function()
+        --     local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+        --     local max = 4
+        --     for i = 1, max do
+        --         actor_string = actor_string .. "\"SOp UpBy Dot25\""
+        --         if i ~= max then
+        --             actor_string = actor_string .. ","
+        --         end
+        --     end
+        --     actor_string = actor_string .. "],\"append\": true}}"
+        --     local id = DCEI.CompileActorAction(actor_string)
+        --     DCEI.SendActorAction(player.crew[i].unit, id)
+        -- end, 0.0625, false, true)
+    end
+end
+
+local bindings = 0
+function mod.HookupAbilityButton(table)
+    local options = {
+        offset = {up = 1.2},
+        center_at_unit_origin = true
+    }
+
+    xml.ingame:Show()
+    xml.ingame.abilities:Show()
+    table.status_ui = mods.gmui.Layout:New({frame = DCEI.NewUiFromXml(xml.ingame.abilities.Frame, "_game_hero_ability")})
+    DCEI.SetBackgroundImage(table.status_ui.img, table.icon)
+
+    DCEI.TriggerAddUseAbilityEvent(table.unit, function() mod.AbilityCast(table) end)
+    DCEI.TriggerAddDeactivateAbilityEvent(table.unit, function() DCEI.SetBackgroundImage(table.status_ui.img, table.icon) end)
+
+    table.ability_cooldown = mods.core.GameTimer:New({duration=table.ability.cooldown * 0.5})
+    table.ability_cooldown.Action = function()
+        DCEI.SetActive(table.status_ui.ability_active, true)
+        mods.ui.animate.Pop(table.status_ui.Frame, 1.5)
+    end
+
+    table.ability_cooldown.data = {
+        elapsed = function()
+            local decimals = 1
+            local time = table.ability_cooldown:GetTimeRemaining()
+            return math.floor(time)
+        end,
+        progress = function()
+            local decimals = 1
+            local time = table.ability_cooldown:GetTimeRemaining() / table.ability.cooldown
+            return time
+        end
+    }
+    DCEI.BindData(bindings .. "ability" .. table.index, table.ability_cooldown)
+    DCEI.SetBackgroundImageFillAmountExpression(table.status_ui.fill , bindings .. "ability" .. table.index .. ".data.progress", false)
+    bindings = bindings + 1
+
+    mods.ui.CustomCallback(table.status_ui.Frame, function()
+        if table.ability_cooldown:GetTimeRemaining() <= 0 then
+            if table.ability.target == true then 
+                mods.ui.ShowFeedbackMessage(DCEI.GetTranslationText("ui/choose_target"))
+                DCEI.SetBackgroundImage(table.status_ui.img, "hero_skill_target")
+            end
+            table.ability.click_func(table.unit, table.ability.ability)
+        end
+    end)
+end
+
+function mod.Exit()
+    game.game_active = false
+    DCEI.ExitTargetingModeAndDeselectUnits()
+    game_state.location = nil
+    game.t.weapon:Destroy()
+    mods.waves.timer:Destroy()
+    xml.ingame:Hide()
+    xml.all.victory_screen:Hide()
+    DCEI.RemoveLine(player.heroes[1].line)
+    
+    for k, v in pairs(game.all_game_units) do
+        DCEI.RemoveUnit(v)
+    end
+
+    for k, v in pairs(player.heroes) do
+        DCEI.Destroy(v.status_ui.Frame)
+        v.status_ui = nil
+    end
+
+    for k, v in pairs(player.crew) do
+        if v.status_ui ~= nil then
+            DCEI.Destroy(v.status_ui.Frame)
+            v.status_ui = nil
+        end
+    end
+
+    mods.waves.enemy_units_table = {}
+    game.all_game_units = {}
+    --DCEI.PlayMusic("placeholder")
+end
+
+function mod.Defeat()
+    local pos = DCEI.GetCameraCurrentFocalPoint()
+    DCEI.ShowFloatingText({x = pos.x, z = pos.y}, 
+    "<size=300%>DEFEAT!",
+    2, 1,-- 3, 1, -- stayDuration, animationType,
+    2, {offset = {up = -0.5}} -- animationDuration, options
+    )
+    mod.Exit()
+    -- mods.data.currencies.gold:Add(100)
+    DCEI.TriggerAddTimerEventElapsed(function() 
+        mods.bank.Save()
+        mods.main.SwitchState("meta", {transition=true, transition_time=2, flip=false})
+    end, 1, false, true)
+end
+
+function lf.Camera()
+    DCEI.SetEnabledCameraClamp(false)
+    DCEI.SetCameraVisibleAreaLength(99)
+    DCEI.SetCameraVisibleAreaWidth(99)
+    DCEI.SetCameraFocusSmoothOvertime(game.level_center[1], game.level_center[2] + 5.4, 0, true)
+    DCEI.SetCameraDistanceSmoothOvertime(57, 0, true) --36
+    DCEI.GetCameraMaxDistance(57)
+    DCEI.SetCameraPitchSmoothOvertime(65, 0, false) --39 --50
+    DCEI.SetCameraYawSmoothOvertime(0, 0.5, true)
+end
+
+function mod.TrackWeapon()
+    if game.mouse_down == true then
+        local pos = DCEI.GetMousePosition2D()
+        mod.WeaponMode(pos, 1)
+        mod.FireWeapon()
+    end
+    local pos = DCEI.GetUnitPosition2D(player.hp)
+
+    DCEI.SetUnitPosition2DWithInterpolation(player.heroes[1].unit, pos.x, player.heroes[1].pos.y)
+
+    for v = 1, #player.cannons do
+        DCEI.SetUnitPosition2DWithInterpolation(player.cannons[v], pos.x + game.ship_weapon_offsets[v][1], player.heroes[1].pos.y + game.ship_weapon_offsets[v][2])
+    end
+
+    for v = 1, #player.crew do -- todo
+        DCEI.SetUnitPosition2DWithInterpolation(player.crew[v].unit, pos.x + game.crew_offsets[v][1], player.heroes[1].pos.y + game.crew_offsets[v][2])
+    end
+    
+    player.heroes[1].pos = DCEI.GetUnitPosition2D(player.heroes[1].unit)
+end
+
+function mod.FireWeapon()
+    local effects = {"bow_generic_search_1", "bow_2_generic_search_1"}
+    for id = 1, C.NUMBER_OF_HEROES do
+        if player.heroes[1].last_aim_xy.x ~= nil and player.heroes[id].weapon_cooldown:GetTimeRemaining() <= 0  and  player.heroes[id].weapon_start:GetTimeRemaining() <= 0  then 
+            if player.heroes[1].weapon_target ~= nil and DCEI.UnitIsAlive(player.heroes[1].weapon_target) then
+                DCEI.CreateEffect(player.heroes[id].weapon_effect, player.heroes[id].unit, player.heroes[id].unit, player.heroes[1].weapon_target)
+                DCEI.ApplyBehavior(player.heroes[id].unit, "anim_attack")
+            else
+                DCEI.CreateEffect(player.heroes[id].weapon_effect_g, player.heroes[id].unit, player.heroes[1].last_aim_xy.x, player.heroes[1].last_aim_xy.y)
+                DCEI.ApplyBehavior(player.heroes[id].unit, "anim_attack")
+            end
+
+            if game.triple_shot == true then
+                DCEI.CreateEffect(player.heroes[id].weapon_effect_g, player.heroes[id].unit, player.heroes[1].last_aim_xy.x + 8, player.heroes[1].last_aim_xy.y)
+                DCEI.CreateEffect(player.heroes[id].weapon_effect_g, player.heroes[id].unit, player.heroes[1].last_aim_xy.x - 8, player.heroes[1].last_aim_xy.y)
+            end
+            player.heroes[id].weapon_cooldown = mods.core.GameTimer:New({duration=game.weapon_cooldown})
+        end
+    end
+end
+
+
+function mod.WeaponMode(axes, id)
+    local distance_multiplier = 0.5
+    local effects = {"bow_generic_search_1", "bow_2_generic_search_1"}
+    local axes = axes
+    axes.y = axes.y
+
+    local old = {x=player.heroes[1].last_aim_xy.x, y=player.heroes[1].last_aim_xy.y}
+    local angle = mods.core.AngleBetweenPoints(player.heroes[id].pos, axes)
+    player.heroes[id].last_aim_xy =  mods.core.PointWithPolarOffset(axes.x,  axes.y, angle, 25) 
+
+    if DCEI.UnitIsAlive(player.hp) then
+        if game.ship_stationary == true then
+            for k, v in pairs(game.clouds) do
+                if DCEI.UnitIsAlive(v) then
+                    local pos = DCEI.GetUnitPosition2D(v)
+                    DCEI.Move(v, pos.x + ((player.heroes[1].last_aim_xy.x - old.x) * 5),  game.level_center[2] - 155)
+                end
+            end
+            local pos = DCEI.GetUnitPosition2D(player.hp)
+            if (axes.x + 0.3) < pos.x then
+                local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+                actor_string = actor_string .. "\"SOp FaceNorth - 30\""
+                actor_string = actor_string .. "],\"duration\": 0,\"append\": true}}"
+                local id = DCEI.CompileActorAction(actor_string)
+                DCEI.SendActorAction(player.hp, id)
+            elseif axes.x > (pos.x + 0.3) then
+                local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+                actor_string = actor_string .. "\"SOp FaceNorth +30\""
+                actor_string = actor_string .. "],\"duration\": 0,\"append\": true}}"
+                local id = DCEI.CompileActorAction(actor_string)
+                DCEI.SendActorAction(player.hp, id)
+            else
+                local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+                actor_string = actor_string .. "\"SOp FaceNorth\", \"SOp DownBy 1\""
+                actor_string = actor_string .. "],\"duration\": 0,\"append\": false}}"
+                local id = DCEI.CompileActorAction(actor_string)
+                DCEI.SendActorAction(player.hp, id)
+            end
+        else
+            DCEI.SetUnitPosition2DWithInterpolation(player.hp, axes.x, player.heroes[id].pos.y + game.ship_offset[2])
+            --DCEI.Move(player.hp, axes.x, player.heroes[id].pos.y + game.ship_offset[2])
+            --DCEI.SetUnitPosition2DWithInterpolation(player.hp, axes.x + game.ship_offset[1], player.heroes[id].pos.y + game.ship_offset[2])
+        end
+    end
+
+
+    --player.heroes[id].last_aim_xy.y = game.level_center[2] + 25
+    mods.core.MakeUnitFacePoint(player.heroes[id].unit, player.heroes[id].last_aim_xy.x, player.heroes[id].last_aim_xy.y, 0)
+    --DCEI.CreateEffect(player.heroes[id].weapon_effect, player.heroes[id].unit, player.heroes[id].last_aim_xy.x, player.heroes[id].last_aim_xy.y)
+    --DCEI.ApplyBehavior(player.heroes[id].unit, "anim_attack")
+    mod.DrawLine()
+    DCEI.CreateEffect(effects[id], player.heroes[id].unit, player.heroes[id].last_aim_xy.x, player.heroes[id].last_aim_xy.y)
+
+    return player.heroes[id].last_aim_xy
+end
+
+
+-- Touch Down (Mouse or finger)
+function mod.OnTouchDown(pos)
+    if game_state.location == "gameplay" and game.game_active == true then
+        local p = DCEI.TriggeringPlayerId
+        pos = DCEI.GetMousePosition2D()
+        player.heroes[1].weapon_start = mods.core.GameTimer:New({duration=0.3})
+        DCEI.CreateUnitAsync(1, 1, "target_blip", pos.x, pos.y)
+        game.mouse_down = true
+        mod.WeaponMode(pos, 1)
+    end
+end
+
+-- Touch Up (Mouse or finger)
+function mod.OnTouchUp(pos)
+    if game_state.location == "gameplay" and game.game_active == true then
+        game.mouse_down = false
+        local p = DCEI.TriggeringPlayerId
+        pos = DCEI.GetMousePosition2D()
+        DCEI.TriggerAddTimerEventElapsed(function()
+            if game.mouse_down == false then
+                DCEI.RemoveLine(player.heroes[1].line)
+            end
+        end, 0.125, false, true)
+    end
+end
+
+function mod.AbilityCast(table)
+    DCEI.SetBackgroundImage(table.status_ui.img, table.icon)
+
+    if table.ability.cast_func ~= nil then
+        table.ability.cast_func(table.unit, table.ability.ability)
+    end
+
+    DCEI.SetActive(table.status_ui.ability_active, false)
+    table.ability_cooldown = mods.core.GameTimer:New({duration=table.ability.cooldown})
+    table.ability_cooldown.Action = function()
+        if table.status_ui ~= nil and game_state.location == "gameplay" and game.game_active == true then
+            DCEI.SetActive(table.status_ui.ability_active, true)
+            mods.ui.animate.Pop(table.status_ui.Frame, 1.5)
+        end
+    end
+
+    -- table.ability_cooldown.data = {
+    --     elapsed = function()
+    --         local decimals = 1
+    --         local time = table.ability_cooldown:GetTimeRemaining()
+    --         return math.floor(time)
+    --     end,
+    --     progress = function()
+    --         local decimals = 1
+    --         local time = table.ability_cooldown:GetTimeRemaining() / table.ability.cooldown
+    --         return time
+    --     end
+    -- }
+    -- DCEI.BindData("ability" .. table.index, table.ability_cooldown)
+    -- DCEI.SetBackgroundImageFillAmountExpression(table.status_ui.fill, "ability" .. table.index .. ".data.progress", false)
+end
+
+function mod.NoTarget()
+    local e = DCEI.TriggeringEffectName
+    if e == "no_target_found" then
+        if player.heroes[1].weapon_target ~= nil and DCEI.UnitIsAlive(player.heroes[1].weapon_target) then
+            DCEI.RemoveBehavior(player.heroes[1].weapon_target, "target_marker")
+        end
+        player.heroes[1].weapon_target = nil
+        player.heroes[1].weapon_start = mods.core.GameTimer:New({duration=0})
+        mod.FireWeapon()
+    elseif e == "no_target_found 2" then
+        player.heroes[2].weapon_target = nil
+        player.heroes[1].weapon_start = mods.core.GameTimer:New({duration=0})
+        mod.FireWeapon()
+    end
+    
+end
+
+function mod.Target()
+    local u = DCEI.TriggeringUnit
+    local b = DCEI.TriggeringBehaviorName
+
+    if b == "target_marker" then
+        if player.heroes[1].weapon_target ~= nil and DCEI.UnitIsAlive(player.heroes[1].weapon_target) then
+            DCEI.RemoveBehavior(player.heroes[1].weapon_target, "target_marker")
+        end
+       
+        player.heroes[1].weapon_target = u
+        player.heroes[1].weapon_start = mods.core.GameTimer:New({duration=0})
+        mod.FireWeapon()
+        mod.DrawLine()
+    elseif b == "target_marker 2" then
+        player.heroes[2].weapon_target = u
+        player.heroes[1].weapon_start = mods.core.GameTimer:New({duration=0})
+        mod.FireWeapon()
+        mod.DrawLine()
+    end
+end
+
+function mod.DrawLine()
+    local pos = {x=nil, y=nil} 
+    if player.heroes[1].weapon_target ~= nil and DCEI.UnitIsAlive(player.heroes[1].weapon_target) then
+        pos = DCEI.GetUnitPosition2D(player.heroes[1].weapon_target)
+    end
+    DCEI.RemoveLine(player.heroes[1].line)
+    player.heroes[1].pos = DCEI.GetUnitPosition2D(player.heroes[1].unit)
+    player.heroes[1].line = DCEI.AddLineWithSprite(
+        { x =  player.heroes[1].pos.x, y = 0.04, z = player.heroes[1].pos.y},--startPos, 
+        { x =  pos.x or player.heroes[1].last_aim_xy.x, y = 0.04, z =  pos.y or player.heroes[1].last_aim_xy.y },--endPos, 
+        0.7, --width, 
+        {x = 255, y = 255, z = 255},--rgbColor, 
+        0.15,--transparency,
+        "bar_reward02_pin", --spriteName
+        1.2) -- tex_multiplier 
+end
+
+function mod.CreateUnit(team, unit, position, facing)
+    LoadData()
+    local pos = {}
+    pos[1] = position.x or position[1]
+    pos[2] = position.y or position[2]
+    local u = DCEI.CreateUnitWithFacingAsync(team, team, unit, pos[1], pos[2], -1, 1)
+    if facing ~= nil then mods.core.MakeUnitFaceAngle(u, facing, 0) end
+    table.insert(game.all_game_units, u)
+    return u
+end
+
+function mod.SpawnClouds(offset, quantity)
+    for i=1, quantity do
+        local units = {}
+        local pos = {game.level_center[1] + 45 +  (math.random() * math.random(-15, 15)), game.level_center[2] + 35 + offset + 75}
+        local u =  mod.CreateUnit(1,  "meta_transition_scene_cloud2", pos, 180)
+        table.insert(units, u)
+        table.insert(game.clouds, u)
+        DCEI.Move(u, pos[1], game.level_center[2] - 155)
+
+        DCEI.TriggerAddTimerEventElapsed(function()
+            for i = 1, #units do
+                DCEI.RemoveUnit(units[i])
+            end
+        end, 62, false, true)
+        
+        DCEI.TriggerAddTimerEventElapsed(function()
+            local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+            local max = 8 + math.random(1, 12)
+            for i = 1, max do
+                actor_string = actor_string .. "\"SOp UpBy 1\""
+                if i ~= max then
+                    actor_string = actor_string .. ","
+                end
+            end
+            actor_string = actor_string .. "],\"append\": true}}"
+            local id = DCEI.CompileActorAction(actor_string)
+            --local id2 = DCEI.CompileActorAction("{\"setModelScale\":{\"modelScale\":".. (2.5 + (math.random() * math.random(1, 7))) .."}}")
+            DCEI.SendActorAction(u, id)
+            --DCEI.SendActorAction(u, id2)
+            DCEI.ApplyBehaviorCount(u, "slow_down", max)
+        end, 0.0625, false, true)
+    end
+
+    DCEI.TriggerAddTimerEventElapsed(function() 
+        if game_state.location == "gameplay"  then
+            mod.SpawnClouds(0, 1)
+        end
+    end, 7, false, true)
+end
+
+
+function mod.game() return game end
+
+function mod.player() return player end
+
+return mod

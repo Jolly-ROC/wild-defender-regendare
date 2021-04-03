@@ -1,0 +1,20 @@
+local mods = nil
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"],
+        }
+    end
+end

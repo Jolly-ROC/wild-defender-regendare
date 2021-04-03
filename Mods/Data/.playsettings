@@ -1,0 +1,17 @@
+{
+    "play": {
+        "resolution": {
+            "width": 375,
+            "height": 812
+        },
+        "levelName": "Levels/entry_level",
+        "simulateUserId": "dev",
+        "throwTriggerErrorAsException": false,
+        "mapSaveData": [
+            {
+                "key": "",
+                "save": "{\n    \"c_heroes\": \"{\\\"alchemist_musketeer\\\":{\\\"lvl\\\":1},\\\"avalanche_surfer\\\":{\\\"lvl\\\":1},\\\"lionking\\\":{\\\"lvl\\\":1}}\",\n    \"c_loadout\": \"{\\\"captains\\\":[\\\"lionking\\\"],\\\"crew\\\":[\\\"avalanche_surfer\\\",\\\"alchemist_musketeer\\\"]}\",\n    \"c_ship\": \"[]\",\n    \"g_current_island_progress\": \"{\\\"stage\\\":8}\",\n    \"bank_version\": 1,\n    \"m_currencies\": \"{\\\"gold\\\":678}\",\n    \"m_sessions\": 29\n}"
+            }
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "settings": {
+        "version": "0.0.36",
+        "dependencies": [
+            "Mods/Main"
+        ]
+    },
+    "displaySettings": {
+        "orientation": 1
+    },
+    "triggerSettings": {
+        "usedSpriteAssets": [
+            "unlock_hero_lionking"
+        ]
+    }
+}

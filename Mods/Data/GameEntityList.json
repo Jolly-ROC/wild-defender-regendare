@@ -1,0 +1,1 @@
+{ "GameEntityList": [ { "UnitName": "base", "Position": [ 9.99, 0, 12.12 ], "Rotation": [ 0, 0, 0, 1 ], "Player": 2 }, { "UnitName": "base", "Position": [ 9.74, 0, 4.34 ], "Rotation": [ 0, 0, 0, 1 ], "Player": 1 } ] }

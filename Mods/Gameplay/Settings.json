@@ -1,0 +1,15 @@
+{
+    "settings": {
+        "version": "0.0.9",
+        "type": 1,
+        "dependencies": [
+            "Mods/Main"
+        ]
+    },
+    "playerSettings": {
+        "playerCount": 2
+    },
+    "displaySettings": {
+        "orientation": 1
+    }
+}

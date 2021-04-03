@@ -1,0 +1,17 @@
+{
+    "settings": {
+        "version": "0.0.9",
+        "dependencies": [
+            "Mods/Main"
+        ],
+        "transitionMaps": [
+            "Scenes/Base"
+        ]
+    },
+    "playerSettings": {
+        "playerCount": 2
+    },
+    "displaySettings": {
+        "orientation": 1
+    }
+}

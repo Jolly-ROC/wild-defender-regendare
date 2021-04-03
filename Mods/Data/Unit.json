@@ -1,0 +1,1439 @@
+{
+    "units": {
+        "enemy_goblin_1": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 1.2
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "enemy_weapon"
+                ]
+            }
+        },
+        "bow_base": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "immortal": true
+                }
+            }
+        },
+        "bow_basic_missile_1": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "Bow Collision Search"
+                ]
+            }
+        },
+        "_enemy": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.2,
+                    "ignoreCollision": true
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            }
+        },
+        "player_health_bar": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.2
+                },
+                "health": {
+                    "maxHealth": 100
+                }
+            },
+            "healthBar": {
+                "type": 8,
+                "showWhenFull": false
+            }
+        },
+        "bow_frost_missile_1": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "bow_frost_missile_1_collision_search"
+                ]
+            }
+        },
+        "bow_fire_missile_1": {
+            "baseUnit": "_CMissile",
+            "references": {
+                "behaviorList": [
+                    "bow_fire_missile_1_collision_search "
+                ]
+            }
+        },
+        "_dummy_unit": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "ignoreCollision": true
+                }
+            }
+        },
+        "aoe_ability_target": {
+            "baseUnit": "_dummy_unit",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false,
+                    "ignoreCollision": true
+                }
+            }
+        },
+        "ability_fireball_missile": {
+            "baseUnit": "_CMissile"
+        },
+        "enemy_hobgoblin_1": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.5,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 25
+                },
+                "movement": {
+                    "moveSpeed": 0.9
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "enemy_weapon"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_hero": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": true,
+                    "ground": false,
+                    "air": true,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 0
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            }
+        },
+        "preloads_1": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "immortal": true
+                },
+                "movement": {
+                    "moveSpeed": 0
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "ability_lionking"
+                ]
+            },
+            "dependentUnits": [
+                "aoe_ability_target",
+                "enemy_hobgoblin_1",
+                "hero_icemage",
+                "hero_lionking",
+                "ship_cannon",
+                "crew_hero_alchemist_musketeer",
+                "crew_hero_centaurarcher_awaken",
+                "crew_hero_beemistress_thief",
+                "crew_hero_cloudrabbit",
+                "crew_hero_wolfhuntress_maskedheroine",
+                "crew_hero_avalanche_surfer",
+                "crew_hero_lionking",
+                "crew_hero_icemage",
+                "enemy_ogre",
+                "enemy_ooze1",
+                "enemy_pig1",
+                "boss_boar",
+                "gameplay_ship",
+                "enemy_drow_hawk",
+                "enemy_goblin_flyer",
+                "enemy_dragon_1",
+                "boss_dragon_1",
+                "enemy_goblin_flyer_purple_1",
+                "enemy_goblin_flyer_red",
+                "target_blip",
+                "enemy_cargo_ship",
+                "enemy_goblin_flyer_huge",
+                "powerup_tripleshot"
+            ],
+            "dependentEffects": [
+                "bow_fire_launch_missile",
+                "bow_frost_launch_missile",
+                "bow_basic_launch_missile",
+                "bow_generic_search_1",
+                "ability_fireball_launch_missile",
+                "bow_2_generic_search_1"
+            ],
+            "dependentBehaviors": [
+                "anim_attack",
+                "ability_queued_1",
+                "ability_queued_2",
+                "hero_upgrade_scaling",
+                "enemy_scaling",
+                "ship_hp_scaling",
+                "ship_weapon_scaling",
+                "hero_ability_active"
+            ]
+        },
+        "icemage_attack_missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "icemage_attack_collision_search"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "lionking_attack_missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "meta_wall": {
+            "baseUnit": "_CBuilding"
+        },
+        "preloads_meta": {
+            "baseUnit": "_CUnit",
+            "dependentUnits": [
+                "meta_wall",
+                "meta_build_spot",
+                "meta_armory",
+                "meta_arrow_tower",
+                "meta_hero_temple",
+                "meta_shop",
+                "meta_tent",
+                "meta_ship",
+                "meta_transition_scene_cloud",
+                "music_controller",
+                "meta_transition_scene_cloud2"
+            ]
+        },
+        "meta_build_spot": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "meta_arrow_tower": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "meta_tent": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "meta_shop": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "meta_armory": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "meta_hero_temple": {
+            "baseUnit": "_CBuilding",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 10
+                }
+            },
+            "displayName": "data/GameData/unit/_CBuilding/display_name"
+        },
+        "_ship_tower": {
+            "baseUnit": "_CUnit"
+        },
+        "ship_cannon": {
+            "baseUnit": "_ship_tower",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "ignoreCollision": true
+                },
+                "movement": {
+                    "moveSpeed": 0
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "ship_cannon_weapon"
+                ],
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            }
+        },
+        "ship_cannon_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "_hero_crew": {
+            "baseUnit": "_hero",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 50
+                },
+                "mana": {
+                    "maxMana": 100,
+                    "startMana": 100,
+                    "regeneration": 10
+                },
+                "movement": {
+                    "moveSpeed": 0
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            }
+        },
+        "crew_hero_alchemist_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "crew_hero_centaur_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "crew_hero_wolfhuntress_maskedheroine": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 32
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "crew_hero_wolfhuntress_maskedheroine_weapon"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "crew_hero_wolfhuntress_maskedheroine_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "crew_hero_beemistress_thief": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 32
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "crew_hero_beemistress_thief_weapon"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "crew_hero_beemistress_thief_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "crew_hero_cloudrabbit": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 32
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "crew_hero_cloudrabbit_weapon"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "crew_hero_cloudrabbit_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "hero_icemage": {
+            "prefix": "",
+            "baseUnit": "_hero",
+            "references": {
+                "abilityList": [
+                    "ability_snowstorm"
+                ]
+            },
+            "dependentEffects": [
+                "icemage_attack_launch_missile"
+            ],
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "hero_lionking": {
+            "prefix": "",
+            "baseUnit": "_hero",
+            "references": {
+                "abilityList": [
+                    "ability_lionking",
+                    "ability_snowstorm"
+                ]
+            },
+            "dependentEffects": [
+                "lionking_attack_launch_missile",
+                "lionking_attack_launch_missile_ground"
+            ],
+            "dependentSpriteAssets": [
+                "unlock_hero_lionking"
+            ]
+        },
+        "crew_hero_centaurarcher_awaken": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 32
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "crew_hero_centaur_weapon"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "crew_hero_avalanche_surfer": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "ability_avalanche_surfer"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentEffects": [
+                "avalanche_surfer_attack_launch_missile",
+                "avalanche_surfer_attack_launch_missile_ground"
+            ],
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "crew_hero_alchemist_musketeer": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "ability_alchemist_musketeer"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentEffects": [
+                "alchemist_ability_missile",
+                "alchemist_ability_weapon_missile",
+                "alchemist_musketeer_attack_launch_missile",
+                "alchemist_musketeer_attack_launch_missile_ground"
+            ],
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "crew_hero_lionking": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 32
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "ability_lionking",
+                    "ability_snowstorm"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentEffects": [
+                "lionking_attack_launch_missile"
+            ],
+            "dependentSpriteAssets": [
+                "unlock_hero_lionking"
+            ]
+        },
+        "crew_hero_icemage": {
+            "prefix": "",
+            "baseUnit": "_hero_crew",
+            "components": {
+                "unit": {
+                    "unitType": 2
+                },
+                "unitStats": {
+                    "radius": 0.125,
+                    "immortal": false,
+                    "selectable": true
+                },
+                "health": {
+                    "maxHealth": 100
+                },
+                "movement": {
+                    "moveSpeed": 32
+                },
+                "turning": {
+                    "turningSpeed": 9900
+                }
+            },
+            "references": {
+                "abilityList": [
+                    "ability_snowstorm"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "healthBar": {
+                "type": 8
+            },
+            "dependentEffects": [
+                "icemage_attack_launch_missile"
+            ],
+            "dependentSpriteAssets": [
+                "unlock_hero_iceMage"
+            ]
+        },
+        "enemy_pig1": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2.4
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "enemy_pig1_weapon"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "enemy_ooze1": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 5
+                },
+                "movement": {
+                    "moveSpeed": 1.5
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "enemy_ooze1_weapon "
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "enemy_ogre": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 75
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "enemy_ogre1_weapon  "
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "meta_ship": {
+            "baseUnit": "_CUnit",
+            "dependentBehaviors": [
+                "ship_flying"
+            ]
+        },
+        "boss_boar": {
+            "baseUnit": "_boss",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 750
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "boss_boar1_weapon  "
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_boss": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.2,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "meta_transition_scene_cloud": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "immortal": true,
+                    "ground": false,
+                    "air": true,
+                    "ignoreCollision": true
+                },
+                "movement": {
+                    "moveSpeed": 12
+                },
+                "turning": {
+                    "turningSpeed": 9990
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            },
+            "dependentBehaviors": [
+                "slow_down"
+            ]
+        },
+        "gameplay_ship": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 3,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 150
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name",
+            "dependentBehaviors": [
+                "ship_flying"
+            ]
+        },
+        "earthsurfer_stone_golem": {
+            "baseUnit": "_summon",
+            "components": {
+                "unitStats": {
+                    "radius": 0.1,
+                    "ground": false,
+                    "air": true,
+                    "selectable": false,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 12
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "avalanche_surfer_golem"
+                ],
+                "behaviorList": [
+                    "no_navmesh"
+                ]
+            }
+        },
+        "ability_snowstorm_missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "alchemist_ability_missile": {
+            "baseUnit": "_CMissile"
+        },
+        "alchemist_ability_weapon_missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "_summon": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "radius": 0.2,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "tagList": [
+                    {
+                        "name": "_summon",
+                        "count": 1,
+                        "duration": -1
+                    }
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "_CUnit": {
+            "components": {
+                "behavior": {
+                    "genericControllableUnit": {}
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "System HitReaction",
+                    "System Knockback"
+                ]
+            }
+        },
+        "music_controller": {
+            "baseUnit": "_CUnit",
+            "components": {
+                "unitStats": {
+                    "immortal": true,
+                    "selectable": false
+                },
+                "movement": {
+                    "moveSpeed": 0
+                }
+            }
+        },
+        "enemy_goblin_flyer": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 1.4
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "suicide_weapon"
+                ],
+                "behaviorList": [
+                    "enemy_goblin_flyer_deathrattle"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "enemy_drow_hawk": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.5,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 20
+                },
+                "movement": {
+                    "moveSpeed": 1.8
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "enemy_weapon"
+                ],
+                "behaviorList": [
+                    "System HitReaction",
+                    "System Knockback",
+                    "no_navmesh"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "enemy_dragon_1": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 30
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "dragon_1_weapon"
+                ],
+                "behaviorList": [
+                    "System HitReaction",
+                    "System Knockback",
+                    "no_navmesh"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "boss_dragon_1": {
+            "baseUnit": "_boss",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 350
+                },
+                "movement": {
+                    "moveSpeed": 1
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "Standard RangedUnit Weapon"
+                ],
+                "behaviorList": [
+                    "System HitReaction",
+                    "System Knockback",
+                    "no_navmesh"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "crew_hero_avalanche_surfer_weapon Missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "enemy_goblin_flyer_red": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 2.4
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "suicide_weapon"
+                ],
+                "behaviorList": [
+                    "enemy_goblin_flyer_deathrattle"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "enemy_goblin_flyer_purple_1": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 10
+                },
+                "movement": {
+                    "moveSpeed": 1.2
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "suicide_weapon"
+                ],
+                "behaviorList": [
+                    "enemy_goblin_flyer_deathrattle"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "meta_transition_scene_cloud2": {
+            "baseUnit": "meta_transition_scene_cloud",
+            "components": {
+                "movement": {
+                    "moveSpeed": 18
+                }
+            }
+        },
+        "enemy_cargo_ship": {
+            "baseUnit": "_enemy",
+            "components": {
+                "health": {
+                    "maxHealth": 40
+                }
+            }
+        },
+        "target_blip": {
+            "baseUnit": "_summon",
+            "components": {
+                "unitStats": {
+                    "radius": 0,
+                    "immortal": true,
+                    "air": true,
+                    "ignoreCollision": false
+                }
+            },
+            "references": {
+                "behaviorList": [
+                    "timed_life_short"
+                ]
+            }
+        },
+        "dragon_1_weapon Missile": {
+            "baseUnit": "_CMissile"
+        },
+        "ability_alchemist_musketeer_missile": {
+            "baseUnit": "_CMissile"
+        },
+        "ability_avalanche_surfer_missile": {
+            "baseUnit": "_CMissile"
+        },
+        "avalanche_surfer_attack_missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "alchemist_musketeer_attack_missile": {
+            "baseUnit": "_CMissile",
+            "components": {
+                "unit": {
+                    "unitType": 1
+                },
+                "unitStats": {
+                    "radius": 0,
+                    "selectable": false
+                },
+                "health": {
+                    "maxHealth": 999
+                }
+            },
+            "displayName": "data/GameData/unit/_CMissile/display_name"
+        },
+        "enemy_goblin_flyer_huge": {
+            "baseUnit": "_enemy",
+            "components": {
+                "unitStats": {
+                    "radius": 0.345,
+                    "selectable": true,
+                    "ignoreCollision": true
+                },
+                "health": {
+                    "maxHealth": 40
+                },
+                "movement": {
+                    "moveSpeed": 1.4
+                },
+                "turning": {
+                    "turningSpeed": 900
+                }
+            },
+            "references": {
+                "weaponList": [
+                    "suicide_weapon"
+                ],
+                "behaviorList": [
+                    "enemy_goblin_flyer_huge_deathrattle"
+                ]
+            },
+            "displayName": "data/GameData/unit/_CUnit/display_name"
+        },
+        "powerup_tripleshot": {
+            "baseUnit": "_summon"
+        }
+    }
+}

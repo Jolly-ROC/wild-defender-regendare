@@ -1,0 +1,422 @@
+-- // Mods/Meta //
+-- // For the meta game aspects //
+local mods = nil
+local mod = {}
+local lf = {}
+
+local log_settings = {
+    logging_on = true,
+    filter = 1 -- 1 = all, 2 = some, 3 = strict
+}
+local function log(message)
+    mods.utility.print(message, {priority = 3, type="error"}, log_settings)
+end
+
+
+-- Data from other mods
+-- If we access them often, easier to put them in a local variable
+-- So we don't have to call "mods.bank.GetBankData()" every time, we can just reference this local "bank_data"
+local bank_data = nil
+local ui = nil
+local xml = nil
+local game_state = nil
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            core = GameModules["Arcade/Core"],
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            meta = GameModules["Mods/Meta"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"]
+        }
+        bank_data = mods.bank.GetBankData()
+        ui = mods.ui.Get()
+        xml = mods.ui.xml()
+        game_state = mods.main.game_state()
+    end
+end
+
+-- VARIABLES
+local meta = {}
+
+-- Meta
+meta.pos = {54, 22}
+meta.cam = {66, 16}
+meta.castle_grid = {7, 6}
+meta.music = nil
+
+local initialized = false
+function mod.Initialize()
+    LoadData()
+
+    -- swipe to move camera
+
+    -- Create units 
+    for x = -3, 3 do
+        for y = -3, 3 do
+            mod.CreateBlankCastleArea(x, y) 
+        end
+    end
+
+    initialized = true
+end
+
+function mod.CreateBlankCastleArea(x, y)
+    local pos = {
+        meta.pos[1] + (meta.castle_grid[1] * x),
+        meta.pos[2] + (meta.castle_grid[2] * y)
+    }
+    --DCEI.CreateUnitAsync(1, 1, "meta_build_spot", pos[1], pos[2])
+
+    -- DCEI.CreateUnitAsync(1, 1, "meta_build_spot", pos[1] + 1.5, pos[2] + 1.5)
+    -- DCEI.CreateUnitAsync(1, 1, "meta_build_spot", pos[1] - 1.5, pos[2] + 1.5)
+
+    -- DCEI.CreateUnitAsync(1, 1, "meta_build_spot", pos[1] + 1.5, pos[2] - 1.5)
+    -- DCEI.CreateUnitAsync(1, 1, "meta_build_spot", pos[1] - 1.5, pos[2] - 1.5)
+end
+
+function mod.Enter()
+    LoadData()
+
+    local j_options = {
+        anchor = {x = 0, y = 0}, --anchor = {x = 0.5, y = 0}, 
+        offset = {x = 0, y = 0},--offset = {x = 0, y = C.SCREEN_SIZE.x/3},
+        joystick_id = 1,
+        disable_wasd = false,
+        disable_arrow_keys = false,
+        dynamic_position = true,
+        always_show = true,
+        --parent = xml.ingame.layer1,
+        active_area_offset = {left = 0, right = 0, top = 0, bottom = 0,
+            debug_draw_color = {
+                r = 1,
+                g = 0,
+                b = 0,
+                a = 1
+            }
+        }, -- left = C.SCREEN_SIZE.x/2.5 --{left = 120, right = 0, top = C.SCREEN_SIZE.y/1.3, bottom = 0}
+        handle_rotation = true,-- bool always_show;
+        handle_icon = " ",
+        handle_icon_color = {
+            r = 1,
+            g = 0,
+            b = 0,
+            a = 0
+        },
+        background_icon = " ",
+        background_icon_color = {
+            r = 1,
+            g = 0,
+            b = 0,
+            a = 0
+        }
+        -- string handle_icon;
+        -- Color handle_icon_color;
+    
+        -- string background_icon;
+        -- Color background_icon_color;
+        --bool handle_rotation;
+    }
+
+    if initialized == false then
+        mod.Initialize()
+
+        local unit = DCEI.FindUnit("meta_ship")
+        local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+        local max = 10
+        for i = 1, max do
+            actor_string = actor_string .. "\"SOp UpBy 1\""
+            if i ~= max then
+                actor_string = actor_string .. ","
+            end
+        end
+        actor_string = actor_string .. "],\"duration\": 0,\"append\": true}}"
+        local id = DCEI.CompileActorAction(actor_string)
+        DCEI.SendActorAction(unit, id)
+    end
+
+    -- Set camera
+    mod.Camera({time=0})
+
+    -- move
+    -- DCEI.TriggerAddJoystickEvent(mod.JoystickMove, j_options)
+    -- DCEI.TriggerAddJoystickReleaseEvent(mod.JoystickRelease)
+    -- DCEI.TriggerAddJoystickSwipeEvent(mod.JoystickSwipe, 1, 0.20)
+    -- DCEI.TriggerAddTouchEvent(mod.Touch, 1, 1, 0.5)
+    -- --DCEI.ShowJoystick(1)
+    DCEI.TriggerAddTouchUpEvent(mod.Touch)
+    DCEI.TriggerAddMouseDownEvent(0, mod.Touch)
+
+    -- UI
+    xml.meta:Show()
+    DCEI.SetActive(xml.meta.meta_nav.Frame, true)
+    xml.meta.meta_nav:Show()
+    DCEI.SetText(xml.meta.meta_nav.play_btn.play_btn_text, DCEI.GetTranslationText("meta/play_btn_txt", {x=bank_data.game.g_current_island_progress.l_value.stage or 1}))
+    DCEI.SetText(xml.meta.ship_upgrade.play_btn.play_btn_text, DCEI.GetTranslationText("meta/play_btn_txt", {x=bank_data.game.g_current_island_progress.l_value.stage or 1}))
+    DCEI.SetText(xml.meta.hero_upgrade.play_btn.play_btn_text, DCEI.GetTranslationText("meta/play_btn_txt", {x=bank_data.game.g_current_island_progress.l_value.stage or 1}))
+
+    local k1, k2 = 30, -30
+    local d2 = 0.65
+    local ease = "Linear"
+    local anim = DCEI.AnimateRotation(xml.meta.meta_nav.play_btn.glow, {z = k1}, {z = k2}, d2, ease)
+    DCEI.SetAnimationLoops(anim, -1, "Incremental")
+    local anim = DCEI.AnimateRotation(xml.meta.ship_upgrade.play_btn.glow, {z = k1}, {z = k2}, d2, ease)
+    DCEI.SetAnimationLoops(anim, -1, "Incremental")
+    local anim = DCEI.AnimateRotation(xml.meta.hero_upgrade.play_btn.glow, {z = k1}, {z = k2}, d2, ease)
+    DCEI.SetAnimationLoops(anim, -1, "Incremental")
+    
+    local unit = DCEI.FindUnit("meta_ship")
+    local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+    local max = 10
+    for i = 1, max do
+        actor_string = actor_string .. "\"SOp DownBy 1\""
+        if i ~= max then
+            actor_string = actor_string .. ","
+        end
+    end
+    actor_string = actor_string .. "],\"duration\": 3,\"append\": true}}"
+    local id = DCEI.CompileActorAction(actor_string)
+    DCEI.SendActorAction(unit, id)
+
+    meta.music = DCEI.CreateUnitAsync(1, 1, "music_controller", meta.cam[1], meta.cam[2])
+
+end
+
+function mod.Exit()
+    local unit =  DCEI.FindUnit("meta_ship")
+    local actor_string = "{\"setSiteOperations\": {\"siteOperations\": ["
+    local max = 10
+    for i = 1, max do
+        actor_string = actor_string .. "\"SOp UpBy 1\""
+        if i ~= max then
+            actor_string = actor_string .. ","
+        end
+    end
+    actor_string = actor_string .. "],\"duration\": 2,\"append\": true}}"
+    local id = DCEI.CompileActorAction(actor_string)
+    DCEI.SendActorAction(unit, id)
+
+    -- TODO(Jolly) Some more robust sub-state system that will exit out of any current sub-states automatically 
+    xml.meta.hero_upgrade:Hide()
+    xml.meta.ship_upgrade:Hide()
+    xml.meta.meta_nav:Show()
+
+    DCEI.RemoveUnit(meta.music)
+    mod.ShipCamera()
+    xml.meta:Hide()
+    DCEI.Wait(0.6)
+    --DCEI.HideJoystick(1)
+end
+
+
+function mod.Touch()
+    if game_state.location == "meta" then
+        local axes = DCEI.TriggeringJoystickAxes
+        local id = DCEI.TriggeringJoystickId
+        local transition_time = 0
+        local pos = DCEI.GetMousePosition2D() 
+        local tpos =  DCEI.GetTouchPosition2D()
+
+        if pos.x == 0 and pos.y == 0 then pos = tpos end
+
+        log(axes.x .. "/" .. axes.y .. "(tap)")
+        log(pos.x .. "/" .. pos.y .. "(tap m)")
+        --DCEI.ShowFloatingText({x = meta.cam[1], z = meta.cam[2]}, 
+        -- mods.core.Round(pos.x, 2) .. "/" .. mods.core.Round(pos.y) .. "(tap m)\n" .. mods.core.Round(axes.x) .. "/" .. mods.core.Round(axes.y) .. "(tap)\n" .. mods.core.Round(tpos.x) .. "/" .. mods.core.Round(tpos.y),
+        -- 3, 1, -- stayDuration, animationType,
+        -- 3, {offset = {up = -0.5}} -- animationDuration, options
+        -- )
+        
+        local closest = mods.utility.ClosestUnitToPoint({radius=3.15, point=pos})
+        if closest.unit ~= nil then
+            log(DCEI.UnitName(closest.unit) .. "(tap m)") 
+
+            if DCEI.UnitName(closest.unit) == "meta_build_spot" then
+                mod.BuildModeEnter(closest.unit)
+            elseif DCEI.UnitName(closest.unit) == "meta_hero_temple" then
+                mod.HeroUpgradeEnter(closest.unit)
+            elseif DCEI.UnitName(closest.unit) == "meta_ship" then
+                mod.ShipUpgradeEnter(closest.unit)
+            end
+        end
+    end
+end
+
+function mod.JoystickMove()
+    local axes = DCEI.TriggeringJoystickAxes
+    local id = DCEI.TriggeringJoystickId
+    local transition_time = 0
+
+    log(axes.x .. "/" .. axes.y .. "(JoystickMove)")
+
+    meta.cam[1] = meta.cam[1] + (axes.x * -0.5)
+    meta.cam[2] = meta.cam[2] + (axes.y * -0.5)
+    DCEI.SetCameraFocusSmoothOvertime(meta.cam[1], meta.cam[2], 0.125, true)
+end
+
+function mod.JoystickRelease()
+    local axes = DCEI.TriggeringJoystickAxes
+    local id = DCEI.TriggeringJoystickId
+    local transition_time = 0
+
+    log(axes.x .. "/" .. axes.y .. "(JoystickRelease)")
+end
+
+function mod.JoystickSwipe()
+    if game_state.location == "meta" then
+        local axes = DCEI.TriggeringJoystickAxes
+        local id = DCEI.TriggeringJoystickId
+        local transition_time = 0
+
+        log(axes.x .. "/" .. axes.y .. "(JoystickSwipe)")
+        if axes.x >= 0.43 then
+            meta.cam[1] = meta.cam[1] - meta.castle_grid[1]
+            transition_time = transition_time + 0.4
+        elseif axes.x <= -0.43 then
+            meta.cam[1] = meta.cam[1] + meta.castle_grid[1]
+            transition_time = transition_time + 0.4
+        end
+
+        if axes.y >= 0.43 then
+            meta.cam[2] = meta.cam[2] - meta.castle_grid[2]
+            transition_time = transition_time + 0.6
+        elseif axes.y <= -0.43 then
+            meta.cam[2] = meta.cam[2] + meta.castle_grid[2]
+            transition_time = transition_time + 0.6
+        end
+
+        DCEI.SetCameraFocusSmoothOvertime(meta.cam[1], meta.cam[2], transition_time, true)
+    end
+end
+
+function mod.Camera(options)
+    local options = options or {}
+    options.time = options.time or 0.5
+
+    DCEI.SetEnabledCameraClamp(false)
+    DCEI.GetCameraBoundsCenterPoint(meta.cam[1], meta.cam[2])
+    DCEI.GetCameraBoundsHeight(99)
+    DCEI.GetCameraBoundsWidth(99)
+    DCEI.SetCameraFocusSmoothOvertime(meta.cam[1], meta.cam[2],  options.time, true)
+    DCEI.SetCameraDistanceSmoothOvertime(54,  options.time, true) --36
+    DCEI.GetCameraMaxDistance(54)
+    DCEI.SetCameraPitchSmoothOvertime(55,  options.time, false) --60---50
+    DCEI.SetCameraYawSmoothOvertime(-45,  options.time, true)
+end
+
+--------------------------------------------------------------------------------------------
+--- FTUE
+
+function mod.MetaButtonPressed()
+end
+
+-- More complex stuff
+
+function mod.BuildModeEnter(unit)
+    local pos = DCEI.GetUnitPosition2D(unit)
+    --DCEI.HideJoystick(1)
+
+    DCEI.SetCameraFocusSmoothOvertime(pos.x -2, pos.y - 2, 0.5, true)
+    DCEI.SetCameraDistanceSmoothOvertime(22,  1, true)
+    DCEI.SetCameraPitchSmoothOvertime(40,  1, false) 
+    
+    -- Show build menu
+    DCEI.SetActive(xml.meta.build_menu.Frame, true)
+    xml.meta.build_menu:Show()
+    xml.meta.meta_nav:Hide()
+
+    DCEI.SetOnClickCallback(xml.meta.build_menu.tower_btn, function()
+        DCEI.CreateUnitAsync(1, 1, "meta_arrow_tower", pos.x, pos.y)
+        DCEI.RemoveUnit(unit)
+        mod.BuildModeExit()
+    end)
+    DCEI.SetOnClickCallback(xml.meta.build_menu.tent_btn, function()
+        DCEI.CreateUnitAsync(1, 1, "meta_tent", pos.x, pos.y)
+        DCEI.RemoveUnit(unit)
+        mod.BuildModeExit()
+    end)
+    DCEI.SetOnClickCallback(xml.meta.build_menu.shop_btn, function()
+        DCEI.CreateUnitAsync(1, 1, "meta_shop", pos.x, pos.y)
+        DCEI.RemoveUnit(unit)
+        mod.BuildModeExit()
+    end)
+    DCEI.SetOnClickCallback(xml.meta.build_menu.armory_btn, function()
+        DCEI.CreateUnitAsync(1, 1, "meta_armory", pos.x, pos.y)
+        DCEI.RemoveUnit(unit)
+        mod.BuildModeExit()
+    end)
+    DCEI.SetOnClickCallback(xml.meta.build_menu.temple_btn, function()
+        DCEI.CreateUnitAsync(1, 1, "meta_hero_temple", pos.x, pos.y)
+        DCEI.RemoveUnit(unit)
+        mod.BuildModeExit()
+    end)
+end
+
+function mod.BuildModeExit()
+    --DCEI.ShowJoystick(1)
+    xml.meta.build_menu:Hide()
+    xml.meta.meta_nav:Show()
+    mod.Camera()
+end
+
+function mod.HeroUpgradeEnter(unit)
+    local unit = unit or DCEI.FindUnit("meta_hero_temple")
+    local pos = DCEI.GetUnitPosition2D(unit)
+    --DCEI.HideJoystick(1)
+
+    DCEI.SetCameraFocusSmoothOvertime(pos.x + 1, pos.y - 1, 0.5, true)
+    DCEI.SetCameraDistanceSmoothOvertime(6,  1, true)
+    DCEI.SetCameraPitchSmoothOvertime(40,  1, false) 
+    
+    -- Show build menu
+    DCEI.SetActive(xml.meta.hero_upgrade.Frame, true)
+    xml.meta.hero_upgrade:Show()
+    xml.meta.meta_nav:Hide()
+end
+
+function mod.HeroUpgradeExit()
+    --DCEI.ShowJoystick(1)
+    xml.meta.hero_upgrade:Hide()
+    xml.meta.meta_nav:Show()
+    mod.Camera()
+end
+
+function mod.ShipUpgradeEnter(unit)
+    mod.ShipCamera(unit)
+
+    -- Show build menu
+    DCEI.SetActive(xml.meta.ship_upgrade.Frame, true)
+    xml.meta.ship_upgrade:Show()
+    xml.meta.meta_nav:Hide()
+end
+
+function mod.ShipCamera(unit)
+    local unit = unit or DCEI.FindUnit("meta_ship")
+    local pos = DCEI.GetUnitPosition2D(unit)
+    --DCEI.HideJoystick(1)
+
+    DCEI.SetCameraFocusSmoothOvertime(pos.x + 1, pos.y + 1, 0.5, true)
+    DCEI.SetCameraDistanceSmoothOvertime(20,  1, true)
+    DCEI.SetCameraPitchSmoothOvertime(40,  1, false) 
+    DCEI.SetCameraYawSmoothOvertime(45, 0.5, true)
+end
+
+
+function mod.ShipUpgradeExit()
+    LoadData()
+    xml.meta.ship_upgrade:Hide()
+    xml.meta.meta_nav:Show()
+    mod.Camera()
+end
+
+return mod

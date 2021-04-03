@@ -1,0 +1,332 @@
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // Mods/Bank
+-- For saving & loading player data
+local json = require "json"
+local mods = nil
+local bank = {}
+local lf = {}
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"]
+        }
+    end
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // bank_data
+-- A list of all data that will be saved to the player's save file
+-- If you want to add a new category; you will have to add new save/load functions for those categories in the bank mod
+--
+-- key
+--      needs to be the same as the section name
+-- default
+--      default value if no value is loaded from save value
+-- l_value
+--      local value - the value stored in Lua before it is saved to the bank
+--      values should always be stored here, and are more up-to-date than the values saved to the save file
+--      when the bank is saved, the l_value is what will be saved to the save file
+-- simple_load
+--      true will cause the data to automatically be saved/loaded
+--      set to false if the data needs to be loaded in a specific, unique way
+--      in which case, you will have to create special cases in the bank saving/loading mod
+local bank_data = {
+    meta = {
+        _bank_version = {key = "bank_version", default = 1, l_value = 0, simple_load = true},
+        m_sessions = {key = "m_sessions", default = 0, l_value = 0, simple_load = true},
+        m_currencies = {key = "m_currencies", default = {}, l_value = {}, simple_load = true},
+    },
+    cards = {
+        c_heroes = {key = "c_heroes", default = {}, l_value = {}, simple_load = true},
+        c_ship = {key = "c_ship", default = {}, l_value = {}, simple_load = true},
+        c_loadout = {key = "c_loadout", default = {captains={"lionking"}, crew={"avalanche_surfer", "alchemist_musketeer"}}, l_value = {}, simple_load = true},
+    },
+    game = {
+        g_current_island_progress = {key = "g_current_island_progress", default = {stage = 1}, l_value = {stage = 1}, simple_load = true},
+    }
+}
+local section_functions = {
+    meta = {
+        save = function() 
+            local save_value = {}
+            for k, v in pairs(mods.data.currencies) do
+                save_value[k] = bank_data.meta.m_currencies.l_value[k] or 0
+            end
+            bank_data.meta.m_currencies.l_value = save_value
+            lf.SaveAndLog(bank_data.meta.m_currencies, save_value)
+        end,
+        load = function() 
+            LoadData()
+            -- Bank Version
+            local key = bank_data.meta.bank_version
+            if key ~= nil then
+                bank.UpgradeBank(lf.GetAndLog(key))
+                lf.SaveAndLog(key, lf.GetAndLog(key) or bank_data.meta.bank_version.default)
+            end
+
+            local save_value = {}
+            for k, v in pairs(mods.data.currencies) do
+                save_value[k] = bank_data.meta.m_currencies.l_value[k] or 0
+            end
+            bank_data.meta.m_currencies.l_value= save_value
+            lf.SaveAndLog(bank_data.meta.m_currencies, save_value)
+        end
+    },
+    cards  = {
+        save = function() 
+            LoadData()
+            -- Save Heroes
+            local save_value = {}
+            for k, v in pairs(mods.data.hero_table) do
+                save_value[k] = {}
+                save_value[k].lvl = v.level
+            end
+            bank_data.cards.c_heroes.l_value = save_value
+            lf.SaveAndLog(bank_data.cards.c_heroes, save_value)
+        end,
+        load = function()
+            LoadData()
+            for k, v in pairs(bank_data.cards.c_heroes.l_value) do
+                mods.data.hero_table[k].level = v.lvl
+            end
+        end
+    },
+    game = {
+        save = function() end,
+        load = function() end
+    },
+}
+-- Data bind player data so it can be used in UI
+DCEI.BindData("bank_data", bank_data)
+
+-- Version history, so that if you change the storage format of the data, you can update it
+-- Bank version should be saved to the bank itself
+-- If you make a change to the bank data which breaks things, you need to change the version
+-- Then check if the new version is different then the save version
+-- If so, run an "upgrade_function" that converts the old bank data to the new bank data to solve compatibility issues
+local versions = {
+    {
+        num = 1,
+        upgrade_function = function()
+            DCEI.LogError("Bank Init Complete")
+        end
+    }
+}
+
+-- Initialize the bank if this is the first time playing
+function bank.Initialize()
+    bank.Save({use_defaults=true})
+end
+
+-- Load the bank
+function bank.Load()
+    LoadData()
+
+    -- We first load sessions, because if this is the first session, we want to initialize the bank
+    local key = bank_data.meta.m_sessions
+    local sessions = lf.GetAndLog(key) or bank_data.meta.m_sessions.default
+    DCEI.LogError("SESSIONS: " .. sessions)
+
+
+    if sessions == 0 then
+        bank.Initialize()
+        DCEI.Wait(0)
+    else
+        --load
+        for k, v in pairs(bank_data) do
+            bank.LoadSection(k)
+            DCEI.Wait(0)
+            if section_functions[k].load ~= nil then
+                section_functions[k].load()
+            end
+        end
+        DCEI.Wait(0)
+    end
+    DCEI.Wait(0)
+    lf.SaveAndLog(key, sessions + 1)
+    bank.Save()
+end
+
+-- Save & Commit bank data
+function bank.Save(settings)
+    LoadData()
+    for k, v in pairs(bank_data) do
+        bank.SaveSection(k, settings)
+        if section_functions[k].save ~= nil then
+            section_functions[k].save()
+        end
+    end
+    bank.TriggerCommit()
+end
+
+-- Commit the save file to the bank. Make sure we don't do this twice at the same time
+function bank.TriggerCommit()
+    bank.commit = true
+    DCEI.TriggerAddTimerEventElapsed(
+        function()
+            if bank.commit then
+                if log_messages then
+                    DCEI.LogWarning("SAVE FILE COMMITTED")
+                end
+                bank.commit = false
+                DCEI.Save.Commit()
+            end
+        end,
+        0
+    )
+end
+
+-- Reset bank, with the option to reset only a certain category (if not specified; resets entire bank)
+function bank.Reset(optional_settings)
+    LoadData()
+    local k = ""
+
+    if optional_settings == nil then
+        -- Iterate through all sections of the bank, clearing every value (setting it to it's default value)
+        for key1, value1 in pairs(bank_data) do
+            k = "bank_data." .. key1
+
+            for key2, value2 in pairs(bank_data[key1]) do
+                k = "bank_data." .. key1 .. "." .. value2.key
+                DCEI.LogError(k)
+                if type(value2.default) == "table" then
+                    DCEI.Save.Set(value2.key, json.encode(value2.default))
+                else
+                    DCEI.Save.Set(value2.key, value2.default)
+                end
+            end
+        end
+    else
+        -- If optional settings are specified, iterate only through the specified categories and clear them
+        for i = 1, #optional_settings do
+            for key2, value2 in pairs(bank_data[optional_settings[i]]) do
+                k = "bank_data." .. optional_settings[i] .. "." .. value2.key
+                if type(value2.default) == "table" then
+                    DCEI.Save.Set(value2.key, json.encode(value2.default))
+                else
+                    DCEI.Save.Set(value2.key, value2.default)
+                end
+            end
+        end
+    end
+    -- Wait and then commit the bank in order to ensure the reset is actually saved to the save file
+    DCEI.Wait(0)
+    bank.TriggerCommit()
+end
+
+-- Fetch value from saved data; automatically decode table values, also log values
+function lf.GetAndLog(path)
+    -- Get the raw value from the save file
+    local value = DCEI.Save.Get(path.key)
+
+    -- log the value and type of value loaded, if "log_messages" is enabled
+    if value ~= nil and log_messages then
+        if type(value) == "nil" then
+            DCEI.LogWarning(log_prefix .. "Load: " .. path.key .. " (" .. type(value) .. ") - " .. "nil")
+        elseif type(value) == "table" then
+            DCEI.LogWarning(
+                log_prefix .. "Load: " .. path.key .. " (" .. type(value) .. ") - " .. mods.library.dump(value)
+            )
+        else
+            DCEI.LogWarning(log_prefix .. "Load: " .. path.key .. " (" .. type(value) .. ") - " .. tostring(value))
+        end
+    end
+
+    -- decode if table value
+    if type(path.default) == "table" and type(value) == "string" and value ~= nil then
+        if string.sub(value, 1, 1) == "[" or string.sub(value, 1, 1) == "{" then
+            value = json.decode(value)
+        else
+            DCEI.LogError(path.key .. " Value not table - Upgrading to Table: " .. value)
+            value = {value}
+        end
+    end
+
+    -- Store the loaded value in the "l_value" field of player data
+    path.l_value = value
+    return value
+end
+
+-- Save value; automatically encode table values, also log values
+function lf.SaveAndLog(path, value)
+    local local_value = value
+
+    -- encode if table value
+    if type(value) == "table" and local_value ~= nil then
+        local_value = json.encode(value)
+    end
+
+    if local_value ~= nil then
+        DCEI.Save.Set(path.key, local_value)
+        if log_messages then
+            DCEI.LogWarning(log_prefix .. " Save: " .. path.key .. " (" .. type(value) .. ") - " .. tostring(value))
+        end
+    else
+        if log_messages then
+            DCEI.LogWarning(log_prefix .. " Save: " .. path.key .. " (" .. type(value) .. ") - " .. "nil")
+        end
+    end
+
+    path.l_value = value
+end
+
+function bank.SaveSection(key, settings)
+    local settings = settings or {}
+    -- Automatically save any values with "simple_load=true"
+    for k, v in pairs(bank_data[key]) do
+        if v.simple_load == true then
+            if settings.use_defaults == true then
+                lf.SaveAndLog(v, v.default)
+            else
+                lf.SaveAndLog(v, v.l_value or v.default)
+            end 
+        end
+    end
+end
+
+function bank.LoadSection(key)
+    -- Automatically Load any values with "simple_load=true"
+    for k, v in pairs(bank_data[key]) do
+        if v.simple_load == true then
+            lf.SaveAndLog(v, lf.GetAndLog(v) or v.default)
+        end
+    end
+end
+
+function bank.UpgradeBank(loaded_version)
+    local l_version = loaded_version
+    if l_version ~= versions[#versions].num then
+        if type(loaded_version) ~= "number" then
+            l_version = bank_data.meta.bank_version.default
+        end
+        DCEI.LogError("attempt upgrade bank from " .. l_version .. " to " .. versions[#versions].num)
+        if l_version == 0 then
+            l_version = 1
+        end
+        for i = l_version, #versions do
+            DCEI.LogError("Upgrading Bank from version " .. l_version .. " to version " .. versions[i].num)
+            versions[i].upgrade_function()
+            DCEI.Wait(0)
+            bank_data.meta.bank_version.l_value = i
+            bank.Save()
+        end
+    end
+end
+
+-- We need to be able to share the player data with other mods
+function bank.GetBankData()
+    return bank_data
+end
+
+return bank

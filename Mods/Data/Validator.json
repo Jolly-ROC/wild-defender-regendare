@@ -1,0 +1,67 @@
+{
+    "validators": {
+        "unit_is_dragon_1": {
+            "unitType": {
+                "unitTypeName": "enemy_dragon_1",
+                "whichUnit": 1
+            }
+        },
+        "unit_has_same_group_tag": {
+            "expression": {
+                "compare": {
+                    "left": {
+                        "value": {
+                            "tagCount": {
+                                "tagName": "_group"
+                            }
+                        }
+                    },
+                    "right": {
+                        "value": {
+                            "tagCount": {
+                                "unit": 2,
+                                "tagName": "_group"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "expressions": {
+        "damage_multiplier": {
+            "multiply": {
+                "expressions": [
+                    {
+                        "value": {
+                            "damageAmount": {
+                                "multiplier": 1
+                            }
+                        }
+                    },
+                    {
+                        "multiply": {
+                            "expressions": [
+                                {
+                                    "value": {
+                                        "tagCount": {
+                                            "unit": 0,
+                                            "tagName": "dmg_multiplier"
+                                        }
+                                    }
+                                },
+                                {
+                                    "value": {
+                                        "constant": {
+                                            "doubleValue": 0.001
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

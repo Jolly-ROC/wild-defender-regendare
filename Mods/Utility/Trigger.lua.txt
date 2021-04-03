@@ -1,0 +1,468 @@
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // Mods/Utility
+-- Generic/general helper functions any mods can use
+local utility = {}
+local lf = {}
+
+local mods = nil
+local function LoadData()
+    if mods == nil then
+        mods = {
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"],
+        }
+    end
+end
+
+-- Log settings for this mod, so we can easily enable/disable/filter log messages on a per-mod basis
+local log_settings = {
+    logging_on = true,
+    filter=1 -- 1 = all, 2 = some, 3 = strict
+}
+-- Example:
+-- utility.print("Message Content", {priority = 3, type="error"}, log_settings)
+
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // Specific to This Game
+function utility.print(msg, settings, filter)
+    local l_filter = filter or {logging_on = true, filter=1} -- 1 = all, 2 = some, 3 = strict
+    local l_settings = settings or {priority = 1, type="warning"}
+    if l_filter.logging_on then
+        if l_settings.priority >= l_filter.filter then
+            if l_settings.type == "error" then
+                DCEI.LogError(tostring(debug.getinfo(2).name) .. ": " .. msg)
+            elseif l_settings.type == "warning" then
+                DCEI.LogWarning(tostring(debug.getinfo(2).name).. ": " ..msg)
+            else
+                DCEI.LogMessage(tostring(debug.getinfo(2).name) .. ": " ..msg)
+            end
+        end
+    end
+end
+
+function utility.GetVectorDistance(x1, y1, x2, y2)
+    return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
+end
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // general
+
+function utility.GetTimeText(time)
+    local hr = math.floor(time / 3600)
+    local min = math.floor((time - hr * 3600) / 60)
+    local sec = time - hr * 3600 - min * 60
+    local text = ""
+    if hr == 0 then
+        if min == 0 then
+            text = tostring(sec) .. "s"
+        else
+            text = tostring(min) .. "min " .. tostring(sec) .. "s"
+        end
+    else
+        if min == 0 then
+            text = tostring(hr) .. "h" -- TODO(Jolly) Localize
+        else
+            text = tostring(hr) .. "h " .. tostring(min) .. "min"
+        end
+    end
+    return text
+end
+
+function utility.MergeTables(table1, table2)
+    if table1 == nil or table2 == nil then
+        return
+    end
+
+    local returnTable = lf.ShallowCopyTable(table1)
+    for k, v in pairs(table2) do
+        returnTable[k] = v
+    end
+
+    return returnTable
+end
+
+function utility.CombineTables(baseTable, tableToAdd)
+    if tableToAdd == nil then
+        return baseTable
+    end
+
+    for key, value in pairs(tableToAdd) do
+        baseTable[key] = value
+    end
+
+    return baseTable
+end
+
+function utility.TableLength(table)
+    if table == nil then
+        return
+    end
+
+    local count = 0
+    for _ in pairs(table) do
+        count = count + 1
+    end
+    return count + 0
+end
+
+function utility.OrdinalNumber(int)
+    local first = string.sub(int, 1, 1)
+    local last = string.sub(int, string.len(int), string.len(int))
+    local l =  string.len(int)
+
+    local string = int
+    --DCEI.LogError("OrdinalNumber: " .. first .. " - " .. last .. " - " .. l)
+
+    if last == "1" and (l == 1 or first ~= "1") then
+        string = string .. "st"
+    elseif last == "2" and (l == 1 or first ~= "1") then
+        string = string .. "nd"
+    elseif last == "3" and (l == 1 or first ~= "1") then
+        string = string .. "rd"
+    else
+        string = string .. "th"
+    end
+    return string
+end
+
+
+function utility.SubtractTableFromTable(t1, t2)
+    local t = {}
+    for i = 1, #t1 do
+      t[t1[i]] = true;
+    end
+    for i = #t2, 1, -1 do
+      if t[t2[i]] then
+        table.remove(t2, i);
+      end
+    end
+  end
+
+function utility.ClosestUnitToPoint(data)
+    local l_data = data
+    l_data.unit_type = data.unit_type
+    l_data.radius = data.radius or 16
+    l_data.group = data.group or nil
+
+    local region = DCEI.CreateRegion(l_data.point.x, l_data.point.y, l_data.radius, l_data.radius)
+    local units = DCEI.GetUnitsInRegion(region)
+    local return_data = {}
+    return_data.closest_distance = 99
+    return_data.unit = nil
+
+    if #units == 0 then 
+        return return_data 
+    end
+
+    for k, v in pairs(units) do
+        return_data.pos = DCEI.GetUnitPosition2D(v)
+        return_data.distance = utility.DistanceBetweenPoints(return_data.pos.x, return_data.pos.y, l_data.point.x, l_data.point.y)
+        if ((l_data.unit_type == nil) or (DCEI.UnitName(v) == l_data.unit_type)) and return_data.closest_distance > return_data.distance then
+            if l_data.group ~= nil then
+                if utility.UnitInTable(v, l_data.group) then
+                    return_data.closest_distance = return_data.distance 
+                    return_data.closest_pos = return_data.pos
+                    return_data.unit = v
+                end
+            else
+                return_data.closest_distance = return_data.distance 
+                return_data.closest_pos = return_data.pos
+                return_data.unit = v
+            end
+        end
+    end
+
+    return return_data
+end
+
+function utility.UnitInTable(unit, table)
+    for k, v in pairs(table) do
+        if v == unit then
+            return true
+        end
+    end
+end
+
+function utility.RemoveUnitFromTable(unit, table)
+    for k, v in pairs(table) do
+        if v == unit then
+            table[k] = nil
+            return true
+        end
+    end
+end
+
+function utility.checkArrival(unit, point, minimumDistance, successFunction)
+    if DistanceBetweenUnitPoint(unit, point, 0.5) == false then
+        DCEI.TriggerAddTimerEventElapsed(
+            function()
+                utility.checkArrival(unit, point, minimumDistance, successFunction)
+            end,
+            0.125
+        )
+    else
+        successFunction()
+    end
+end
+
+function DistanceBetweenUnitPoint(unit, point, minimumDistance) 
+    --DCEI.LogMessage("Checking distance between points")
+    local minDistance = minimumDistance or 0.5
+    local p = DCEI.GetUnitPosition2D(unit)
+    local pos = {p.x, p.y}
+    local dis = DistanceBetweenPoints(pos, point)
+
+    if dis < minDistance then
+        --DCEI.LogMessage("Points within min distance")
+        return true
+    else
+        --DCEI.LogMessage("Points exceed min distance")
+        return false
+    end
+end
+
+function DistanceBetweenPoints(p1, p2)
+    local function Square(x)
+        return x * x
+    end
+
+    local dis = Square(p2[1] - p1[1]) + Square(p2[2] - p1[2])
+
+    return dis
+end
+
+-- calculate Distance between 2 points
+function utility.DistanceBetweenPoints(x1, y1, x2, y2)
+    local dx = x1 - x2
+    local dy = y1 - y2
+    return math.sqrt( dx * dx + dy * dy )
+end
+
+-- calculate Distance between 2 points
+function utility.XYBetweenPoints(x1, y1, x2, y2)
+    local dx = x1 - x2
+    local dy = y1 - y2
+    return {x=dx, y=dy}
+end
+
+function utility.TableToString(node)
+    local cache, stack, output = {},{},{}
+    local depth = 1
+    local output_str = "{\n"
+
+    while true do
+        local size = 0
+        for k,v in pairs(node) do
+            size = size + 1
+        end
+
+        local cur_index = 1
+        for k,v in pairs(node) do
+            if (cache[node] == nil) or (cur_index >= cache[node]) then
+
+                if (string.find(output_str,"}",output_str:len())) then
+                    output_str = output_str .. ",\n"
+                elseif not (string.find(output_str,"\n",output_str:len())) then
+                    output_str = output_str .. "\n"
+                end
+
+                -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
+                table.insert(output,output_str)
+                output_str = ""
+
+                local key
+                if (type(k) == "number" or type(k) == "boolean") then
+                    key = "["..tostring(k).."]"
+                else
+                    key = "['"..tostring(k).."']"
+                end
+
+                if (type(v) == "number" or type(v) == "boolean") then
+                    output_str = output_str .. string.rep('\t',depth) .. key .. " = "..tostring(v)
+                elseif (type(v) == "table") then
+                    output_str = output_str .. string.rep('\t',depth) .. key .. " = {\n"
+                    table.insert(stack,node)
+                    table.insert(stack,v)
+                    cache[node] = cur_index+1
+                    break
+                else
+                    output_str = output_str .. string.rep('\t',depth) .. key .. " = '"..tostring(v).."'"
+                end
+
+                if (cur_index == size) then
+                    output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
+                else
+                    output_str = output_str .. ","
+                end
+            else
+                -- close the table
+                if (cur_index == size) then
+                    output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
+                end
+            end
+
+            cur_index = cur_index + 1
+        end
+
+        if (size == 0) then
+            output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
+        end
+
+        if (#stack > 0) then
+            node = stack[#stack]
+            stack[#stack] = nil
+            depth = cache[node] == nil and depth + 1 or depth - 1
+        else
+            break
+        end
+    end
+
+    -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
+    table.insert(output,output_str)
+    output_str = table.concat(output)
+
+    return output_str
+end
+
+-- returns a unique ID for a unit
+-- Note : string.gsub("(11:1): 11", "[%p%s]", "x") produces x11x1xxx11 too
+function utility.GetUnitId(unit)
+    local unit_id = tostring(unit)
+    unit_id = string.gsub(unit_id, "Entity", "")
+    unit_id = string.gsub(unit_id, ":",  "x")
+    unit_id = string.gsub(unit_id, "%(", "x") -- special char like "("" need to be escaped with "%"
+    unit_id = string.gsub(unit_id, "%)", "x")
+    unit_id = string.gsub(unit_id, " ",  "x") -- remove the space
+    return unit_id
+end
+
+-- returns the size of a table as #my_table works only with 1 2 3 indexes, and table.getn(my_table) makes error
+function utility.SizeOfTable(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end
+
+function utility.RemoveDuplicatesFromTable(t)
+    local hash = {}
+    local res = {}
+
+    for _,v in ipairs(t) do
+        if (not hash[v]) then
+            res[#res+1] = v
+            hash[v] = true
+        end
+    end
+
+    return res
+end
+
+function utility.Round(num, numDecimalPlaces) -- TODO(Jolly) replace usage with the core round function
+    local mult = 10^(numDecimalPlaces or 0)
+    return math.floor(num * mult + 0.5) / mult
+  end
+
+function utility.CopyAndShuffleTable(lst)
+	local result = {table.unpack(lst)}
+
+	for i = #result, 2, -1 do
+		local j = math.random(i)
+		result[i], result[j] = result[j], result[i]
+	end
+
+	return result
+end
+
+function utility.FormatStringAsKeyValueTable(string_value)
+    local return_table = {}
+    local split_table = utility.Split(string.gsub(string_value, "[\n\r]", ""), ",")
+    local split_value
+
+    for k, v in pairs(split_table) do
+        split_value = utility.Split(v, "=")
+        return_table[split_value[1]] = split_value[2]
+    end
+
+    return return_table
+end
+
+function utility.Split(str, pat)
+    local t = {}  -- NOTE: use {n = 0} in Lua-5.0
+    local fpat = "(.-)" .. pat
+    local last_end = 1
+    local s, e, cap = str:find(fpat, 1)
+    while s do
+       if s ~= 1 or cap ~= "" then
+          table.insert(t, cap)
+       end
+       last_end = e+1
+       s, e, cap = str:find(fpat, last_end)
+    end
+    if last_end <= #str then
+       cap = str:sub(last_end)
+       table.insert(t, cap)
+    end
+    return t
+end
+
+function utility.ShallowCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == "table" then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+function utility.DeepCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == "table" then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[utility.DeepCopy(orig_key)] = utility.DeepCopy(orig_value)
+        end
+        setmetatable(copy, utility.DeepCopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+-- PLATFORM
+-- TODO(Jolly)  DEBUG.simulate_platform not defined
+local DEBUG = {}
+DEBUG.simulate_platform = true
+function utility.GetPlatform()
+    return (utility.PlayingEditorMode() and DEBUG.simulate_platform) or DCEI.Platform
+end
+function utility.PlayingEditorMode()
+    return DCEI.Platform == "WindowsPlayer" and DCEI.GetUserId() == "dev"
+end
+function utility.PlayingWebVersion(or_dev_mode)
+    return utility.GetPlatform() == "WebGLPlayer"
+end
+function utility.PlayingMobileVersion(or_dev_mode)
+    return utility.PlayingAndroidVersion() or utility.PlayingiOSVersion()
+end
+function utility.PlayingAndroidVersion()
+    return utility.GetPlatform() == "Android"
+end
+function utility.PlayingiOSVersion()
+    return utility.GetPlatform() == "IPhonePlayer"
+end
+
+return utility

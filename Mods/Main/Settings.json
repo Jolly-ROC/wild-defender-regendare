@@ -1,0 +1,51 @@
+{
+    "settings": {
+        "type": 1,
+        "dependencies": [
+            "Arcade/Core",
+            "Mods/Gameplay",
+            "Arcade/CrossPromo",
+            "Arcade/UserInterface",
+            "Mods/Bank",
+            "Mods/Data",
+            "Mods/Dev",
+            "Mods/Meta",
+            "Mods/UI",
+            "Mods/Utility",
+            "Mods/Waves"
+        ]
+    },
+    "playerSettings": {
+        "playerCount": 2
+    },
+    "displaySettings": {
+        "orientation": 1
+    },
+    "inputSettings": {
+        "keyMappings": [
+            {
+                "name": "Cheat",
+                "key": 102
+            }
+        ]
+    },
+    "triggerSettings": {
+        "usedUnits": [
+            "bow_base",
+            "preloads_1",
+            "player_health_bar",
+            "enemy_goblin_1",
+            "preloads_meta"
+        ],
+        "usedSoundAssets": [
+            "ui_pop_4",
+            "Battle1",
+            "Battle2",
+            "Battle3",
+            "Boss1",
+            "Hometown1",
+            "pocket legion campaign loop",
+            "Summon Revolt menu full"
+        ]
+    }
+}

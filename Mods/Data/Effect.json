@@ -1,0 +1,1838 @@
+{
+    "effects": {
+        "Bow Basic Damage": {
+            "damage": {
+                "damageAmount": 10
+            }
+        },
+        "Bow Basic Search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 0.5,
+                        "length": 2
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "Bow Set",
+                "location": 3
+            }
+        },
+        "Bow Basic Persistent": {
+            "persistent": {
+                "periodicCount": 1,
+                "location": 9,
+                "periodicDurations": [
+                    0
+                ],
+                "periodicEffects": [
+                    "bow_basic_launch_missile"
+                ],
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 20
+                    }
+                ]
+            }
+        },
+        "Bow Set": {
+            "set": {
+                "effectList": [
+                    "Bow Basic Damage",
+                    "Kill Source"
+                ]
+            }
+        },
+        "bow_frost_missile_1_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 2
+                    }
+                },
+                "maxUnitCount": 12,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "bow_frost_missile_1_set",
+                "location": 3
+            }
+        },
+        "bow_frost_missile_1_set": {
+            "set": {
+                "effectList": [
+                    "bow_frost_missile_damage",
+                    "Kill Source"
+                ]
+            }
+        },
+        "bow_frost_missile_damage": {
+            "damage": {
+                "damageAmount": 10
+            }
+        },
+        "bow_fire_missile_1_search ": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {}
+                },
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "bow_fire_missile_damage ",
+                "location": 3
+            }
+        },
+        "bow_fire_missile_damage ": {
+            "damage": {
+                "damageAmount": 150
+            }
+        },
+        "bow_fire_missile_1_persistent": {
+            "persistent": {
+                "periodicCount": 5,
+                "location": 2,
+                "periodicDurations": [
+                    0.5
+                ],
+                "periodicEffects": [
+                    "bow_fire_missile_1_search "
+                ]
+            }
+        },
+        "bow_basic_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "bow_basic_missile_1",
+                "mover": "bow_mover_1"
+            }
+        },
+        "bow_fire_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "bow_fire_missile_1",
+                "mover": "bow_mover_1"
+            }
+        },
+        "bow_frost_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "bow_frost_missile_1",
+                "mover": "bow_mover_1"
+            }
+        },
+        "bow_generic_search_1": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "debugDraw": false,
+                "distanceExtendMode": 1,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.7,
+                        "length": 6
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "primarySortKeys": {
+                        "key": 10,
+                        "order": 0
+                    }
+                },
+                "effect": "apply_target_marker",
+                "missingEffect": "bow_generic_search_2",
+                "location": 7,
+                "offset": {
+                    "forward": 6
+                }
+            }
+        },
+        "apply_target_marker": {
+            "applyBehavior": {
+                "behavior": "target_marker",
+                "target": 1,
+                "extendDuration": true
+            }
+        },
+        "bow_generic_search_2": {
+            "parent": "bow_generic_search_1",
+            "areaSearch": {
+                "distanceExtendMode": 1,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 0.6,
+                        "length": 22
+                    }
+                },
+                "maxUnitCount": 1,
+                "effect": "apply_target_marker",
+                "missingEffect": "bow_generic_search_3",
+                "location": 7,
+                "offset": {
+                    "forward": 11
+                }
+            }
+        },
+        "bow_generic_search_3": {
+            "parent": "bow_generic_search_1",
+            "areaSearch": {
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 0.9,
+                        "length": 26
+                    }
+                },
+                "maxUnitCount": 1,
+                "effect": "apply_target_marker",
+                "missingEffect": "bow_generic_search_4",
+                "location": 7,
+                "offset": {
+                    "forward": 13
+                }
+            }
+        },
+        "bow_generic_search_4": {
+            "parent": "bow_generic_search_1",
+            "areaSearch": {
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.3,
+                        "length": 26
+                    }
+                },
+                "maxUnitCount": 1,
+                "effect": "apply_target_marker",
+                "missingEffect": "bow_generic_search_5",
+                "location": 7,
+                "offset": {
+                    "forward": 13
+                }
+            }
+        },
+        "bow_generic_search_5": {
+            "parent": "bow_generic_search_1",
+            "areaSearch": {
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.7,
+                        "length": 30
+                    }
+                },
+                "maxUnitCount": 1,
+                "effect": "apply_target_marker",
+                "missingEffect": "no_target_found",
+                "location": 7,
+                "offset": {
+                    "forward": 15
+                }
+            }
+        },
+        "no_target_found": {
+            "persistent": {
+                "periodicCount": 1,
+                "periodicDurations": [
+                    1
+                ],
+                "periodicEffects": [
+                    "DoNothing"
+                ]
+            }
+        },
+        "ability_fireball_launch_missile": {
+            "launchMissile": {
+                "targetType": 2,
+                "missileUnit": "ability_fireball_missile",
+                "effect": "ability_fireball_search",
+                "launchLocation": 9,
+                "mover": "_arc_high_fast"
+            }
+        },
+        "ability_fireball_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.35
+                    }
+                },
+                "filter": {
+                    "air": 0
+                },
+                "effect": "lionking_ability_damage"
+            }
+        },
+        "enemy_damage": {
+            "damage": {
+                "damageAmount": 1
+            }
+        },
+        "bow_2_generic_search_1": {
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 0.2,
+                        "length": 30
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "primarySortKeys": {
+                        "key": 2,
+                        "order": 0
+                    },
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "apply_target_marker 2",
+                "missingEffect": "bow_2_generic_search_2",
+                "location": 7,
+                "offset": {
+                    "forward": 15
+                }
+            }
+        },
+        "apply_target_marker 2": {
+            "applyBehavior": {
+                "behavior": "target_marker 2",
+                "target": 1,
+                "extendDuration": true
+            }
+        },
+        "bow_2_generic_search_2": {
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 0.45,
+                        "length": 30
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "primarySortKeys": {
+                        "key": 2,
+                        "order": 0
+                    },
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "apply_target_marker 2",
+                "missingEffect": "bow_2_generic_search_3",
+                "location": 7,
+                "offset": {
+                    "forward": 15
+                }
+            }
+        },
+        "bow_2_generic_search_3": {
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 0.7,
+                        "length": 30
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "primarySortKeys": {
+                        "key": 2,
+                        "order": 0
+                    },
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "apply_target_marker 2",
+                "missingEffect": "bow_2_generic_search_4",
+                "location": 7,
+                "offset": {
+                    "forward": 15
+                }
+            }
+        },
+        "bow_2_generic_search_4": {
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.2,
+                        "length": 30
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "primarySortKeys": {
+                        "key": 2,
+                        "order": 0
+                    },
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "apply_target_marker 2",
+                "missingEffect": "bow_2_generic_search_5",
+                "location": 7,
+                "offset": {
+                    "forward": 15
+                }
+            }
+        },
+        "bow_2_generic_search_5": {
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.7,
+                        "length": 30
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "primarySortKeys": {
+                        "key": 2,
+                        "order": 0
+                    },
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "apply_target_marker 2",
+                "missingEffect": "no_target_found 2",
+                "location": 7,
+                "offset": {
+                    "forward": 15
+                }
+            }
+        },
+        "no_target_found 2": {
+            "persistent": {
+                "periodicCount": 1,
+                "periodicDurations": [
+                    1
+                ],
+                "periodicEffects": [
+                    "DoNothing"
+                ]
+            }
+        },
+        "icemage_attack_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "icemage_attack_missile",
+                "mover": "bow_mover_1"
+            }
+        },
+        "icemage_attack_basic_search": {
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.5,
+                        "length": 1.5
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper",
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "icemage_attack_impact_set",
+                "location": 3,
+                "offset": {
+                    "right": -0.2
+                }
+            }
+        },
+        "icemage_attack_impact_set": {
+            "set": {
+                "effectList": [
+                    "icemage_attack_damage",
+                    "Kill Source"
+                ]
+            }
+        },
+        "icemage_attack_damage": {
+            "damage": {
+                "damageAmount": 1,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "lionking_attack_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "lionking_attack_missile",
+                "effect": "lionking_attack_damage",
+                "mover": "bow_mover_1"
+            }
+        },
+        "lionking_attack_basic_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.5,
+                        "length": 1.5
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "effect": "lionking_attack_impact_set",
+                "location": 3,
+                "offset": {
+                    "right": -0.2
+                }
+            }
+        },
+        "lionking_attack_impact_set": {
+            "set": {
+                "effectList": [
+                    "lionking_attack_damage",
+                    "Kill Source"
+                ]
+            }
+        },
+        "lionking_attack_damage": {
+            "damage": {
+                "damageAmount": 1,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "_knockback_create": {
+            "persistent": {
+                "periodicCount": 1,
+                "location": 1,
+                "offsetStart": 7,
+                "offsetEnd": 7,
+                "periodicEffects": [
+                    "_knockback_launch"
+                ],
+                "periodicOffsetSelectMode": 1,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 0.75,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 0.75
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": 0.1
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 0.875
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": 0.1
+                    },
+                    {
+                        "forward": 1,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 1,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 1
+                    },
+                    {
+                        "forward": 1,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 1,
+                        "right": 0.1
+                    }
+                ]
+            }
+        },
+        "_knockback_launch": {
+            "launchMissile": {
+                "useMissileHeightAtDestination": true,
+                "mover": "_knockback"
+            }
+        },
+        "ability_fireball_damage": {
+            "damage": {
+                "damageAmount": 30,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "ability_fireball_apply_burning": {
+            "applyBehavior": {
+                "behavior": "ability_fireball_burning"
+            }
+        },
+        "ability_fireball_set": {
+            "set": {
+                "effectList": [
+                    "ability_fireball_knockback_create",
+                    "ability_fireball_apply_burning"
+                ]
+            }
+        },
+        "fireball_knockback_create": {
+            "persistent": {}
+        },
+        "fireball_knockback_launch": {
+            "launchMissile": {}
+        },
+        "ability_fireball_knockback_create": {
+            "persistent": {
+                "periodicCount": 1,
+                "location": 1,
+                "offsetStart": 7,
+                "offsetEnd": 2,
+                "periodicEffects": [
+                    "ability_fireball_knockback_launch"
+                ],
+                "periodicOffsetSelectMode": 1,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 2,
+                        "right": 0
+                    }
+                ]
+            }
+        },
+        "ability_fireball_knockback_launch": {
+            "launchMissile": {
+                "missileDeathType": 1,
+                "launchLocation": 4,
+                "impactLocation": 2,
+                "useMissileHeightAtDestination": true,
+                "mover": "_knockback"
+            }
+        },
+        "ability_snowstorm_launch_missile 2": {
+            "launchMissile": {
+                "missileUnit": "ability_snowstorm_missile",
+                "effect": "ability_snowstorm_search 2",
+                "launchLocation": 7,
+                "mover": "_arc_medium"
+            }
+        },
+        "ability_snowstorm_search 2": {
+            "areaSearch": {
+                "targetType": 3,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "validators": [
+                    "TargetUnit Not Helper"
+                ],
+                "effect": "ability_snowstorm_set 2",
+                "location": 3
+            }
+        },
+        "ability_snowstorm_set 2": {
+            "set": {
+                "effectList": [
+                    "ability_snowstorm_damage 2",
+                    "ability_snowstorm_apply_burning 2"
+                ]
+            }
+        },
+        "ability_snowstorm_apply_burning 2": {
+            "applyBehavior": {
+                "behavior": "ability_snowstorm_freeze"
+            }
+        },
+        "ability_snowstorm_damage 2": {
+            "damage": {
+                "damageAmount": 8
+            }
+        },
+        "ability_snowstorm_create": {
+            "persistent": {
+                "periodicCount": 35,
+                "location": 3,
+                "offsetStart": 7,
+                "offsetEnd": 7,
+                "periodicDurationSelectMode": 3,
+                "periodicDurations": [
+                    0.0626,
+                    0.0625,
+                    0.125,
+                    0.25
+                ],
+                "periodicEffects": [
+                    "ability_snowstorm_launch_missile 2"
+                ],
+                "periodicOffsetSelectMode": 2,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": -0.662,
+                        "right": 1.503
+                    },
+                    {
+                        "forward": -1.638,
+                        "right": 0.166
+                    },
+                    {
+                        "forward": 1.89
+                    },
+                    {
+                        "forward": 1.441,
+                        "right": 1.335
+                    },
+                    {
+                        "forward": -1.125,
+                        "right": 0.407
+                    },
+                    {
+                        "forward": -2.274,
+                        "right": 1.273
+                    },
+                    {
+                        "forward": 1.874,
+                        "right": -1.092
+                    },
+                    {
+                        "forward": -1.63
+                    },
+                    {
+                        "forward": 0.684,
+                        "right": -0.382
+                    },
+                    {
+                        "forward": 2.969,
+                        "right": -2.536
+                    },
+                    {
+                        "forward": -0.901,
+                        "right": -0.392
+                    },
+                    {
+                        "forward": 0.853,
+                        "right": -0.832
+                    },
+                    {
+                        "forward": 0.783
+                    },
+                    {
+                        "forward": 0.938,
+                        "right": -1.431
+                    },
+                    {
+                        "forward": -0.588,
+                        "right": -1.652
+                    }
+                ]
+            }
+        },
+        "ship_cannon_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "ship_cannon_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile Slower"
+            }
+        },
+        "crew_hero_alchemist_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "crew_hero_alchemist_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile Slower"
+            }
+        },
+        "crew_hero_centaur_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "crew_hero_centaur_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile"
+            }
+        },
+        "crew_hero_wolfhuntress_maskedheroine_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "crew_hero_wolfhuntress_maskedheroine_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile"
+            }
+        },
+        "crew_hero_beemistress_thief_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "crew_hero_beemistress_thief_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile"
+            }
+        },
+        "crew_hero_boarbarian_shaman_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "crew_hero_avalanche_surfer_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile Slower"
+            }
+        },
+        "crew_hero_cloudrabbit_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "crew_hero_cloudrabbit_weapon Missile",
+                "effect": "Standard Damage (Critical Chance)",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "Standard Ballistic Missile"
+            }
+        },
+        "Standard Damage (Critical Chance)": {
+            "damage": {
+                "damageAmount": 3
+            }
+        },
+        "_knockback_create 2": {
+            "persistent": {
+                "periodicCount": 1,
+                "location": 1,
+                "offsetStart": 7,
+                "offsetEnd": 7,
+                "periodicEffects": [
+                    "_knockback_launch"
+                ],
+                "periodicOffsetSelectMode": 1,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 0.75,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 0.75
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": 0.1
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 0.875
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": 0.1
+                    },
+                    {
+                        "forward": 1,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 1,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 1
+                    },
+                    {
+                        "forward": 1,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 1,
+                        "right": 0.1
+                    }
+                ]
+            }
+        },
+        "enemy_pig1_damage": {
+            "damage": {
+                "damageAmount": 1
+            }
+        },
+        "enemy_ogre1_damage  ": {
+            "damage": {
+                "damageAmount": 1
+            }
+        },
+        "enemy_ooze1_damage ": {
+            "damage": {
+                "damageAmount": 1
+            }
+        },
+        "boss_boar1_damage  ": {
+            "damage": {
+                "damageAmount": 1
+            }
+        },
+        "earthsurfer_stone_golem_spawn": {
+            "spawn": {
+                "unit": "earthsurfer_stone_golem",
+                "count": 1,
+                "ownerPlayId": 1
+            }
+        },
+        "earthsurfer_stone_golem": {
+            "persistent": {
+                "periodicCount": 3,
+                "periodicDurations": [
+                    0.0625
+                ],
+                "periodicEffects": [
+                    "earthsurfer_stone_golem_spawn"
+                ],
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 2
+                    },
+                    {
+                        "forward": 1.75,
+                        "right": 0.65
+                    },
+                    {
+                        "forward": 1.75,
+                        "right": -0.65
+                    }
+                ]
+            }
+        },
+        "avalanche_surfer_golem_damage": {
+            "damage": {
+                "damageAmount": 5
+            }
+        },
+        "DoNothing 2": {
+            "persistent": {
+                "targetType": 3,
+                "location": 3
+            }
+        },
+        "lionking_attack_launch_missile_ground": {
+            "launchMissile": {
+                "missileUnit": "lionking_attack_missile",
+                "effect": "lionking_attack_damage",
+                "missileEffect": "lionking_attack_basic_apply_collider",
+                "mover": "bow_mover_1"
+            }
+        },
+        "lionking_attack_basic_apply_collider": {
+            "applyBehavior": {
+                "behavior": "lionking_attack_collision_search",
+                "target": 1,
+                "stackCount": 1
+            }
+        },
+        "alchemist_ability_missile": {
+            "launchMissile": {
+                "missileUnit": "alchemist_ability_missile",
+                "mover": "_arc_medium"
+            }
+        },
+        "alchemist_ability_weapon_missile": {
+            "launchMissile": {
+                "missileUnit": "alchemist_ability_weapon_missile",
+                "effect": "lionking_attack_damage",
+                "missileEffect": "lionking_attack_basic_apply_collider",
+                "mover": "bow_mover_1"
+            }
+        },
+        "System HitReaction Apply Trigger": {
+            "applyBehavior": {
+                "behavior": "System HitReaction Trigger",
+                "target": 1,
+                "stackCount": 1
+            }
+        },
+        "System HitReaction Remove Trigger": {
+            "removeBehavior": {
+                "behavior": "System HitReaction Trigger",
+                "target": 1,
+                "stackCount": 1
+            }
+        },
+        "System Death Knockback Create": {
+            "persistent": {
+                "periodicCount": 1,
+                "location": 1,
+                "offsetStart": 7,
+                "offsetEnd": 7,
+                "periodicEffects": [
+                    "System Death Knockback Launch"
+                ],
+                "periodicOffsetSelectMode": 1,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 0.75,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 0.75
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 0.75,
+                        "right": 0.1
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 0.875
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 0.875,
+                        "right": 0.1
+                    },
+                    {
+                        "forward": 1,
+                        "right": -0.1
+                    },
+                    {
+                        "forward": 1,
+                        "right": -0.05
+                    },
+                    {
+                        "forward": 1
+                    },
+                    {
+                        "forward": 1,
+                        "right": 0.05
+                    },
+                    {
+                        "forward": 1,
+                        "right": 0.1
+                    }
+                ]
+            }
+        },
+        "System Death Knockback Launch": {
+            "launchMissile": {
+                "useMissileHeightAtDestination": true,
+                "mover": "Death Knockback"
+            }
+        },
+        "Standard RangedUnit Weapon Launch": {
+            "launchMissile": {
+                "effect": "enemy_damage"
+            }
+        },
+        "enemy_goblin_flyer_damage": {
+            "damage": {
+                "damageAmount": 4
+            }
+        },
+        "enemy_goblin_flyer_search": {
+            "parent": "_StandardAreaSearch Friendly",
+            "areaSearch": {
+                "debugDraw": false,
+                "distanceExtendMode": 1,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 0.7
+                    }
+                },
+                "filter": {
+                    "enemy": 0,
+                    "neutral": 0
+                },
+                "effect": "enemy_goblin_flyer_damage"
+            }
+        },
+        "dragon_1_damage": {
+            "damage": {
+                "damageAmount": 3
+            }
+        },
+        "dragon_1_weapon Launch": {
+            "launchMissile": {
+                "targetType": 1,
+                "missileUnit": "dragon_1_weapon Missile",
+                "startEffect": "dragon_1_range_increase_search",
+                "effect": "dragon_1_damage",
+                "launchLocation": 7,
+                "impactLocation": 1,
+                "offsetStart": 7,
+                "offsetEnd": 1,
+                "mover": "_arc_medium"
+            }
+        },
+        "dragon_1_range_increase_search": {
+            "parent": "_StandardAreaSearch Friendly",
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 32
+                    }
+                },
+                "caster": 2,
+                "validators": [
+                    "unit_has_same_group_tag"
+                ],
+                "effect": "dragon_1_range_increase_AB",
+                "location": 7
+            }
+        },
+        "dragon_1_range_increase_AB": {
+            "applyBehavior": {
+                "behavior": "ranged_unit_range_increase",
+                "duration": 2.1
+            }
+        },
+        "stop": {
+            "stop": {
+                "whichUnit": 2
+            }
+        },
+        "ability_fireball_persistent": {
+            "persistent": {
+                "periodicCount": 16,
+                "periodicDurations": [
+                    0
+                ],
+                "periodicEffects": [
+                    "ability_fireball_launch_missile"
+                ],
+                "periodicOffsetSelectMode": 0,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 3.5,
+                        "right": 0
+                    },
+                    {
+                        "forward": -3.5
+                    },
+                    {
+                        "right": 3.5
+                    },
+                    {
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 2.13,
+                        "right": 2.485
+                    },
+                    {
+                        "forward": -2.13,
+                        "right": 2.485
+                    },
+                    {
+                        "forward": 2.13,
+                        "right": -2.485
+                    },
+                    {
+                        "forward": -2.13,
+                        "right": -2.485
+                    },
+                    {
+                        "forward": 3.23,
+                        "right": 1.34
+                    },
+                    {
+                        "forward": 1.34,
+                        "right": 3.23
+                    },
+                    {
+                        "forward": -1.34,
+                        "right": 3.23
+                    },
+                    {
+                        "forward": -3.23,
+                        "right": 1.34
+                    },
+                    {
+                        "forward": -3.23,
+                        "right": -1.34
+                    },
+                    {
+                        "forward": -1.34,
+                        "right": -3.23
+                    },
+                    {
+                        "forward": 1.34,
+                        "right": -3.23
+                    },
+                    {
+                        "forward": 3.23,
+                        "right": -1.34
+                    }
+                ]
+            }
+        },
+        "lionking_ability_damage": {
+            "damage": {
+                "damageAmount": 12,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "ability_alchemist_musketeer_persistent": {
+            "persistent": {
+                "periodicCount": 12,
+                "offsetStart": 3,
+                "worldFacing": true,
+                "periodicDurations": [
+                    0
+                ],
+                "periodicEffects": [
+                    "ability_alchemist_musketeer_launch_missile"
+                ],
+                "periodicOffsetSelectMode": 0,
+                "periodicEffectOffsets": [
+                    {
+                        "right": -4.25
+                    },
+                    {
+                        "right": -3.35
+                    },
+                    {
+                        "right": -2.55
+                    },
+                    {
+                        "right": -1.75
+                    },
+                    {
+                        "right": -1
+                    },
+                    {
+                        "right": -0.25
+                    },
+                    {
+                        "right": 0.5
+                    },
+                    {
+                        "right": 1.25
+                    },
+                    {
+                        "right": 2
+                    },
+                    {
+                        "right": 2.75
+                    },
+                    {
+                        "right": 3.5
+                    },
+                    {
+                        "right": 4.25
+                    }
+                ]
+            }
+        },
+        "ability_alchemist_musketeer_launch_missile": {
+            "launchMissile": {
+                "targetType": 2,
+                "missileUnit": "ability_alchemist_musketeer_missile",
+                "effect": "ability_alchemist_musketeer_search",
+                "launchLocation": 9,
+                "mover": "_arc_high_fast"
+            }
+        },
+        "ability_alchemist_musketeer_damage": {
+            "damage": {
+                "damageAmount": 12,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "ability_alchemist_musketeer_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.35
+                    }
+                },
+                "filter": {
+                    "air": 0
+                },
+                "effect": "ability_alchemist_musketeer_damage"
+            }
+        },
+        "ability_avalanche_surfer_damage": {
+            "damage": {
+                "damageAmount": 12,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "ability_avalanche_surfer_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "debugDraw": false,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 1.35
+                    }
+                },
+                "filter": {
+                    "air": 0
+                },
+                "effect": "ability_avalanche_surfer_damage"
+            }
+        },
+        "ability_avalanche_surfer_launch_missile": {
+            "launchMissile": {
+                "targetType": 2,
+                "missileUnit": "ability_avalanche_surfer_missile",
+                "effect": "ability_avalanche_surfer_search",
+                "launchLocation": 9,
+                "mover": "_arc_high_fast"
+            }
+        },
+        "ability_avalanche_surfer_persistent": {
+            "persistent": {
+                "periodicCount": 44,
+                "worldFacing": true,
+                "periodicDurations": [
+                    0
+                ],
+                "periodicEffects": [
+                    "ability_avalanche_surfer_launch_missile"
+                ],
+                "periodicOffsetSelectMode": 0,
+                "periodicEffectOffsets": [
+                    {
+                        "forward": 3.5,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": -3.25
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": -2.5
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": -1.75
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": -1
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": -0.25
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 0.5
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 1.25
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 2
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 2.75
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -3.25
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -2.5
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -1.75
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -1
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -0.25
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": 0.5
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": 1.25
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": 2
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": 2.75
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -3.25,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -2.5,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -1.75,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -1,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -0.25,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": 0.5,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": 1.25,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": 2,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": 2.75,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": 3.5
+                    },
+                    {
+                        "forward": -3.5,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": -3.25,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": -2.5,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": -1.75,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": -1,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": -0.25,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 0.5,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 1.25,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 2,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 2.75,
+                        "right": -3.5
+                    },
+                    {
+                        "forward": 3.5,
+                        "right": -3.5
+                    }
+                ]
+            }
+        },
+        "avalanche_surfer_attack_damage": {
+            "damage": {
+                "damageAmount": 1,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "avalanche_surfer_attack_impact_set": {
+            "set": {
+                "effectList": [
+                    "avalanche_surfer_attack_damage",
+                    "Kill Source"
+                ]
+            }
+        },
+        "avalanche_surfer_attack_basic_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.5,
+                        "length": 1.5
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "effect": "avalanche_surfer_attack_impact_set",
+                "location": 3,
+                "offset": {
+                    "right": -0.2
+                }
+            }
+        },
+        "avalanche_surfer_attack_basic_apply_collider": {
+            "applyBehavior": {
+                "behavior": "avalanche_surfer_attack_collision_search",
+                "target": 1,
+                "stackCount": 1
+            }
+        },
+        "avalanche_surfer_attack_launch_missile_ground": {
+            "launchMissile": {
+                "missileUnit": "avalanche_surfer_attack_missile",
+                "effect": "avalanche_surfer_attack_damage",
+                "missileEffect": "avalanche_surfer_attack_basic_apply_collider",
+                "mover": "bow_mover_1"
+            }
+        },
+        "avalanche_surfer_attack_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "avalanche_surfer_attack_missile",
+                "effect": "avalanche_surfer_attack_damage",
+                "mover": "bow_mover_1"
+            }
+        },
+        "alchemist_musketeer_attack_damage": {
+            "damage": {
+                "damageAmount": 1,
+                "expressions": [
+                    {
+                        "namedExpression": {
+                            "name": "damage_multiplier"
+                        }
+                    }
+                ]
+            }
+        },
+        "alchemist_musketeer_attack_impact_set": {
+            "set": {
+                "effectList": [
+                    "alchemist_musketeer_attack_damage",
+                    "Kill Source"
+                ]
+            }
+        },
+        "alchemist_musketeer_attack_basic_search": {
+            "parent": "_StandardAreaSearch",
+            "areaSearch": {
+                "targetType": 3,
+                "debugDraw": false,
+                "areaSearchType": {
+                    "rectangle": {
+                        "width": 1.5,
+                        "length": 1.5
+                    }
+                },
+                "maxUnitCount": 1,
+                "filter": {
+                    "player": 2,
+                    "ally": 2,
+                    "unit": 1,
+                    "air": 2,
+                    "invulerable": 2,
+                    "alive": 1
+                },
+                "effect": "alchemist_musketeer_attack_impact_set",
+                "location": 3,
+                "offset": {
+                    "right": -0.2
+                }
+            }
+        },
+        "alchemist_musketeer_attack_basic_apply_collider": {
+            "applyBehavior": {
+                "behavior": "alchemist_musketeer_attack_collision_search",
+                "target": 1,
+                "stackCount": 1
+            }
+        },
+        "alchemist_musketeer_attack_launch_missile_ground": {
+            "launchMissile": {
+                "missileUnit": "alchemist_musketeer_attack_missile",
+                "effect": "alchemist_musketeer_attack_damage",
+                "missileEffect": "alchemist_musketeer_attack_basic_apply_collider",
+                "mover": "bow_mover_1"
+            }
+        },
+        "alchemist_musketeer_attack_launch_missile": {
+            "launchMissile": {
+                "missileUnit": "alchemist_musketeer_attack_missile",
+                "effect": "alchemist_musketeer_attack_damage",
+                "mover": "bow_mover_1"
+            }
+        },
+        "enemy_goblin_flyer_huge_damage": {
+            "damage": {
+                "damageAmount": 50
+            }
+        },
+        "enemy_goblin_flyer_huge_search": {
+            "parent": "_StandardAreaSearch Friendly",
+            "areaSearch": {
+                "debugDraw": false,
+                "distanceExtendMode": 1,
+                "areaSearchType": {
+                    "circle": {
+                        "radius": 5
+                    }
+                },
+                "effect": "enemy_goblin_flyer_huge_damage"
+            }
+        }
+    }
+}

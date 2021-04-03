@@ -1,0 +1,10 @@
+{
+    "play": {
+        "mapSaveData": [
+            {
+                "key": "",
+                "save": "{\n    \"m_sessions\": 199,\n    \"lvcount\": 1,\n    \"mmr\": 0,\n    \"player_id\": 0,\n    \"deck\": \"{\\\"hero\\\":\\\"dwarf\\\",\\\"unit\\\":{\\\"a1\\\":\\\"footman\\\",\\\"a2\\\":\\\"archer\\\",\\\"a3\\\":\\\"windknight\\\"}}\",\n    \"unitlevel\": \"{\\\"archer\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"dwarf\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"footman\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"windknight\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1}}\",\n    \"bank_version\": 1,\n    \"calender\": \"[]\",\n    \"chest_count\": 0,\n    \"chest_timer\": 0,\n    \"daily_reward\": 0,\n    \"mmr_reward\": \"[]\",\n    \"portrait\": \"{\\\"dwarf\\\":1,\\\"mage\\\":0,\\\"priest\\\":0}\",\n    \"tutorial_state\": 0,\n    \"WAD\": null,\n    \"WADresult\": null,\n    \"game_result\": \"[]\",\n    \"gem\": 0,\n    \"gold\": 0,\n    \"heart\": 0\n}"
+            }
+        ]
+    }
+}

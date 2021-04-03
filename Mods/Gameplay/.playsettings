@@ -1,0 +1,10 @@
+{
+    "play": {
+        "mapSaveData": [
+            {
+                "key": "",
+                "save": "{\n    \"WAD\": \"{\\\"calender\\\":{\\\"ads\\\":{\\\"chest\\\":true,\\\"gem\\\":true,\\\"gold\\\":true,\\\"heart\\\":true},\\\"chest\\\":{\\\"a1\\\":{\\\"haschest\\\":false,\\\"rarity\\\":0,\\\"starttime\\\":0},\\\"a2\\\":{\\\"haschest\\\":false,\\\"rarity\\\":0,\\\"starttime\\\":0},\\\"a3\\\":{\\\"haschest\\\":false,\\\"rarity\\\":0,\\\"starttime\\\":0},\\\"a4\\\":{\\\"haschest\\\":false,\\\"rarity\\\":0,\\\"starttime\\\":0}},\\\"dailyreward\\\":1,\\\"dailytime\\\":1608770687,\\\"day\\\":336,\\\"heart\\\":0,\\\"player_birth\\\":1608770687,\\\"starter\\\":true},\\\"chest_timer\\\":0,\\\"deck\\\":{\\\"hero\\\":\\\"dwarf\\\",\\\"unit\\\":{\\\"a1\\\":\\\"footman\\\",\\\"a2\\\":\\\"archer\\\",\\\"a3\\\":\\\"windknight\\\",\\\"a4\\\":\\\"tesla\\\"}},\\\"gem\\\":100,\\\"gold\\\":100,\\\"lvcount\\\":1,\\\"mmr\\\":50,\\\"mmr_reward\\\":{\\\"a1\\\":false,\\\"a10\\\":false,\\\"a11\\\":false,\\\"a12\\\":false,\\\"a13\\\":false,\\\"a14\\\":false,\\\"a15\\\":false,\\\"a16\\\":false,\\\"a17\\\":false,\\\"a18\\\":false,\\\"a19\\\":false,\\\"a2\\\":false,\\\"a20\\\":false,\\\"a21\\\":false,\\\"a22\\\":false,\\\"a23\\\":false,\\\"a24\\\":false,\\\"a3\\\":false,\\\"a4\\\":false,\\\"a5\\\":false,\\\"a6\\\":false,\\\"a7\\\":false,\\\"a8\\\":false,\\\"a9\\\":false},\\\"player_id\\\":\\\"TBD\\\",\\\"portrait\\\":{\\\"dwarf\\\":1,\\\"mage\\\":0,\\\"priest\\\":0},\\\"savechests\\\":[],\\\"saveunits\\\":[],\\\"unitlevel\\\":{\\\"archer\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"dwarf\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"footman\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"tesla\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1},\\\"windknight\\\":{\\\"curpiece\\\":0,\\\"lv\\\":1}}}\",\n    \"WADresult\": \"{\\\"hp\\\":3,\\\"id\\\":1,\\\"tutorial\\\":false,\\\"win\\\":true}\"\n}"
+            }
+        ]
+    }
+}

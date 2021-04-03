@@ -1,0 +1,199 @@
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- // Mods/Dev
+-- For developer debug commands
+local mod = {}
+local lf = {}
+
+-- //—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+-- MODS
+local mods = nil
+local ui = nil
+local xml = nil
+local game_state = nil
+local bank_data = nil
+
+-- Load functions & Data from other mods as needed
+local function LoadData()
+    -- Only load if we haven't already loaded before
+    if mods == nil then
+        mods = {
+            core = GameModules["Arcade/Core"],
+            bank = GameModules["Mods/Bank"],
+            data = GameModules["Mods/Data"],
+            dev = GameModules["Mods/Dev"],
+            meta = GameModules["Mods/Meta"],
+            promo = GameModules["Arcade/CrossPromo"],
+            shop = GameModules["Mods/DreamCraft_Libraries/DreamCraft_Shop"],
+            gmui = GameModules["Arcade/UserInterface"],
+            gameplay = GameModules["Mods/Gameplay"],
+            utility = GameModules["Mods/Utility"],
+            main = GameModules["Mods/Main"],
+            ui = GameModules["Mods/UI"]
+        }
+        bank_data = mods.bank.GetBankData()
+        ui = mods.ui.Get()
+        xml = mods.ui.xml()
+        game_state = mods.main.game_state()
+    end
+end
+
+local dev_commands = {}
+local input_box
+
+local dev_panel
+function mod.CreateDevPanel(settings)
+    LoadData()
+
+    local settings = settings or {}
+    local size = settings.size or nil
+    local parent = settings.parent or DCEI.GetUiRoot()
+    local frame_table = {}
+    frame_table.selected_index = 1
+    frame_table.last_selected_index = 1
+    frame_table.suggested_params_buttons = {}
+    frame_table.suggested_params_texts = {}
+
+    mod.SetDevCommands({
+        {
+            name = "Reset",
+            default_parameters = {},
+            description = "Give the player x of specified currencies",
+            possible_parameters = {},
+            action = function() 
+                mods.bank.Reset()
+                DCEI.Wait(0)
+                DCEI.PlayLevel("Scenes/Base", "Base")
+            end
+        }, 
+        {
+            name = "Ship Fly",
+            default_parameters = {},
+            description = "Show ship fly ",
+            possible_parameters = {},
+            action = function() 
+                xml.all.ship_travel:Show()
+                dev_panel.Show(false)
+            end
+        }, 
+        {
+            name = "Add G",
+            default_parameters = {},
+            description = "Gold ",
+            possible_parameters = {},
+            action = function() 
+                mods.data.currencies.gold:Add(99999)
+            end
+        }, 
+    })
+
+    frame_table.panel = DCEI.NewUiFromXml(parent, "_dev_main")
+    frame_table.commands_scroll = DCEI.FindXmlUiById(frame_table.panel, "commands")
+    frame_table.suggestions_scroll = DCEI.FindXmlUiById(frame_table.panel, "suggestions")
+    frame_table.run_button = DCEI.FindXmlUiById(frame_table.panel, "run")
+    frame_table.run_button_text = DCEI.FindXmlUiById(frame_table.panel, "run_txt")
+    frame_table.command_description = DCEI.FindXmlUiById(frame_table.panel, "description_txt")
+    frame_table.close_button = DCEI.FindXmlUiById(frame_table.panel, "close")
+    frame_table.param_input = DCEI.FindXmlUiById(frame_table.panel, "input")
+    input_box = frame_table.param_input
+
+    DCEI.SetOnClickCallback(frame_table.close_button, function() DCEI.SetActive(frame_table.panel, false) end)
+
+    -- Populate Command list
+    frame_table.command_buttons = {}
+    frame_table.command_button_texts = {}
+    for i = 1, #dev_commands do
+        frame_table.command_buttons[i] = DCEI.NewUiFromXml(frame_table.commands_scroll, "_dev_command_btn")
+        frame_table.command_button_texts[i] = DCEI.FindXmlUiById(frame_table.command_buttons[i], "dev_item_txt")
+        DCEI.SetText(frame_table.command_button_texts[i], dev_commands[i].name)
+        DCEI.SetOnClickCallback(frame_table.command_buttons[i], function() frame_table.UpdateSelectedCommand(i) end)
+    end
+
+    -- When Command pressed, set as selected command,  
+    function frame_table.UpdateSelectedCommand(index)
+        DCEI.SetBackgroundImage(frame_table.command_buttons[frame_table.selected_index], "frame01")
+        DCEI.SetBackgroundImageColor(frame_table.command_buttons[frame_table.selected_index], 0, 0.5, 0.8, 1)
+    
+        frame_table.selected_index = index
+
+        DCEI.SetBackgroundImage(frame_table.command_buttons[frame_table.selected_index], "frame01")
+        DCEI.SetBackgroundImageColor(frame_table.command_buttons[frame_table.selected_index], 0, 0.7, 1, 1)
+
+        -- Update run button text
+        DCEI.SetText(frame_table.run_button_text, "Run\n" .. dev_commands[index].name)
+
+        -- Update description 
+        DCEI.SetText(frame_table.command_description, dev_commands[index].description)
+
+        -- Update suggested parameter list
+        for i = 1, #frame_table.suggested_params_buttons do
+            DCEI.Destroy(frame_table.suggested_params_buttons[i])
+        end
+        frame_table.suggested_params_buttons = {}
+        frame_table.suggested_params_texts = {}
+        DCEI.Wait(0)
+        for i = 1, #dev_commands[index].possible_parameters do 
+            frame_table.suggested_params_buttons[i] = DCEI.NewUiFromXml(frame_table.suggestions_scroll, "_dev_command_btn")
+            frame_table.suggested_params_texts[i] = DCEI.FindXmlUiById(frame_table.suggested_params_buttons[i], "dev_item_txt")
+            DCEI.SetText(frame_table.suggested_params_texts[i], dev_commands[index].possible_parameters[i])
+            DCEI.SetOnClickCallback(frame_table.suggested_params_buttons[i], function() frame_table.InsertParameterSuggestion(i) end)
+        end
+
+        -- Update input box current input
+        local display_text = ""
+        for i = 1, #dev_commands[index].default_parameters do 
+            display_text = display_text .. dev_commands[index].default_parameters[i] .. ",\n"
+        end
+        DCEI.SetInputText(frame_table.param_input, display_text)
+    end
+
+    -- When suggestion clicked on the Suggestions tab, insert it into the input box
+    function frame_table.InsertParameterSuggestion(index)
+        local base = DCEI.GetInputText(frame_table.param_input) or ""
+        DCEI.SetInputText(frame_table.param_input, base .. dev_commands[frame_table.selected_index].possible_parameters[index] .. ",\n")
+    end
+
+    -- When "Run" button pressed, execute the action for the selected command
+    DCEI.SetOnClickCallback(frame_table.run_button, function() dev_commands[frame_table.selected_index].action() end)
+
+    function frame_table.Show(bool)
+        DCEI.SetActive(frame_table.panel, bool)
+        DCEI.MoveToTop(frame_table.panel)
+    end
+
+    frame_table.UpdateSelectedCommand(1)
+    frame_table.Show(false)
+    DCEI.MoveToTop(frame_table.panel)
+
+    dev_panel = frame_table
+    return frame_table
+end
+
+function lf.GetParameters(settings)
+    local settings = settings or {}
+    local return_value
+    LoadData()
+
+    if settings.pairs == true then
+        return_value = mods.utility.FormatStringAsKeyValueTable(DCEI.GetInputText(input_box))
+    else
+        return_value = mods.utility.Split(string.gsub(DCEI.GetInputText(input_box), "[\n\r]", ""), ",")
+    end
+
+    return return_value or {}
+end
+
+function mod.SetDevCommands(commands)
+    dev_commands = commands
+end
+
+function mod.FormatStringTableAsDevParameters(string_table, default_value)
+    local return_table = {}
+
+    for k, v in pairs(string_table) do
+        table.insert(return_table, v .. "=" .. default_value)
+    end
+
+    return return_table
+end
+
+return mod
